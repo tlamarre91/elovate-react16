@@ -1,17 +1,63 @@
-import { Router } from "express";
-import { getRepository } from "typeorm";
-import { Logger } from "winston";
+import {
+    Router,
+    Request,
+    Response
+} from "express";
+
+import {
+    sanitizeBody,
+    sanitizeParam,
+    validationResult,
+    Result
+} from "express-validator";
+
+import {
+    getRepository,
+    Like
+} from "typeorm";
+
 import { LoremIpsum } from "lorem-ipsum";
 
-import { User } from "../model";
+import { log } from "../log";
+import { User, Match } from "../model";
+import {
+    UserProps,
+} from "../../api";
 
-export default function(log: Logger) {
-    const routes = Router();
+import { apiRouter } from "./apiRouter";
 
-    routes.get("/", (req, res) => {
-        log.info("get request");
-        res.render("base");
+const router = Router();
+
+router.use("/api", apiRouter);
+
+//router.get("/api/searchUsers", (req, res) => { res.json({ WHAT: "WHAT THE FUUUUUCK" }) });
+
+router.get("/", (req: Request, res: Response) => {
+    log.info("got somethin here boss");
+    res.render("base");
+});
+
+router.get("/randomUser", (req: Request, res: Response) => {
+    User.getRandom().then(user => {
+        res.json({ user });
     });
+});
 
-    return routes;
-}
+router.post("/addUser", (req: Request, res: Response) => {
+    //const username: string = req.body["username"];
+    //const userProps = new User(req.body as UserProps);
+    const userProps: UserProps = req.body;
+    const user = new User(userProps);
+    //user.username = req.body["username"];
+    getRepository(User).save(user).then(user => res.json(user));
+});
+
+router.post("/addMatch", (req: Request, res: Response) => {
+    const matchName = req.body["name"];
+    const match = new Match();
+    match.name = matchName;
+    getRepository(Match).save(match);
+    res.json({ match });
+});
+
+export default router;

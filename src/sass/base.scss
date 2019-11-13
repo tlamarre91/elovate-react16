@@ -1,0 +1,30 @@
+$font-stack: Helvetica, sans-serif;
+$primary-color: #111;
+$bgcolor-outer: #dde;
+$bgcolor-inner: #bbe;
+
+body {
+    background-color: $bgcolor-outer;
+    font: 100% $font-stack;
+    color: $primary-color;
+}
+
+.appContainer {
+    display: flex;
+}
+
+.uiColumn {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #888;
+    margin-right: 5px;
+    min-width: 400px;
+}
+
+.uiElement {
+    background-color: $bgcolor-inner;
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    min-height: 30px;
+}

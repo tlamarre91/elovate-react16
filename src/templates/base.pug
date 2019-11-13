@@ -2,6 +2,12 @@ doctype html
 html
     head
         title elovate
+        link(rel="stylesheet", type="text/css" href="/css/base.css")
     body
-        p#timeContainer welcome to the page
+        .appContainer
+            .uiColumn
+                div.uiElement#userSearchContainer user search
+            .uiColumn
+                div.uiElement#userInfoContainer user info
+                div.uiElement#matchListContainer match list
         script(src="/js/bundle.js")

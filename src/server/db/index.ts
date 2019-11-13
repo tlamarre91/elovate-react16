@@ -1,21 +1,34 @@
 import "reflect-metadata";
 import { createConnection } from "typeorm";
-import { User } from "../model";
 
-const DB_LOGGING = false;
+import { log } from "../log";
+import {
+    User,
+    Match,
+    //Party
+} from "../model";
+
+const DB_LOGGING = true;
 
 export function connectDb() {
-    return createConnection({
-        type: "postgres",
-        host: "localhost",
-        port: 5432,
-        username: "tom",
-        password: "tom",
-        database: "elovate",
-        entities: [
-            User
-        ],
-        synchronize: true,
-        logging: DB_LOGGING
-    });
+    try {
+        return createConnection({
+            type: "postgres",
+            host: "localhost",
+            port: 5432,
+            username: "tom",
+            password: "tom",
+            database: "elovate",
+            entities: [
+                User,
+                //Comment,
+                //Match,
+                //Party
+            ],
+            synchronize: true,
+            logging: DB_LOGGING
+        });
+    } catch (err) {
+        log.error(err);
+    }
 }
