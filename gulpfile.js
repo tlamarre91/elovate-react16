@@ -76,7 +76,7 @@ exports.copyTemplates = copyTemplates;
 exports.cleanDist = cleanDist;
 
 exports.watchAll = cb => {
-    gulp.watch(["src/server/**/*", "src/api/**/*"], gulp.series(cleanTypes, cleanServer, buildServer, copyTemplates));
+    gulp.watch(["src/server/**/*", "src/api/**/*"], gulp.series(cleanApi, cleanServer, buildServer, copyTemplates));
     gulp.watch(["src/client/**/*", "src/api/**/*"], gulp.series(cleanClient, cleanSass, gulp.parallel(buildClient, buildSass)));
     gulp.watch(["src/templates/**/*"], copyTemplates);
     gulp.watch(["src/sass/**/*"], gulp.series(cleanSass, buildSass));

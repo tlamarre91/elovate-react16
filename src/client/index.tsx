@@ -2,9 +2,15 @@ import * as React from "react";
 import { render } from "react-dom";
 
 import { log } from "./log";
+
 import {
     UserSearchComponent,
 } from "./UserSearchComponent";
+
+import {
+    UserSearchResultList
+} from "./UserComponents";
+
 
 import {
     UserProps,
@@ -13,15 +19,16 @@ import {
 
 function main() {
     const testReceiver: Receiver<UserProps[]> = {
+        id: "testReceiver",
         data: (users: UserProps[]) => {
             users.forEach(u => log.info(`GOT 'IM, BOSS! ${ u.username }`));
         }
     }
     log.info("running main()");
-    const cmpt = <UserSearchComponent value="default value" inputElmtId="userSearchInput" searchTimeoutLength={ 1000 } outputReceivers={ [testReceiver] } />
-    // const cmpt = <UserSearchComponent value="default value" inputElmtId="userSearchInput" searchTimeoutLength={ 2000 } />
-    // const cmpt = <UserSearchComponent value="default value" inputElmtId="userSearchInput" />
-    render(cmpt, document.getElementById("userSearchContainer"));
+    const searchCmpt = <UserSearchComponent value="default value" id="userSearchInput" searchTimeoutLength={ 1000 } />
+
+    //const resultCmpt = <UserSearchResultList id="resultsList" provider={ searchCmpt } />;
+    render(searchCmpt, document.getElementById("userSearchContainer"));
 }
 
 main();

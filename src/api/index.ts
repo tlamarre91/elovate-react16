@@ -118,6 +118,7 @@ export class ApiError<T> implements ApiResponse<T> {
 }
 
 export interface Receiver<T> {
+    id: string;
     data(obj: T): void;
 }
 
