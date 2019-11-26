@@ -1,20 +1,25 @@
 import * as React from "react";
-import { render } from "react-dom";
+import {
+    render
+} from "react-dom";
 
 import { log } from "./log";
 
-import {
-    Endpoint,
-    UserProps,
-    UserSearchParams,
-    ApiPost,
-    ApiGet,
-    ApiQuery,
-    ApiResponse,
-    Receiver
-} from "../api";
+//import {
+//    Endpoint,
+//    UserProps,
+//    UserSearchParams,
+//    ApiPost,
+//    ApiGet,
+//    ApiQuery,
+//    ApiResponse,
+//    Receiver,
+//    SearchType
+//} from "../api";
 
-type UserSearchComponentProps = {
+import * as Api from "../api";
+
+interface UserSearchComponentProps {
     /**
      * Initial search input value
      */
@@ -33,33 +38,22 @@ type UserSearchComponentProps = {
      * TODO: client-side instant update if new string is substring of last complete search
      */
     searchTimeoutLength: number;
-
-    receiver?: Receiver<UserProps[]>;
-    receivers?: Receiver<UserProps[]>[];
 };
 
-type UserSearchComponentState = {
+interface UserSearchComponentState {
     value: string;
     timeoutId: number;
-    receivers: Receiver<UserProps[]>[];
+    results: Api.UserProps[];
 }
 
 export class UserSearchComponent extends React.Component<UserSearchComponentProps, UserSearchComponentState> {
     constructor(props: UserSearchComponentProps) {
         super(props);
 
-        let recs: Receiver<UserProps[]>[] = [];
-        if (this.props.receivers) {
-            recs = recs.concat(this.props.receivers);
-        }
-        if (this.props.receiver) {
-            recs.push(this.props.receiver);
-        }
-
         this.state = {
             value: props.value ? props.value : "",
             timeoutId: 0,
-            receivers: recs
+            results: []
         };
     }
 
@@ -68,18 +62,19 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
     }
 
     runSearch() {
-        const params = new UserSearchParams("username", "contains", this.state.value);
-        const call = new ApiQuery<UserProps[]>(this.originStr(), Endpoint.SearchUsers, params);
+        const params = new Api.UserSearchParams({ username: this.state.value }, Api.SearchType.ContainsAll);
+        const call = new Api.ApiQuery<Api.UserProps[]>(this.originStr(), Api.Endpoint.SearchUsers, params);
         call.execute().then(res => {
             if (! res.success) {
                 const err = res.error;
                 log.error(err);
-                throw Error(err);
-            } else if (this.state.receivers.length > 0) {
-                this.state.receivers.forEach(rec => rec.data(res.data));
+                throw Error(err); // TODO: don't throw. just have a "toast" drop down to show error
             } else {
-                log.warn(`ran user search with no receivers: ${ this.originStr() }`);
+                this.setState({ results: res.data });
             }
+        }).catch(err => {
+            log.info("WUWUWUWU??")
+            log.error(err);
         });
     }
 
@@ -90,7 +85,6 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
 
     private handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const str: string = event.currentTarget.value;
-        log.info(`changing search string: ${str}`);
         this.setState(() => {
             return {
                 value: str,
@@ -108,35 +102,8 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
             clearTimeout(this.state.timeoutId);
         }
 
-        log.info("queueing search");
         const newTO: number = window.setTimeout(this.runSearch.bind(this), this.props.searchTimeoutLength);
         return newTO;
-    }
-
-    componentDidMount() {
-        log.info("did mount");
-    }
-
-    componentWillUnmount() {
-        this.setState({ receivers: null });
-        clearTimeout(this.state.timeoutId);
-    }
-
-    addReceiver(rec: Receiver<UserProps[]>) {
-        this.setState((prevState, props) => {
-            const prevReceivers = prevState.receivers;
-            if (prevReceivers.map(r => r.id).includes(rec.id)) {
-                throw Error(`receiver already assigned to UserSearchComponent ${ props.id } with id ${ rec.id }`);
-            } else {
-                return { receivers: prevReceivers.concat(rec) };
-            }
-        });
-    }
-
-    removeReceiver(id: String) {
-        this.setState(prevState => ({
-            receivers: prevState.receivers.filter(rec => rec.id !== id)
-        }));
     }
 
     render() {
@@ -144,6 +111,7 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
             <div>
                 <input id={ this.props.id } type="text" onChange={ this.handleInputChange } />
                 <button onClick={ this.handleClick }>search</button>
+                { this.state.results.map((r, i) => <p key={ i }>{ r.username }</p>) }
             </div>
         </div>;
     }

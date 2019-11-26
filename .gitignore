@@ -3,3 +3,6 @@ dist/*
 *.log
 logs/*
 *.code-workspace
+*.swp
+src/sandbox
+notes.txt

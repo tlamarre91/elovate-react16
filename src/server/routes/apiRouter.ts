@@ -20,25 +20,25 @@ import {
 import { LoremIpsum } from "lorem-ipsum";
 
 import { log } from "../log";
-import { User, Match } from "../model";
 import {
-    Endpoint,
-    UserProps,
-    UserSearchParams,
-    ApiResponse,
-    ApiError
-} from "../../api";
+    User,
+    Group,
+    Game,
+    Match,
+} from "../model";
+
+import * as Api from "../../api";
 
 export const apiRouter = Router();
 
-async function searchUsers(params: UserSearchParams): Promise<ApiResponse<UserProps[]>> {
+async function searchUsers(params: Api.UserSearchParams): Promise<Api.ApiResponse<Api.UserProps[]>> {
     const userRepo = getRepository(User);
-    if (params.match === "contains") {
+    if (params.searchType === Api.SearchType.ContainsAll) {
         const users = await userRepo.find({
-            username: Like (`%${ params.value }%`)
+            username: Like(`%${ params.searchProps.username }%`) // TODO: Factor out, check each field in Partial<UserProps>
         });
 
-        const userPropsList: UserProps[] = users.map((u: User) => u as UserProps);
+        const userPropsList: Api.UserProps[] = users.map((u: User) => u.toProps());
 
         return {
             success: true,
@@ -46,22 +46,46 @@ async function searchUsers(params: UserSearchParams): Promise<ApiResponse<UserPr
             data: userPropsList
         };
     } else {
-        const err = `match type not yet implemented: ${ params.match }`;
+        const err = `match type not yet implemented: ${ params.searchType }`;
         log.error(err);
         throw Error(err);
     }
 }
 
-apiRouter.get(Endpoint.SearchUsers,
-              sanitizeQuery(["searchString"]).escape(),
+apiRouter.get(Api.Endpoint.SearchUsers,
+              sanitizeQuery(["username"]).escape(),
               async (req, res) => {
                   const errors = validationResult(req);
-                  const params = req.query as UserSearchParams;
-                  res.json(await searchUsers(params));
+                  const params = Api.UserSearchParams.fromQuery(req.query);
+                  searchUsers(params)
+                    .then(ret => res.json(ret))
+                    .catch(err => res.json(new Api.ApiError<Api.UserProps[]>(err)));
               });
 
-apiRouter.post(Endpoint.AddUser,
-               sanitizeBody(["username", "displayName", "email"]),
-               async (req, res) => {
-                   res.json(new ApiError<UserProps>("endpoint not implemented"));
-               });
+// async function addUser(props: Partial<Api.UserProps>): Promise<Api.ApiResponse<Api.UserProps>> {
+//     try {
+//         const userRepo = getRepository(User);
+//         const newUser = await userRepo.save(new User(props));
+//         return {
+//             success: true,
+//             error: null,
+//             data: newUser
+//         };
+//     } catch (err) {
+//         log.error(err);
+//         throw err;
+//     }
+// }
+// 
+// apiRouter.post(Api.Endpoint.AddUser,
+//                sanitizeBody(["username", "displayName", "email"]),
+//                async (req, res) => {
+//                    log.info(JSON.stringify(req.body));
+//                    const props: Partial<Api.UserProps> = {
+//                        ... req.body.data
+//                    };
+//                    log.info(JSON.stringify(props));
+//                    addUser(props)
+//                        .then(ret => res.json(ret))
+//                        .catch(err => res.json(new Api.ApiError<Api.UserProps[]>(err)));
+//                });

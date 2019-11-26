@@ -1,5 +1,9 @@
-import { UserProps } from "../../api";
 import winston from "winston";
+
+import {
+    UserProps,
+    GroupProps
+} from "../../api";
 
 import {
     getRepository,
@@ -19,10 +23,11 @@ import {
 
 const log: winston.Logger = winston.loggers.get("base-logger");
 
-export abstract class EntityWithId {
-    @PrimaryGeneratedColumn()
-    id: number;
-}
+export { User } from "./User";
+export { Match } from "./Match";
+export { Game } from "./Game";
+export { Group } from "./Group";
+export { ImageAsset } from "./assets";
 
 //@Entity()
 //export class Party extends EntityWithId {
@@ -48,47 +53,3 @@ export abstract class EntityWithId {
 //        }
 //    }
 //}
-
-@Entity()
-export class User extends EntityWithId {
-    constructor(props?: UserProps) {
-        super();
-        if (props) {
-            this.username = props.username;
-        }
-    }
-
-    @Index({ unique: true })
-    @Column({ length: 64 })
-    username: string;
-
-    @Column({ length: 64, default: "" })
-    displayName: string;
-    
-    @Column({ length: 64, default: "" })
-    email: string;
-
-    @Column({ default: false })
-    hasAccount: boolean;
-
-//    @ManyToMany(type => Party)
-//    @JoinTable()
-//    parties: Party[];
-
-    static async getRandom(): Promise<User> {
-        const userRepository = getRepository(this);
-        const ids = await userRepository.find({ select: ["id"] });
-        const randId = ids[Math.floor(Math.random() * ids.length)];
-        return userRepository.findOne(randId);
-    }
-}
-
-@Entity()
-export class Match extends EntityWithId {
-    @Column()
-    name: string;
-
-//    @ManyToMany(type => Party)
-//    @JoinTable()
-//    parties: Party[];
-}

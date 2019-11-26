@@ -7,69 +7,69 @@ import {
     Receiver
 } from "../api";
 
-import {
-    UserSearchComponent,
-} from "./UserSearchComponent";
-
-export const UserListItem = (user: UserProps) => {
-    return <div className="userListItem">{ user.username }</div>
-};
-
-export const UserList = (users: UserProps[]) => {
-    // TODO: Figure out why i can't use function components the way i'm supposed to!!! (i.e. as jsx tags)
-    return <div className="userList">
-        { users.map(user => UserListItem(user)) }
-    </div>
-};
-
-interface UserSearchResultListProps {
-    /**
-     * Base string for ID of rendered tags.
-     * Also identifies this component when subscribing as a Receiver.
-     */
-    id: string;
-    maxDisplayed?: number;
-    providerId: string;
+export interface UserListItemProps {
+    user: UserProps;
+    focused?: boolean;
 }
 
-interface UserSearchResultListState {
-    users: UserProps[];
-    provider: UserSearchComponent;
-    lastUpdate: number;
+export interface UserListItemState {
+    focused: boolean;
 }
 
-export class UserSearchResultList extends React.Component<UserSearchResultListProps, UserSearchResultListState> {
-    constructor(props: UserSearchResultListProps) {
+export class UserListItem extends React.Component<UserListItemProps, UserListItemState> {
+    constructor(props: UserListItemProps) {
         super(props);
-        //this.state = state;
-    }
-
-    receiver: Receiver<UserProps[]> = {
-        id: this.props.id,
-        data: (users: UserProps[]) => {
-            this.setState({
-                users,
-                lastUpdate: Date.now()
-            });
-        }
-    }
-
-    setProvider(p: UserSearchComponent) {
-        p.addReceiver(this.receiver);
-    }
-
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-        try {
-            this.state.provider.removeReceiver(this.receiver.id);
-        } catch (err) {
-            log.error(err);
-        }
+        const focused = this.props.focused !== undefined ? this.props.focused : false;
+        this.state = { focused };
     }
 
     render() {
-        return UserList(this.state.users);
+        return <div className="userListItem">
+            { this.props.user.username }
+        </div>
+    }
+}
+
+export interface UserListProps {
+    users: UserProps[];
+}
+
+export interface UserListState {
+    users: (UserProps & { hidden: boolean })[];
+    filter?: UserProps;
+}
+
+export class UserList extends React.Component<UserListProps, UserListState> {
+    constructor(props: UserListProps) {
+        super(props);
+        this.state = {
+            users: this.props.users.map(u => {
+                return { ... u, hidden: false };
+            })
+        }
+    }
+
+    setFilter(userProps: UserProps) {
+        this.setState(() => {
+            return { filter: userProps }; // do i set user.hidden here or in render? or...?
+        });
+    }
+
+    //update() {
+    //}
+
+    render() {
+        const toDisplay: UserProps[] = this.state.users.filter(u => {
+            const f = this.state.filter;
+            if (! u.username.includes(f.username)) {
+                return false;
+            } else if (! u.email.includes(f.email)) {
+                return false;
+            } else if (! u.displayName.includes(f.displayName)) {
+            }
+        });
+        return <div className="userList">
+            { toDisplay.map(u => <UserListItem user={ u } /> ) }
+        </div>
     }
 }

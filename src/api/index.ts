@@ -7,9 +7,13 @@
 /**
  * Base URLs for API endpoints
  */
+
+import { MapsTo, UserProps, GroupProps, GameProps, MatchProps } from "./props";
+export { MapsTo, UserProps, GroupProps, GameProps, MatchProps };
+
 export enum Endpoint {
     SearchUsers = "/searchUsers",
-    AddUser = "/blahblahblah"
+    AddUser = "/addUser"
 }
 
 export class ApiGet<Receive> {
@@ -55,7 +59,11 @@ export class ApiQuery<Receive> {
 
         return fetch(this.url, fetchParams)
             .then(response => response.json())
-            .then(obj => obj as ApiResponse<Receive>);
+            .then(obj => {
+                if (obj["success"] === true) {
+                    return obj as ApiResponse<Receive>;
+                }
+            });
     }
 }
 
@@ -122,20 +130,7 @@ export interface Receiver<T> {
     data(obj: T): void;
 }
 
-/**
- * Properties representing basic information about a user
- */
-export interface UserProps {
-    username?: string | null;
-    displayName?: string | null;
-    email?: string | null;
-}
-
-//export interface UserPropsList extends ApiObj {
-//    users: UserProps[];
-//}
-
-function queryString(... keyVals: [string, string][]): string {
+function queryString(keyVals: [string, string][]): string {
     // TODO: ensure reserved symbols are escaped
     const str: string = '?' + keyVals.map(pair => `${ pair[0] }=${ pair[1] }`).join("&");
     console.log(`made query string: ${ str }`);
@@ -147,18 +142,39 @@ interface UrlQuery {
     toQueryStr(): string;
 }
 
-export class UserSearchParams implements UrlQuery {
-    field: "username" | "displayName" | "email";
-    match: "exact" | "contains";
-    value: string;
+export enum SearchType {
+    Exact = "exact",
+    ContainsAll = "containsAll",
+    ContainsAny = "containsAny",
+}
 
-    constructor(field: "username" | "displayName" | "email", match: "exact" | "contains", value: string) {
-        this.match = match;
-        this.field = field;
-        this.value = value;
+export class UserSearchParams implements UrlQuery {
+    // TODO: implement isSubset() for client-side checking.
+    // eg: if newParams.isSubset(lastParams) then don't hit API - filter results in client
+    searchProps: Partial<UserProps>;
+    searchType: SearchType;
+
+    constructor(searchProps: Partial<UserProps>, searchType: SearchType) {
+        this.searchProps = searchProps;
+        this.searchType = searchType;
     }
 
-    toQueryStr() {
-        return queryString(["match", this.match], ["field", this.field], ["value", this.value]);
+    static fromQuery(query: any): UserSearchParams {
+        // TODO: Is it ok that this totally shits with a malformed query? validate elsewhere, i guess
+        let props: Partial<UserProps> = { ... query }; // TODO: does query.searchType get stuck into props too?
+        console.log(props);
+        let searchType: SearchType = query["searchType"];
+        return new UserSearchParams(props, searchType);
+    }
+
+    toQueryStr(): string {
+        let pairs: [string, string][] = [];
+
+        for (let k in this.searchProps) {
+            pairs.push([k, this.searchProps[k as keyof UserProps].toString()]);
+        }
+
+        pairs.push(["searchType", this.searchType]);
+        return queryString(pairs);
     }
 }

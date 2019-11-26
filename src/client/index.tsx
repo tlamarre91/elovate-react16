@@ -8,27 +8,25 @@ import {
 } from "./UserSearchComponent";
 
 import {
-    UserSearchResultList
+//UserSearchResultList,
+    UserList,
+    UserListItem
 } from "./UserComponents";
 
-
 import {
-    UserProps,
-    Receiver,
-} from "../api";
+    AdminControlsComponent
+} from "./AdminControlsComponent";
+
+
+import * as Api from "../api";
 
 function main() {
-    const testReceiver: Receiver<UserProps[]> = {
-        id: "testReceiver",
-        data: (users: UserProps[]) => {
-            users.forEach(u => log.info(`GOT 'IM, BOSS! ${ u.username }`));
-        }
-    }
     log.info("running main()");
     const searchCmpt = <UserSearchComponent value="default value" id="userSearchInput" searchTimeoutLength={ 1000 } />
-
-    //const resultCmpt = <UserSearchResultList id="resultsList" provider={ searchCmpt } />;
     render(searchCmpt, document.getElementById("userSearchContainer"));
+
+    const adminCmpt = <AdminControlsComponent />;
+    render(adminCmpt, document.getElementById("adminControlsContainer"));
 }
 
 main();
