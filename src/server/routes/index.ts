@@ -35,9 +35,9 @@ router.get("/", (req: Request, res: Response) => {
     res.render("base");
 });
 
-router.get("/randomUser", (req: Request, res: Response) => {
-    User.getRandom().then(user => {
-        res.json({ user });
-    });
-});
+// router.get("/randomUser", (req: Request, res: Response) => {
+//     User.getRandom().then(user => {
+//         res.json({ user });
+//     });
+// });
 export default router;

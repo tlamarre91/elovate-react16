@@ -1,15 +1,16 @@
-export interface MapsTo<T extends EntityProps> {
+export abstract class MapsTo<T extends EntityProps> {
     toProps(): T;
 }
 
-interface EntityProps {
-    id: number;
+export interface EntityProps {
+    id?: number;
 }
 
 export interface UserProps extends EntityProps {
     username: string;
     displayName: string;
     email: string;
+    hasAccount?: boolean;
     avatarAssetUrl?: string;
 }
 

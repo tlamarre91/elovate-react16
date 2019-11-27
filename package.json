@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "prestart": "gulp",
-    "start": "node ."
+    "start": "node .",
+    "start-dev": "nodemon --watch dist/server --watch dist/api --delay 3 ."
   },
   "dependencies": {
     "app-root-path": "^3.0.0",

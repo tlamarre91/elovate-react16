@@ -30,6 +30,9 @@ export class Group implements Api.MapsTo<Api.GroupProps> {
     @Column()
     name: string;
 
+    @Column({ default: () => "NOW()" })
+    dateCreated: Date;
+
    @ManyToMany(type => User, user => user.groups)
    @JoinTable()
    members: User[];

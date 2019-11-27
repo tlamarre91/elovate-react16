@@ -1,9 +1,12 @@
-import winston from "winston";
+//import winston from "winston";
+
+import { log } from "../log";
 
 import {
     getRepository,
     Repository,
     EntityRepository,
+    BaseEntity,
     Entity,
     Column,
     Index,
@@ -11,7 +14,8 @@ import {
     PrimaryGeneratedColumn,
     ManyToOne,
     OneToMany,
-    ManyToMany
+    ManyToMany,
+    Like
 } from "typeorm";
 
 import * as Api from "../../api";
@@ -19,35 +23,23 @@ import * as Api from "../../api";
 import { Group, GroupRepository } from "./Group";
 import { Match, MatchRepository } from "./Match";
 import { ImageAsset, AssetRepository } from "./assets";
+import { MatchParty } from "./MatchParty";
+
+export abstract class MappedEntity<T extends Api.EntityProps> extends BaseEntity {
+    abstract toProps(): T;
+}
 
 @Entity()
-export class User implements Api.MapsTo<Api.UserProps> {
-    // ERRRR. i'm pretty sure i should nooooot be using a constructor
-    // or at least not with a Partial of any type
-//     constructor(props: Partial<Api.UserProps>) {
-//         //let providedProps = { ... props };
-//         // TODO: actually do validation
-//         if (! props.username) {
-//             const err = "username required to create user";
-//             //log.error(err);
-//             throw Error(err);
-//         } else if (! props.email) {
-//             const err = "email required to create user";
-//             //log.error(err);
-//             throw Error(err);
-//         }
-// 
-//         this.username = props.username;
-//         this.email = props.email;
-//         this.displayName = props.displayName;
-//     }
-
+export class User extends MappedEntity<Api.UserProps> {
     toProps() {
         return { ... this, avatarAssetUrl: "TODOOOO" }; // TODO: resolve asset path here
     }
 
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ default: () => "NOW()" })
+    dateCreated: Date;
 
     @ManyToOne(type => ImageAsset)
     avatarAsset: ImageAsset;
@@ -65,20 +57,67 @@ export class User implements Api.MapsTo<Api.UserProps> {
     @Column({ default: false })
     hasAccount: boolean;
 
-    @ManyToMany(type => Group, group => group.members)
+    @ManyToMany(type => Group, group => group.members, {
+        cascade: true
+    })
     groups: Group[];
 
-    @ManyToMany(type => Match, match => match.players)
-    matches: Match[];
+    @ManyToMany(type => MatchParty, matchParty => matchParty.users, {
+        cascade: true 
+    })
+    matchParties: MatchParty[];
 
-    static async getRandom(): Promise<User> {
-        const userRepository = getRepository(this);
-        const ids = await userRepository.find({ select: ["id"] });
-        const randId = ids[Math.floor(Math.random() * ids.length)];
-        return userRepository.findOne(randId);
-    }
 }
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+    search(params: Api.UserSearchParams) {
+        if (params.searchType === Api.SearchType.ContainsAll) {
+            return this.find({
+                username: Like(`%${ params.searchProps.username }%`) // TODO: Factor out, check each field in Partial<UserProps>
+            });
+        } else {
+            const err = `match type not yet implemented: ${ params.searchType }`;
+            log.error(err);
+            throw Error(err);
+        }
+    }
+
+    createWithProps(props: Api.UserProps) {
+        const user = this.create();
+        user.username = props.username;
+        user.displayName = props.displayName;
+        user.email = props.email;
+        // user.hasAccount = props.hasAccount ?? false;
+        return this.save(user);
+    }
+
+    async getRandom(): Promise<User> {
+        const allUsers: User[] = await this.find({ select: ["id"] });
+        return allUsers[Math.floor(Math.random() * allUsers.length)];
+    }
+
+    async findUserParties(userId: number): Promise<MatchParty[]> {
+        return this.findOne({
+            where: { id: userId },
+            join: {
+                alias: "user",
+                leftJoinAndSelect: {
+                    matchParties: "user.matchParties"
+                }
+            }
+        }).then(user => user.matchParties);
+    }
+
+//    async findUserMatches(userId: number): Promise<Match[]> {
+//        return this.findOne({
+//            where: { id: userId },
+//            join: {
+//                alias: "user",
+//                leftJoinAndSelect: {
+//                    matches: "user.matches"
+//                }
+//            }
+//        }).then(u => u.matches);
+//    }
 }

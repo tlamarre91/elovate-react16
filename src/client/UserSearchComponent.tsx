@@ -5,19 +5,9 @@ import {
 
 import { log } from "./log";
 
-//import {
-//    Endpoint,
-//    UserProps,
-//    UserSearchParams,
-//    ApiPost,
-//    ApiGet,
-//    ApiQuery,
-//    ApiResponse,
-//    Receiver,
-//    SearchType
-//} from "../api";
-
 import * as Api from "../api";
+
+import { UserCard } from "./UserComponents";
 
 interface UserSearchComponentProps {
     /**
@@ -107,11 +97,12 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
     }
 
     render() {
+
         return <div className="userSearchComponent">
             <div>
-                <input id={ this.props.id } type="text" onChange={ this.handleInputChange } />
+                <input id={ this.props.id } type="text" placeholder="Search users" onChange={ this.handleInputChange } />
                 <button onClick={ this.handleClick }>search</button>
-                { this.state.results.map((r, i) => <p key={ i }>{ r.username }</p>) }
+                { this.state.results.map((u, i) => <UserCard key={ i } user={ u } />) }
             </div>
         </div>;
     }

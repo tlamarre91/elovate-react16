@@ -27,6 +27,9 @@ export class Game implements Api.MapsTo<Api.GameProps> {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ default: () => "NOW()" })
+    dateCreated: Date;
+
     @Column()
     name: string;
 

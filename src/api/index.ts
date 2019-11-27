@@ -8,8 +8,8 @@
  * Base URLs for API endpoints
  */
 
-import { MapsTo, UserProps, GroupProps, GameProps, MatchProps } from "./props";
-export { MapsTo, UserProps, GroupProps, GameProps, MatchProps };
+import { EntityProps, UserProps, GroupProps, GameProps, MatchProps } from "./props";
+export { EntityProps, UserProps, GroupProps, GameProps, MatchProps };
 
 export enum Endpoint {
     SearchUsers = "/searchUsers",
@@ -111,6 +111,17 @@ export interface ApiResponse<T> {
     success: boolean;
     error: string | null;
     data: T | null;
+}
+
+export class ApiSuccess<T> implements ApiResponse<T> {
+    success: boolean;
+    error: string | null;
+    data: T | null;
+    constructor(data: T) {
+        this.success = true;
+        this.error = null;
+        this.data = data;
+    }
 }
 
 // NOTE: might need to just make this a method to construct a response. or whatever

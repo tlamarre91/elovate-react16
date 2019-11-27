@@ -41,13 +41,13 @@ function buildClient() {
 }
 
 function cleanSass() {
-    return del(["dist/client/css/**/*"]);
+    return del(["dist/css/**/*"]);
 }
 
 function buildSass() {
     return gulp.src("src/sass/**/*.scss")
         .pipe(sass().on("error", sass.logError))
-        .pipe(gulp.dest("dist/client/css"));
+        .pipe(gulp.dest("dist/public/css"));
 }
 
 function copyTemplates() {
@@ -56,12 +56,12 @@ function copyTemplates() {
 }
 
 function cleanAssets() {
-    return del(["dist/client/assets/*"]);
+    return del(["dist/public/assets/*"]);
 }
 
 function copyAssets() {
-    return gulp.src("assets/*")
-        .pipe(gulp.dest("dist/client"));
+    return gulp.src("assets/**/*")
+        .pipe(gulp.dest("dist/public/assets"));
 }
 
 function cleanDist() {
@@ -72,20 +72,21 @@ function cleanDist() {
 exports.buildServer = buildServer;
 exports.buildClient = buildClient;
 exports.buildSass = buildSass;
-//exports.copyAssets = copyAssets;
+exports.copyAssets = copyAssets;
 exports.copyTemplates = copyTemplates;
 exports.cleanDist = cleanDist;
 
 exports.watchAll = cb => {
-    gulp.watch(["src/server/**/*", "src/api/**/*"], gulp.series(cleanApi, cleanServer, buildServer, copyTemplates));
-    gulp.watch(["src/client/**/*", "src/api/**/*"], gulp.series(cleanClient, cleanSass, gulp.parallel(buildClient, buildSass)));
-    gulp.watch(["src/templates/**/*"], copyTemplates);
-    gulp.watch(["src/sass/**/*"], gulp.series(cleanSass, buildSass));
-    gulp.watch(["assets/**/*"], gulp.series(cleanAssets, copyAssets));
+    const opts = { ignoreInitial: false };
+    gulp.watch(["src/server/**/*", "src/api/**/*"], opts, gulp.series(cleanApi, cleanServer, buildServer, copyTemplates));
+    gulp.watch(["src/client/**/*", "src/api/**/*"], opts, gulp.series(cleanClient, cleanSass, gulp.parallel(buildClient, buildSass)));
+    gulp.watch(["src/templates/**/*"], opts, copyTemplates);
+    gulp.watch(["src/sass/**/*"], opts, gulp.series(cleanSass, buildSass));
+    gulp.watch(["assets/**/*"], opts, gulp.series(cleanAssets, copyAssets));
     cb();
 };
 
 exports.default = gulp.series(
     cleanDist,
-    gulp.parallel(buildServer, buildClient, buildSass, copyTemplates)
+    gulp.parallel(buildServer, buildClient, buildSass, copyTemplates, copyAssets)
 );

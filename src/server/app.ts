@@ -38,8 +38,11 @@ async function main() {
     app.set("views", path.join(__dirname, "templates"));
     app.set("view engine", "pug");
 
-    const staticDir = `${appRoot}/dist/client`;
-    app.use(express.static(staticDir));
+    const staticDir1= `${appRoot}/dist/client`;
+    app.use(express.static(staticDir1));
+
+    const staticDir2= `${appRoot}/dist/public`;
+    app.use(express.static(staticDir2));
 
     connectDb().then(() => {
         app.use(routes);
