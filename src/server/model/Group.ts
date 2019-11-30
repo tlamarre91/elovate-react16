@@ -16,10 +16,11 @@ import {
 
 import * as Api from "../../api";
 
+import { MappedEntity } from "./MappedEntity";
 import { User } from "./User";
 
 @Entity()
-export class Group implements Api.MapsTo<Api.GroupProps> {
+export class Group extends MappedEntity<Api.GroupProps> {
     toProps() {
         return { ... this };
     }

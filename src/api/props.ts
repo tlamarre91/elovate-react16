@@ -1,7 +1,6 @@
-export abstract class MapsTo<T extends EntityProps> {
-    toProps(): T;
-}
-
+/**
+ * serializable representations of entities to pass through API
+ */
 export interface EntityProps {
     id?: number;
 }
@@ -24,5 +23,3 @@ export interface MatchProps extends EntityProps {
 export interface GameProps extends EntityProps {
     name: string;
 }
-
-

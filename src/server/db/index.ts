@@ -20,7 +20,7 @@ export function connectDb() {
                 // should probably just do file reference to dist/server/model/* like every doc suggests
                 Model.User,
                 Model.Match,
-                Model.MatchParty
+                Model.MatchParty,
                 Model.Game,
                 Model.Group,
                 Model.ImageAsset

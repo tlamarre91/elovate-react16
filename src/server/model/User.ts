@@ -20,14 +20,11 @@ import {
 
 import * as Api from "../../api";
 
+import { MappedEntity } from "./MappedEntity";
 import { Group, GroupRepository } from "./Group";
 import { Match, MatchRepository } from "./Match";
 import { ImageAsset, AssetRepository } from "./assets";
 import { MatchParty } from "./MatchParty";
-
-export abstract class MappedEntity<T extends Api.EntityProps> extends BaseEntity {
-    abstract toProps(): T;
-}
 
 @Entity()
 export class User extends MappedEntity<Api.UserProps> {
@@ -57,16 +54,12 @@ export class User extends MappedEntity<Api.UserProps> {
     @Column({ default: false })
     hasAccount: boolean;
 
-    @ManyToMany(type => Group, group => group.members, {
-        cascade: true
-    })
+    @ManyToMany(type => Group, group => group.members)
     groups: Group[];
 
-    @ManyToMany(type => MatchParty, matchParty => matchParty.users, {
-        cascade: true 
-    })
+    @ManyToMany(type => MatchParty, matchParty => matchParty.users, { cascade: true })
+    @JoinTable()
     matchParties: MatchParty[];
-
 }
 
 @EntityRepository(User)
@@ -97,17 +90,17 @@ export class UserRepository extends Repository<User> {
         return allUsers[Math.floor(Math.random() * allUsers.length)];
     }
 
-    async findUserParties(userId: number): Promise<MatchParty[]> {
-        return this.findOne({
-            where: { id: userId },
-            join: {
-                alias: "user",
-                leftJoinAndSelect: {
-                    matchParties: "user.matchParties"
-                }
-            }
-        }).then(user => user.matchParties);
-    }
+//     async findUserParties(userId: number): Promise<MatchParty[]> {
+//         return this.findOne({
+//             where: { id: userId },
+//             join: {
+//                 alias: "user",
+//                 leftJoinAndSelect: {
+//                     matchParties: "user.matchParties"
+//                 }
+//             }
+//         }).then(user => user.matchParties);
+//     }
 
 //    async findUserMatches(userId: number): Promise<Match[]> {
 //        return this.findOne({

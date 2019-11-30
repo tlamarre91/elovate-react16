@@ -17,9 +17,28 @@ import {
 
 import * as Api from "../../api";
 
+import { MappedEntity } from "./MappedEntity";
 import { User } from "./User";
 import { Game } from "./Game";
 import { MatchParty } from "./MatchParty";
+
+export enum MatchResultType {
+    singleWinner = "singleWinner"
+}
+
+export interface MatchResult {
+    version: number;
+    ranked: boolean;
+    type: MatchResultType;
+}
+
+export interface PendingResult extends MatchResult {
+    scheduled: Date;
+}
+
+export interface SingleWinnerResult extends MatchResult {
+    winner: number;
+}
 
 export enum MatchVisibility {
     Public = "public",
@@ -28,7 +47,7 @@ export enum MatchVisibility {
 }
 
 @Entity()
-export class Match implements Api.MapsTo<Api.MatchProps> {
+export class Match extends MappedEntity<Api.MatchProps> {
     toProps() {
         return { ... this };
     }
@@ -46,6 +65,7 @@ export class Match implements Api.MapsTo<Api.MatchProps> {
     createdOn: Date;
 
     @Column()
+    @Index()
     datePlayed: Date;
 
     @Column({
@@ -55,20 +75,24 @@ export class Match implements Api.MapsTo<Api.MatchProps> {
     })
     visibility: MatchVisibility;
 
-    @OneToMany(type => MatchParty, matchParty => matchParty.match, {
-        cascade: true
-    })
+    @OneToMany(type => MatchParty, matchParty => matchParty.match, { cascade: true })
+    @JoinTable()
     matchParties: MatchParty[];
+
+    @Column({ type: "jsonb", nullable: true })
+    @Index()
+    result: MatchResult;
 }
 
 @EntityRepository(Match)
 export class MatchRepository extends Repository<Match> {
-    reportMatch(matchParties: MatchParty[], winner: number, datePlayed?: Date): Promise<Match> {
+    reportMatch(matchParties: MatchParty[], result: MatchResult, datePlayed?: Date): Promise<Match> {
         const match = this.create();
-        match.players = players;
-        match.winner = winner;
+        match.matchParties = matchParties;
+        match.result = result;
         match.datePlayed = datePlayed ? datePlayed: new Date();
         match.changedOn = new Date();
         match.createdOn = new Date();
+        return match.save();
     }
 }

@@ -16,10 +16,11 @@ import {
 
 import * as Api from "../../api";
 
+import { MappedEntity } from "./MappedEntity";
 import { Match } from "./Match";
 
 @Entity()
-export class Game implements Api.MapsTo<Api.GameProps> {
+export class Game extends MappedEntity<Api.GameProps> {
     toProps() {
         return { ... this };
     }
