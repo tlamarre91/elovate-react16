@@ -1,14 +1,15 @@
 extends base.pug
 
-block content
-    .appContainer
-        .uiColumn
-            div.uiElement#userSearchContainer user search
-        .uiColumn
-            div.uiElement#userInfoContainer user info
-            div.uiElement#matchListContainer match list
-        .adminContainer
-            .uiColumn
-                div#adminControlsContainer admin controls
+block nav
+    li(class="adminContainer col s2")
+        div#adminControlsContainer admin controls
 
-    script(src="/js/bundle.js")
+block content
+    .container
+        .row
+            div(class="col s5")
+                div.uiElement#userSearchContainer user search
+            div(class="col s5")
+                div.uiElement#userInfoContainer user info
+                div.uiElement#matchListContainer match list
+

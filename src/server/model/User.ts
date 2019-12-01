@@ -35,7 +35,7 @@ export class User extends MappedEntity<Api.UserProps> {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ default: () => "NOW()" })
+    @Column()
     dateCreated: Date;
 
     @ManyToOne(type => ImageAsset)
@@ -53,6 +53,9 @@ export class User extends MappedEntity<Api.UserProps> {
 
     @Column({ default: false })
     hasAccount: boolean;
+
+    @Column({ default: false })
+    isPublic: boolean;
 
     @ManyToMany(type => Group, group => group.members)
     groups: Group[];
@@ -81,7 +84,6 @@ export class UserRepository extends Repository<User> {
         user.username = props.username;
         user.displayName = props.displayName;
         user.email = props.email;
-        // user.hasAccount = props.hasAccount ?? false;
         return this.save(user);
     }
 

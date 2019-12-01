@@ -21,6 +21,9 @@ function main() {
 
     const adminCmpt = <AdminControlsComponent />;
     render(adminCmpt, document.getElementById("adminControlsContainer"));
+
+    // let elems = document.querySelector("#sidebar");
+
 }
 
-main();
+document.addEventListener("DOMContentLoaded", main);

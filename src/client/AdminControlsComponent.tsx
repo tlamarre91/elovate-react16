@@ -1,5 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
+import { Button } from "@material-ui/core";
 
 import { log } from "./log";
 
@@ -45,9 +46,13 @@ export class AdminControlsComponent extends React.Component<AdminControlsProps, 
     }
 
     render() {
-        return <div className="adminControls">
-            <div className="adminStatusMsg">{ this.state.status }</div>
-            <button onClick={ this.newUserCall }>add random user</button>
-        </div>;
+        return (
+            <div className="adminControls">
+                <div className="adminStatusMsg">{ this.state.status }</div>
+                <Button variant="contained" color="primary" onClick={ this.newUserCall }>
+                    <p> HEY </p>
+                </Button>
+            </div>
+        )
     }
 }

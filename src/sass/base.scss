@@ -1,14 +1,14 @@
-$fontStack: Helvetica, sans-serif;
-$primaryColor: rgb(255, 255, 255);
-$secondaryColor: rgb(136, 153, 166);
-$bgcolorOuter: rgb(21, 32, 43);
-$bgcolorInner: rgb(32, 43, 54);
-$bgcolorInnerFocused: rgb(54, 43, 32);
+$font-stack: Helvetica, sans-serif;
+$primary-color: rgb(255, 255, 255);
+$secondary-color: rgb(136, 153, 166);
+$bg-color-outer: rgb(21, 32, 43);
+$bg-color-inner: rgb(32, 43, 54);
+$bg-color-inner-focused: rgb(54, 43, 32);
 
 body {
-    background-color: $bgcolorOuter;
-    font: 100% $fontStack;
-    color: $primaryColor;
+    background-color: $bg-color-outer;
+    font: 100% $font-stack;
+    color: $primary-color;
 }
 
 a {
@@ -19,8 +19,9 @@ a {
     display: flex;
 }
 
-.adminControlsContainer {
+.adminContainer {
     display: flex;
+    background-color: $bg-color-inner;
 }
 
 .uiColumn {
@@ -32,21 +33,25 @@ a {
 }
 
 .uiElement {
-    background-color: $bgcolorInner;
+    background-color: $bg-color-inner;
     border: 1px solid #ccc;
     margin: 5px;
     padding: 5px;
     min-height: 30px;
 }
 
+input {
+    color: $primary-color;
+}
+
 .userCard {
-    background-color: $bgcolorInner;
+    background-color: $bg-color-inner;
     display: flex;
     flex-direction: row;
     margin: 2px;
 
     a:hover {
-        background-color: $bgcolorInnerFocused;
+        background-color: $bg-color-inner-focused;
     }
 
     .icon {
@@ -62,15 +67,15 @@ a {
 
     .info {
         .username {
-            color: $secondaryColor;
+            color: $secondary-color;
         }
 
         .email {
-            color: $secondaryColor;
+            color: $secondary-color;
         }
 
         .displayName {
-            color: $primaryColor;
+            color: $primary-color;
             font-weight: bold;
         }
     }

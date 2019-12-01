@@ -3,6 +3,10 @@ import {
     render
 } from "react-dom";
 
+import {
+    TextField
+} from "@material-ui/core";
+
 import { log } from "./log";
 
 import * as Api from "../api";
@@ -73,7 +77,7 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
         this.runSearch();
     };
 
-    private handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+    private handleInputChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const str: string = event.currentTarget.value;
         this.setState(() => {
             return {
@@ -100,7 +104,7 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
 
         return <div className="userSearchComponent">
             <div>
-                <input id={ this.props.id } type="text" placeholder="Search users" onChange={ this.handleInputChange } />
+                <TextField id={ this.props.id } label="Search users" variant="filled" onChange={ this.handleInputChange } />
                 <button onClick={ this.handleClick }>search</button>
                 { this.state.results.map((u, i) => <UserCard key={ i } user={ u } />) }
             </div>

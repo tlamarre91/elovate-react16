@@ -41,7 +41,7 @@ function buildClient() {
 }
 
 function cleanSass() {
-    return del(["dist/css/**/*"]);
+    return del(["dist/public/css/**/*"]);
 }
 
 function buildSass() {
