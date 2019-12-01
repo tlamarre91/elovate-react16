@@ -4,13 +4,4 @@ html
         title elovate
         link(rel="stylesheet", type="text/css" href="/css/base.css")
     body
-        .appContainer
-            .uiColumn
-                div.uiElement#userSearchContainer user search
-            .uiColumn
-                div.uiElement#userInfoContainer user info
-                div.uiElement#matchListContainer match list
-        .adminContainer
-            .uiColumn
-                div#adminControlsContainer admin controls
-        script(src="/js/bundle.js")
+        block content

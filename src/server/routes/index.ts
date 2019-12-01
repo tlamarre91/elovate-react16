@@ -32,7 +32,7 @@ router.use("/api", apiRouter);
 
 router.get("/", (req: Request, res: Response) => {
     log.info("got somethin here boss");
-    res.render("base");
+    res.render("dev-test");
 });
 
 // router.get("/randomUser", (req: Request, res: Response) => {

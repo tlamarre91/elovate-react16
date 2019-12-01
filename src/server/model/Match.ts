@@ -58,10 +58,12 @@ export class Match extends MappedEntity<Api.MatchProps> {
     @ManyToOne(type => Game, game => game.matches)
     game: Game;
 
-    @Column({ default: () => "NOW()" })
+    //@Column({ default: () => "NOW()" })
+    @Column()
     changedOn: Date;
     
-    @Column({ default: () => "NOW()" })
+    //@Column({ default: () => "NOW()" })
+    @Column()
     createdOn: Date;
 
     @Column()

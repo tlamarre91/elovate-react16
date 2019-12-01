@@ -18,6 +18,7 @@ import * as Api from "../../api";
 import { MappedEntity } from "./MappedEntity";
 import { User } from "./User";
 import { Game } from "./Game";
+import { Group } from "./Group";
 import { Match } from "./Match";
 
 export enum MatchPartyType {
@@ -45,4 +46,12 @@ export class MatchParty {
         default: MatchPartyType.adhoc
     })
     type: MatchPartyType;
+
+    @ManyToOne(type => Group, group => group.matchParties)
+    group: Group;
+}
+
+@EntityRepository(MatchParty)
+export class MatchPartyRepository extends Repository<MatchParty> {
+
 }

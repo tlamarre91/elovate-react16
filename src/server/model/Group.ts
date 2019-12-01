@@ -18,6 +18,7 @@ import * as Api from "../../api";
 
 import { MappedEntity } from "./MappedEntity";
 import { User } from "./User";
+import { MatchParty } from "./MatchParty";
 
 @Entity()
 export class Group extends MappedEntity<Api.GroupProps> {
@@ -37,6 +38,10 @@ export class Group extends MappedEntity<Api.GroupProps> {
    @ManyToMany(type => User, user => user.groups)
    @JoinTable()
    members: User[];
+
+   @OneToMany(type => MatchParty, matchParty => matchParty.group)
+   @JoinTable()
+   matchParties: MatchParty[];
 }
 
 @EntityRepository(Group)
