@@ -35,7 +35,7 @@ export class User extends MappedEntity<Api.UserProps> {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ default: () => "NOW()" })
     dateCreated: Date;
 
     @ManyToOne(type => ImageAsset)

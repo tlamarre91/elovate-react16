@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
-import { Button } from "@material-ui/core";
+import { Button } from "@blueprintjs/core";
 
 import { log } from "./log";
 
@@ -34,7 +34,7 @@ export class AdminControlsComponent extends React.Component<AdminControlsProps, 
             if (! res.success) {
                 const err = res.error;
                 log.error(err);
-                const newState = { status: `error: ${ err }` };
+                const newState = { status: `error: ${ JSON.stringify(err) }` };
                 this.setState(newState);
             } else {
                 this.setState({ status: `added user: ${ baseStr }` });
@@ -49,8 +49,8 @@ export class AdminControlsComponent extends React.Component<AdminControlsProps, 
         return (
             <div className="adminControls">
                 <div className="adminStatusMsg">{ this.state.status }</div>
-                <Button variant="contained" color="primary" onClick={ this.newUserCall }>
-                    <p> HEY </p>
+                <Button onClick={ this.newUserCall }>
+                    <p>Add user</p>
                 </Button>
             </div>
         )

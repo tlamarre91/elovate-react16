@@ -2,15 +2,13 @@ import * as React from "react";
 import {
     render
 } from "react-dom";
-
 import {
-    TextField
-} from "@material-ui/core";
+    InputGroup,
+    Icon
+} from "@blueprintjs/core";
 
 import { log } from "./log";
-
 import * as Api from "../api";
-
 import { UserCard } from "./UserComponents";
 
 interface UserSearchComponentProps {
@@ -51,13 +49,9 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
         };
     }
 
-    private originStr() {
-        return window.location.href;
-    }
-
     runSearch() {
         const params = new Api.UserSearchParams({ username: this.state.value }, Api.SearchType.ContainsAll);
-        const call = new Api.ApiQuery<Api.UserProps[]>(this.originStr(), Api.Endpoint.SearchUsers, params);
+        const call = new Api.ApiQuery<Api.UserProps[]>(window.location.href, Api.Endpoint.SearchUsers, params);
         call.execute().then(res => {
             if (! res.success) {
                 const err = res.error;
@@ -104,7 +98,13 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
 
         return <div className="userSearchComponent">
             <div>
-                <TextField id={ this.props.id } label="Search users" variant="filled" onChange={ this.handleInputChange } />
+                <InputGroup
+                    type="text"
+                    fill={ true }
+                    placeholder="Search users"
+                    onChange={ this.handleInputChange }
+                    leftIcon="search"
+                />
                 <button onClick={ this.handleClick }>search</button>
                 { this.state.results.map((u, i) => <UserCard key={ i } user={ u } />) }
             </div>

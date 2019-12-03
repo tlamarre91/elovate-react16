@@ -1,6 +1,6 @@
 $font-stack: Helvetica, sans-serif;
 $primary-color: rgb(255, 255, 255);
-$secondary-color: rgb(136, 153, 166);
+$primary-color-dark1: rgb(136, 153, 166);
 $bg-color-outer: rgb(21, 32, 43);
 $bg-color-inner: rgb(32, 43, 54);
 $bg-color-inner-focused: rgb(54, 43, 32);
@@ -8,6 +8,10 @@ $bg-color-inner-focused: rgb(54, 43, 32);
 body {
     background-color: $bg-color-outer;
     font: 100% $font-stack;
+    color: $primary-color;
+}
+
+div {
     color: $primary-color;
 }
 
@@ -67,11 +71,11 @@ input {
 
     .info {
         .username {
-            color: $secondary-color;
+            color: $primary-color-dark1;
         }
 
         .email {
-            color: $secondary-color;
+            color: $primary-color-dark1;
         }
 
         .displayName {
