@@ -1,5 +1,6 @@
 const gulp = require("gulp");
-const sass = require("gulp-sass");
+const path = require('path');
+const less = require('gulp-less');
 const del = require("del");
 const browserify = require("browserify");
 const ts = require("gulp-typescript");
@@ -40,13 +41,15 @@ function buildClient() {
         .pipe(gulp.dest("dist/client/js"));
 }
 
-function cleanSass() {
+function cleanLess() {
     return del(["dist/public/css/**/*"]);
 }
 
-function buildSass() {
-    return gulp.src("src/sass/**/*.scss")
-        .pipe(sass().on("error", sass.logError))
+function buildLess() {
+    return gulp.src("src/less/**/*.less")
+        .pipe(less({
+            paths: [ path.join(__dirname, "less", "includes") ]
+        }))
         .pipe(gulp.dest("dist/public/css"));
 }
 
@@ -71,7 +74,7 @@ function cleanDist() {
 
 exports.buildServer = buildServer;
 exports.buildClient = buildClient;
-exports.buildSass = buildSass;
+exports.buildLess = buildLess;
 exports.copyAssets = copyAssets;
 exports.copyTemplates = copyTemplates;
 exports.cleanDist = cleanDist;
@@ -79,14 +82,14 @@ exports.cleanDist = cleanDist;
 exports.watch = cb => {
     const opts = { ignoreInitial: false };
     gulp.watch(["src/server/**/*", "src/api/**/*"], opts, gulp.series(cleanApi, cleanServer, buildServer, copyTemplates));
-    gulp.watch(["src/client/**/*", "src/api/**/*"], opts, gulp.series(cleanClient, cleanSass, gulp.parallel(buildClient, buildSass)));
+    gulp.watch(["src/client/**/*", "src/api/**/*"], opts, gulp.series(cleanClient, cleanLess, gulp.parallel(buildClient, buildLess)));
     gulp.watch(["src/templates/**/*"], opts, copyTemplates);
-    gulp.watch(["src/sass/**/*"], opts, gulp.series(cleanSass, buildSass));
+    gulp.watch(["src/sass/**/*"], opts, gulp.series(cleanLess, buildLess));
     gulp.watch(["assets/**/*"], opts, gulp.series(cleanAssets, copyAssets));
     cb();
 };
 
 exports.default = gulp.series(
     cleanDist,
-    gulp.parallel(buildServer, buildClient, buildSass, copyTemplates, copyAssets)
+    gulp.parallel(buildServer, buildClient, buildLess, copyTemplates, copyAssets)
 );

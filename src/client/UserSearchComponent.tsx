@@ -4,6 +4,7 @@ import {
 } from "react-dom";
 import {
     InputGroup,
+    Classes,
     Icon
 } from "@blueprintjs/core";
 
@@ -100,7 +101,6 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
             <div>
                 <InputGroup
                     type="text"
-                    fill={ true }
                     placeholder="Search users"
                     onChange={ this.handleInputChange }
                     leftIcon="search"

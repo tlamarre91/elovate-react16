@@ -16,7 +16,7 @@ import {
 
 function main() {
     log.info("running main()");
-    const searchCmpt = <UserSearchComponent value="user" id="userSearchInput" searchTimeoutLength={ 1000 } />
+    const searchCmpt = <UserSearchComponent value="user" id="userSearchInput" searchTimeoutLength={ 50 } />
     render(searchCmpt, document.getElementById("userSearchContainer"));
 
     const adminCmpt = <AdminControlsComponent />;

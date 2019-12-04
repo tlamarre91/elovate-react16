@@ -49,9 +49,10 @@ export class AdminControlsComponent extends React.Component<AdminControlsProps, 
         return (
             <div className="adminControls">
                 <div className="adminStatusMsg">{ this.state.status }</div>
-                <Button onClick={ this.newUserCall }>
-                    <p>Add user</p>
-                </Button>
+                <Button
+                    onClick={ this.newUserCall }
+                    text="Add user"
+                />
             </div>
         )
     }
