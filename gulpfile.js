@@ -47,9 +47,7 @@ function cleanLess() {
 
 function buildLess() {
     return gulp.src("src/less/**/*.less")
-        .pipe(less({
-            paths: [ path.join(__dirname, "less", "includes") ]
-        }))
+        .pipe(less())
         .pipe(gulp.dest("dist/public/css"));
 }
 
@@ -77,14 +75,14 @@ exports.buildClient = buildClient;
 exports.buildLess = buildLess;
 exports.copyAssets = copyAssets;
 exports.copyTemplates = copyTemplates;
-exports.cleanDist = cleanDist;
+exports.clean = cleanDist;
 
 exports.watch = cb => {
     const opts = { ignoreInitial: false };
     gulp.watch(["src/server/**/*", "src/api/**/*"], opts, gulp.series(cleanApi, cleanServer, buildServer, copyTemplates));
     gulp.watch(["src/client/**/*", "src/api/**/*"], opts, gulp.series(cleanClient, cleanLess, gulp.parallel(buildClient, buildLess)));
     gulp.watch(["src/templates/**/*"], opts, copyTemplates);
-    gulp.watch(["src/sass/**/*"], opts, gulp.series(cleanLess, buildLess));
+    gulp.watch(["src/less/**/*"], opts, gulp.series(cleanLess, buildLess));
     gulp.watch(["assets/**/*"], opts, gulp.series(cleanAssets, copyAssets));
     cb();
 };

@@ -1,21 +1,22 @@
-@use "/assets/blueprint-css/blueprint.css";
-@use "/assets/blueprint-icons-css/blueprint-icons.css";
+@import "/assets/css/normalize.css";
+@import "/assets/css/blueprint.css";
+@import "/assets/css/blueprint-icons.css";
 
-$font-stack: Helvetica, sans-serif;
-$primary-color: rgb(255, 255, 255);
-$primary-color-dark1: rgb(136, 153, 166);
-$bg-color-outer: rgb(21, 32, 43);
-$bg-color-inner: rgb(32, 43, 54);
-$bg-color-inner-focused: rgb(54, 43, 32);
+@font-stack: Helvetica, sans-serif;
+@primary-color: rgb(10, 10, 10);
+@primary-color-light1: rgb(80, 80, 80);
+@bg-color-outer: rgb(240, 240, 240);
+@bg-color-inner: rgb(255, 255, 255);
+@bg-color-inner-focused: rgb(220, 220, 255);
 
 body {
-    background-color: $bg-color-outer;
-    font: 100% $font-stack;
-    color: $primary-color;
+    background-color: @bg-color-outer;
+    font: 100% @font-stack;
+    color: @primary-color;
 }
 
 div {
-    color: $primary-color;
+    color: @primary-color;
 }
 
 a {
@@ -28,7 +29,7 @@ a {
 
 .adminContainer {
     display: flex;
-    background-color: $bg-color-inner;
+    background-color: @bg-color-inner;
 }
 
 .uiColumn {
@@ -40,7 +41,7 @@ a {
 }
 
 .uiElement {
-    background-color: $bg-color-inner;
+    background-color: @bg-color-inner;
     border: 1px solid #ccc;
     margin: 5px;
     padding: 5px;
@@ -48,17 +49,17 @@ a {
 }
 
 input {
-    color: $primary-color;
+    color: @primary-color;
 }
 
 .userCard {
-    background-color: $bg-color-inner;
-    display: flex;
+    background-color: @bg-color-inner;
+    display: grid;
     flex-direction: row;
     margin: 2px;
 
     a:hover {
-        background-color: $bg-color-inner-focused;
+        background-color: @bg-color-inner-focused;
     }
 
     .icon {
@@ -72,18 +73,16 @@ input {
         }
     }
 
-    .info {
-        .username {
-            color: $primary-color-dark1;
-        }
+    .displayName {
+        color: @primary-color;
+        font-weight: bold;
+    }
 
-        .email {
-            color: $primary-color-dark1;
-        }
+    .username {
+        color: @primary-color-light1;
+    }
 
-        .displayName {
-            color: $primary-color;
-            font-weight: bold;
-        }
+    .email {
+        color: @primary-color-light1;
     }
 }

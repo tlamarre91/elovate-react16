@@ -5,7 +5,8 @@ import {
 import {
     InputGroup,
     Classes,
-    Icon
+    Icon,
+    Button
 } from "@blueprintjs/core";
 
 import { log } from "./log";
@@ -103,10 +104,13 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
                     type="text"
                     placeholder="Search users"
                     onChange={ this.handleInputChange }
+                    fill={ false }
                     leftIcon="search"
                 />
-                <button onClick={ this.handleClick }>search</button>
-                { this.state.results.map((u, i) => <UserCard key={ i } user={ u } />) }
+                <Button onClick={ this.handleClick }>
+                    search
+                </Button>
+                { this.state.results.map((u, i) => <UserCard key={ i } user={ u } interactive={ true } />) }
             </div>
         </div>;
     }
