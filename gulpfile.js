@@ -46,12 +46,17 @@ function cleanLess() {
 }
 
 function buildLess() {
-    return gulp.src("src/less/**/*.less")
-        .pipe(less())
+    return gulp.src("src/less/**/style.less")
+        .pipe(less({
+            paths: [
+                path.join(__dirname, "node_modules"),
+            ]
+        }))
         .pipe(gulp.dest("dist/public/css"));
 }
 
 function copyTemplates() {
+    // TODO: there's some race condition here...
     return gulp.src("src/templates/*")
         .pipe(gulp.dest("dist/server/templates"));
 }

@@ -1,0 +1,9 @@
+extends base.pug
+
+block nav
+    a(class="navBreadcrumbItem", href="/groups")
+        Groups
+    p(class="navBreadCrumbItem current")= group.name
+
+block content
+    div(class="groupDashboardLeft")

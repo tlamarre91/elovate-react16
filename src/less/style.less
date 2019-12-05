@@ -1,6 +1,10 @@
 @import "/assets/css/normalize.css";
 @import "/assets/css/blueprint.css";
-@import "/assets/css/blueprint-icons.css";
+//@import "/assets/css/blueprint-icons.css";
+
+@import "@blueprintjs/core/lib/less/variables";
+
+@import "./userCard";
 
 @font-stack: Helvetica, sans-serif;
 @primary-color: rgb(10, 10, 10);
@@ -11,7 +15,7 @@
 
 body {
     background-color: @bg-color-outer;
-    font: 100% @font-stack;
+    font: 90% @font-stack;
     color: @primary-color;
 }
 
@@ -52,37 +56,3 @@ input {
     color: @primary-color;
 }
 
-.userCard {
-    background-color: @bg-color-inner;
-    display: grid;
-    flex-direction: row;
-    margin: 2px;
-
-    a:hover {
-        background-color: @bg-color-inner-focused;
-    }
-
-    .icon {
-        display: flex;
-        width: 70px;
-        align-items: center;
-        justify-content: center;
-        img {
-            width: 50px;
-            height: 50px;
-        }
-    }
-
-    .displayName {
-        color: @primary-color;
-        font-weight: bold;
-    }
-
-    .username {
-        color: @primary-color-light1;
-    }
-
-    .email {
-        color: @primary-color-light1;
-    }
-}

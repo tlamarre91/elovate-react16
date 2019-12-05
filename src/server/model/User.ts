@@ -23,7 +23,7 @@ import * as Api from "../../api";
 import { MappedEntity } from "./MappedEntity";
 import { Group, GroupRepository } from "./Group";
 import { Match, MatchRepository } from "./Match";
-import { ImageAsset, AssetRepository } from "./assets";
+import { ImageAsset, ImageAssetRepository } from "./assets";
 import { MatchParty } from "./MatchParty";
 
 @Entity()
@@ -67,7 +67,7 @@ export class User extends MappedEntity<Api.UserProps> {
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    search(params: Api.UserSearchParams) {
+    search(params: Api.UserSearchParams): Promise<User[]> {
         if (params.searchType === Api.SearchType.ContainsAll) {
             return this.find({
                 username: Like(`%${ params.searchProps.username }%`) // TODO: Factor out, check each field in Partial<UserProps>
@@ -79,7 +79,7 @@ export class UserRepository extends Repository<User> {
         }
     }
 
-    createWithProps(props: Api.UserProps) {
+    createWithProps(props: Api.UserProps): Promise<User> {
         const user = this.create();
         user.username = props.username;
         user.displayName = props.displayName;

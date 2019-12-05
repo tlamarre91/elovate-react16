@@ -32,6 +32,8 @@ interface UserSearchComponentProps {
      * TODO: client-side instant update if new string is substring of last complete search
      */
     searchTimeoutLength: number;
+
+    interactiveResults: boolean;
 };
 
 interface UserSearchComponentState {
@@ -99,19 +101,21 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
     render() {
 
         return <div className="userSearchComponent">
-            <div>
-                <InputGroup
-                    type="text"
-                    placeholder="Search users"
-                    onChange={ this.handleInputChange }
-                    fill={ false }
-                    leftIcon="search"
-                />
-                <Button onClick={ this.handleClick }>
-                    search
-                </Button>
-                { this.state.results.map((u, i) => <UserCard key={ i } user={ u } interactive={ true } />) }
-            </div>
+            <InputGroup
+                type="text"
+                placeholder="Search users"
+                onChange={this.handleInputChange}
+                fill={false}
+                leftIcon="search" />
+            <Button onClick={this.handleClick}>
+                search
+            </Button>
+            {
+                this.state.results.map((u, i) => <UserCard key={i}
+                    user={u}
+                    linkUser={false}
+                    interactive={this.props.interactiveResults} />)
+            }
         </div>;
     }
 }

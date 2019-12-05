@@ -23,7 +23,7 @@ import { MatchParty } from "./MatchParty";
 @Entity()
 export class Group extends MappedEntity<Api.GroupProps> {
     toProps() {
-        return { ... this };
+        return { ... this }; // TODO: no way this is good enough. will restrict to actual GroupProps properties
     }
 
     @PrimaryGeneratedColumn()
@@ -35,13 +35,13 @@ export class Group extends MappedEntity<Api.GroupProps> {
     @Column({ default: () => "NOW()" })
     dateCreated: Date;
 
-   @ManyToMany(type => User, user => user.groups)
-   @JoinTable()
-   members: User[];
+    @ManyToMany(type => User, user => user.groups)
+    @JoinTable()
+    members: User[];
 
-   @OneToMany(type => MatchParty, matchParty => matchParty.group)
-   @JoinTable()
-   matchParties: MatchParty[];
+    @OneToMany(type => MatchParty, matchParty => matchParty.group)
+    @JoinTable()
+    matchParties: MatchParty[];
 }
 
 @EntityRepository(Group)

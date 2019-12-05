@@ -38,10 +38,12 @@ async function main() {
     app.set("views", path.join(__dirname, "templates"));
     app.set("view engine", "pug");
 
-    const staticDir1= `${appRoot}/dist/client`;
+    //const staticDir1= `${appRoot}/dist/client`;
+    const staticDir1 = path.join(appRoot.toString(), "dist", "client"); // TODO: make gulp just put bundle in public?
     app.use(express.static(staticDir1));
 
-    const staticDir2= `${appRoot}/dist/public`;
+    //const staticDir2= `${appRoot}/dist/public`;
+    const staticDir2 = path.join(appRoot.toString(), "dist", "public");
     app.use(express.static(staticDir2));
 
     connectDb().then(() => {
