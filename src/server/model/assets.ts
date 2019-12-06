@@ -44,10 +44,6 @@ export class ImageAsset extends FileAsset {
     width: number;
 }
 
-//@EntityRepository(FileAsset)
-//export class AssetRepository extends Repository<FileAsset> {
-//}
-
 @EntityRepository(ImageAsset)
 export class ImageAssetRepository extends Repository<ImageAsset> {
     static identiconDir = path.join("img", "identicons");
@@ -56,6 +52,7 @@ export class ImageAssetRepository extends Repository<ImageAsset> {
     }
 
     generateIdenticon(token: string, size: number = 50): Promise<ImageAsset> {
+
         const png = jdenticon.toPng(token, size);
         const uri = ImageAssetRepository.identiconUri(token, size);
         try {
@@ -63,7 +60,7 @@ export class ImageAssetRepository extends Repository<ImageAsset> {
         } catch (e) {
         }
 
-        fs.writeFileSync(path.join(fsAssetDir, uri), png);
+        fs.writeFileSync(path.join(fsAssetDir, uri), png); // TODO: async!
         const newAsset = new ImageAsset();
         newAsset.uri = uri;
         newAsset.height = size;
@@ -72,9 +69,14 @@ export class ImageAssetRepository extends Repository<ImageAsset> {
     }
 
     async getIdenticon(token: string, size: number = 50): Promise<ImageAsset> {
+        if (size > 256) {
+            throw new Error("Cannot handle identicon larger than 256 pixels");
+        }
+
         return this.findOneOrFail({
             uri: ImageAssetRepository.identiconUri(token, size)
-        }).then(asset => asset)
+        })
+            .then(asset => asset)
             .catch(err => this.generateIdenticon(token, size));
     }
 }

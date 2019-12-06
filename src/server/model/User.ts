@@ -25,6 +25,7 @@ import { Group, GroupRepository } from "./Group";
 import { Match, MatchRepository } from "./Match";
 import { ImageAsset, ImageAssetRepository } from "./assets";
 import { MatchParty } from "./MatchParty";
+import { Session } from "./Session";
 
 @Entity()
 export class User extends MappedEntity<Api.UserProps> {
@@ -63,6 +64,9 @@ export class User extends MappedEntity<Api.UserProps> {
     @ManyToMany(type => MatchParty, matchParty => matchParty.users, { cascade: true })
     @JoinTable()
     matchParties: MatchParty[];
+
+    @OneToMany(type => Session, session => session.loggedInUser)
+    loginSessions: Session[];
 }
 
 @EntityRepository(User)

@@ -16,14 +16,15 @@ export function connectDb() {
             username: "tom",
             password: "tom",
             database: "elovate",
-            entities: [ // TODO: feels gross having to include these explicitly. leads to "could not connect" if i forget to add one
+            entities: [ // TODO: feels gross to include these explicitly. get "could not connect" if i forget to add.
                         // should probably just do file reference to dist/server/model/* like every doc suggests
                 Model.User,
                 Model.Match,
                 Model.MatchParty,
                 Model.Game,
                 Model.Group,
-                Model.ImageAsset
+                Model.ImageAsset,
+                Model.Session
             ],
             synchronize: true,
             logging: DB_LOGGING

@@ -6,4 +6,15 @@ block nav
     p(class="navBreadCrumbItem current")= group.name
 
 block content
-    div(class="groupDashboardLeft")
+    #groupDashboardLeft
+        div(id="groupCard")
+            p
+                GROUP ICON
+        ul(id="groupDashboardNav")
+            li
+                a Dashboard
+            li
+                a Manage users
+            li
+                a Add matches
+    #groupDashboardMain

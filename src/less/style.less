@@ -4,23 +4,19 @@
 
 @import "@blueprintjs/core/lib/less/variables";
 
+@import "./variables";
 @import "./userCard";
 
-@font-stack: Helvetica, sans-serif;
-@primary-color: rgb(10, 10, 10);
-@primary-color-light1: rgb(80, 80, 80);
-@bg-color-outer: rgb(240, 240, 240);
-@bg-color-inner: rgb(255, 255, 255);
-@bg-color-inner-focused: rgb(220, 220, 255);
-
 body {
-    background-color: @bg-color-outer;
-    font: 90% @font-stack;
-    color: @primary-color;
+    background-color: @bgColorOuter;
+    font: 90% @fontStack;
+    color: @textColor;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
 }
 
 div {
-    color: @primary-color;
+    color: @textColor;
 }
 
 a {
@@ -33,7 +29,7 @@ a {
 
 .adminContainer {
     display: flex;
-    background-color: @bg-color-inner;
+    background-color: @bgColorInner;
 }
 
 .uiColumn {
@@ -45,7 +41,7 @@ a {
 }
 
 .uiElement {
-    background-color: @bg-color-inner;
+    background-color: @bgColorInner;
     border: 1px solid #ccc;
     margin: 5px;
     padding: 5px;
@@ -53,6 +49,6 @@ a {
 }
 
 input {
-    color: @primary-color;
+    color: @textColor;
 }
 

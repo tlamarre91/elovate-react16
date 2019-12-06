@@ -1,0 +1,9 @@
+doctype html
+html
+    head
+        title IDENTICONS!
+    body
+        each asset in assets
+            p= asset.uri
+            p= `${asset.width} x ${asset.height}`
+            img(src="assets/" + asset.uri)

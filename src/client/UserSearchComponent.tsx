@@ -2,12 +2,9 @@ import * as React from "react";
 import {
     render
 } from "react-dom";
+
 import {
-    InputGroup,
-    Classes,
-    Icon,
-    Button
-} from "@blueprintjs/core";
+} from "@material-ui/core";
 
 import { log } from "./log";
 import * as Api from "../api";

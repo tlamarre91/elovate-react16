@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
-import { Button } from "@blueprintjs/core";
+import { Button } from "@material-ui/core";
 
 import { log } from "./log";
 
@@ -49,11 +49,11 @@ export class AdminControlsComponent extends React.Component<AdminControlsProps, 
         return (
             <div className="adminControls">
                 <div className="adminStatusMsg">{ this.state.status }</div>
-                <Button
-                    onClick={ this.newUserCall }
-                    text="Add user"
-                />
             </div>
+            //                <Button
+            //                    onClick={ this.newUserCall }
+            //                    text="Add user"
+            //                />
         )
     }
 }

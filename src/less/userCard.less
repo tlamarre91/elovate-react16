@@ -1,12 +1,14 @@
+@import "./variables";
+
 .userCard {
-    background-color: darken(@bg-color-inner, 10%);
+    background-color: darken(@bgColorInner, 10%);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin: 5px;
     padding: 5px;
 
     a:hover {
-        background-color: @bg-color-inner-focused;
+        background-color: @bgColorInnerFocused;
     }
 
     .icon {
@@ -23,16 +25,16 @@
     }
 
     .displayName {
-        color: @primary-color;
+        color: @textColor;
         font-weight: bold;
     }
 
     .username {
-        color: @primary-color-light1;
+        color: @textColorLight1;
     }
 
     .email {
-        color: @primary-color-light1;
+        color: @textColorLight1;
     }
 }
 

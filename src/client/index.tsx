@@ -2,6 +2,8 @@ import * as React from "react";
 import { render } from "react-dom";
 
 import { log } from "./log";
+import * as Api from "../api";
+Api.setLogger(log);
 
 import {
     UserSearchComponent,

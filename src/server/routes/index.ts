@@ -19,12 +19,14 @@ import {
 
 import { LoremIpsum } from "lorem-ipsum";
 
+import { app } from "../app";
 import { log } from "../log";
 import {
     User,
     Match,
     ImageAsset,
-    ImageAssetRepository
+    ImageAssetRepository,
+    SessionStore
 } from "../model";
 import {
     UserProps,
@@ -36,7 +38,7 @@ const router = Router();
 
 router.use("/api", apiRouter);
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
     log.info("got somethin here boss");
     res.render("dev-test");
 });
@@ -44,12 +46,21 @@ router.get("/", (req, res) => {
 router.get("/identicon/:token", async (req, res) => {
     const repo = getCustomRepository(ImageAssetRepository);
     const identicon: ImageAsset = await repo.getIdenticon(req.params["token"], 50);
-    res.json({ "made": identicon.uri });
+    res.json({ made: identicon.uri });
 });
 
-// router.get("/randomUser", (req: Request, res: Response) => {
-//     User.getRandom().then(user => {
-//         res.json({ user });
-//     });
-// });
+router.get("/identicons", async (req, res) => {
+    const repo = getCustomRepository(ImageAssetRepository);
+    const identicons: ImageAsset[] = await repo.find();
+    res.render("identicon-test", { assets: identicons });
+});
+
+router.get("/clearSessions", async (req, res) => {
+    const sessionStore: SessionStore = app.get("sessionStore");
+    sessionStore.clear(err => {
+        if (err) res.json({ success: false });
+        else res.json({ success: true });
+    });
+});
+
 export default router;

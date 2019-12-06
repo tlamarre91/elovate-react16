@@ -1,8 +1,15 @@
+import winston from "winston";
 /**
  * Classes, interfaces, and values shared between client and server for typesafe API communication
  */
 
 // TODO: get a function in here to take a logger and register it to be available to rest of module
+// TODO: test the following. lol
+
+let log: winston.Logger;
+export function setLogger(logger: winston.Logger) {
+    log = logger;
+}
 
 /**
  * Base URLs for API endpoints
@@ -26,8 +33,10 @@ export class ApiGet<Receive> {
     }
 
     async execute(): Promise<ApiResponse<Receive>> {
+        log?.info("running a get (TODO: remove. just testing)");
         let fetchParams: any = {
             method: "GET",
+            credentials: "same-origin",
             headers: {
                 Accept: "application/json",
             }
@@ -49,9 +58,9 @@ export class ApiQuery<Receive> {
     }
 
     async execute(): Promise<ApiResponse<Receive>> {
-        // log.info(`executing API query: ${ JSON.stringify(this) }`);
         let fetchParams: any = {
             method: "GET",
+            credentials: "same-origin",
             headers: {
                 Accept: "application/json",
             }
@@ -89,6 +98,7 @@ export class ApiPost<Send, Receive> {
     async execute(): Promise<ApiResponse<Receive>> {
         let fetchParams: any = {
             method: "POST",
+            credentials: "same-origin",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json"
@@ -144,7 +154,6 @@ export interface Receiver<T> {
 function queryString(keyVals: [string, string][]): string {
     // TODO: ensure reserved symbols are escaped
     const str: string = '?' + keyVals.map(pair => `${ pair[0] }=${ pair[1] }`).join("&");
-    console.log(`made query string: ${ str }`);
     return str;
 }
 
@@ -173,7 +182,6 @@ export class UserSearchParams implements UrlQuery {
     static fromQuery(query: any): UserSearchParams {
         // TODO: Is it ok that this totally shits with a malformed query? validate elsewhere, i guess
         let props: Partial<UserProps> = { ... query }; // TODO: does query.searchType get stuck into props too?
-        console.log(props);
         let searchType: SearchType = query["searchType"];
         return new UserSearchParams(props, searchType);
     }

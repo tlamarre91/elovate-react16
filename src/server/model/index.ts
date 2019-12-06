@@ -24,4 +24,5 @@ export { Match, MatchRepository } from "./Match";
 export { Game, GameRepository } from "./Game";
 export { Group, GroupRepository } from "./Group";
 export { MatchParty } from "./MatchParty";
+export { Session, SessionRepository, SessionStore } from "./Session";
 export { ImageAsset, ImageAssetRepository } from "./assets";

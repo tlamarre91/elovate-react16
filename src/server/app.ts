@@ -4,10 +4,15 @@ import express from "express";
 import createError from "http-errors";
 import morgan from "morgan";
 import path from "path";
+import session from "express-session";
+
+import { getRepository } from "typeorm";
 import { log } from "./log";
+import * as Api from "../api";
 
 import { connectDb } from "./db";
 import routes from "./routes";
+import { SessionStore, Session } from "./model/Session";
 
 // TODO
 function getFreePort(port = 3000) {
@@ -27,32 +32,50 @@ const morganOpts: morgan.Options = {
     }
 }
 
-async function main() {
-    const app = express();
-    const port = getFreePort();
+let sessionStore: SessionStore;
 
-    app.use(morgan("dev", morganOpts));
-    app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(bodyParser.json());
+export const app = express();
+const port = getFreePort();
 
-    app.set("views", path.join(__dirname, "templates"));
-    app.set("view engine", "pug");
+Api.setLogger(log);
+app.use(morgan("dev", morganOpts));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-    //const staticDir1= `${appRoot}/dist/client`;
-    const staticDir1 = path.join(appRoot.toString(), "dist", "client"); // TODO: make gulp just put bundle in public?
-    app.use(express.static(staticDir1));
+app.set("views", path.join(__dirname, "templates"));
+app.set("view engine", "pug");
 
-    //const staticDir2= `${appRoot}/dist/public`;
-    const staticDir2 = path.join(appRoot.toString(), "dist", "public");
-    app.use(express.static(staticDir2));
+const staticDir1 = path.join(appRoot.toString(), "dist", "client"); // TODO: make gulp just put bundle in public
+app.use(express.static(staticDir1)); // TODO: won't be serving static through express anyway
 
-    connectDb().then(() => {
-        app.use(routes);
-        app.listen(port);
-    }).catch(err => {
-        log.error(err);
-        exitApp("could not connect to database", 1);
+const staticDir2 = path.join(appRoot.toString(), "dist", "public");
+app.use(express.static(staticDir2));
+
+connectDb().then(() => {
+    const day = 60* 60 * 24;
+    sessionStore = new SessionStore({
+        repository: getRepository(Session),
+        ttl: day,
+        expirationInterval: day,
+        clearExpired: true
     });
-}
 
-main();
+    app.use(session({
+        cookie: {
+            httpOnly: true,
+            secure: true
+        },
+        name: "elovate.sid",
+        saveUninitialized: false,
+        secret: "elovate_secretfj4dfsa00splkfjzvnklf!!dddd", // TODO: generate a seeeeecret
+        store: sessionStore
+    }));
+
+    app.set("sessionStore", sessionStore);
+
+    app.use(routes);
+    app.listen(port);
+}).catch(err => {
+    log.error(err);
+    exitApp("could not connect to database", 1);
+});

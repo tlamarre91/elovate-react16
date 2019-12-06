@@ -2,8 +2,7 @@ import * as React from "react";
 import { render } from "react-dom";
 import {
     Card,
-    Colors,
-} from "@blueprintjs/core";
+} from "@material-ui/core";
 
 import { log } from "./log";
 import {
@@ -34,13 +33,13 @@ export const UserCard = (props: UserCardProps) => {
         </h4>;
 
     const usernameElem = user.username ? <p>{ user.username }</p>
-        : <p style={{ color: Colors.GRAY1 }}><em>no username</em></p>;
+        : <p><em>no username</em></p>;
 
     const emailElem = user.email ? <p>{ user.email }</p>
-        : <p style={{ color: Colors.GRAY1 }}><em>no email</em></p>;
+        : <p><em>no email</em></p>;
 
     return (
-        <Card className={className} interactive={interactive}>
+        <Card className={className} >
             <div className="icon">
                 <img src="/assets/img/elovate-50x50.png" alt={`${user.username}'s user icon`} />
             </div>
