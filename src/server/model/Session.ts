@@ -2,41 +2,36 @@ import { Store } from "express-session";
 import {
     getRepository,
     Repository,
-    Entity
+    Entity,
     EntityRepository,
     Index,
     Column,
+    PrimaryColumn,
     PrimaryGeneratedColumn,
     ManyToOne,
     LessThan
 } from "typeorm";
 
-import {
-    User
-} from "./User";
-
-export interface Data {
-    [key: string]: string;
-}
+import { log } from "../log";
 
 @Entity()
 export class Session {
-    @Column()
-    id: string;
+    @PrimaryColumn({ type: "uuid" })
+    sid: string;
 
     @Column()
     expiresAt: number;
 
-    @ManyToOne(type => User, user => user.loginSessions)
-    loggedInUser: User;
-
     @Column({ type: "jsonb" })
-    data: Data;
+    data: any;
 }
 
-//@EntityRepository(Session)
-//export class SessionRepository extends Repository<Session> {
-//}
+@EntityRepository(Session)
+export class SessionRepository extends Repository<Session> {
+//     async getUserSessions(userId: number): Promise<Session[]> {
+//         return [];
+//     }
+}
 
 export interface SessionStoreOpts {
     repository: SessionRepository;
@@ -53,15 +48,20 @@ export class SessionStore extends Store {
 
     constructor(opts: SessionStoreOpts) {
         super();
+        log.info("constuctor 1");
         this.repository = opts.repository;
+        log.info("constuctor 2");
         this.ttl = opts.ttl;
+        log.info("constuctor 3");
         this.expirationInterval = opts.expirationInterval;
+        log.info("constuctor 4");
         if (opts.clearExpired) {
             this.setExpirationInterval(this.expirationInterval);
         }
+        log.info("constuctor return");
     }
 
-    clearExpiredSessions = (callback?: (error: any) => void) => {
+    clearExpiredSessions(callback?: (error: any) => void) {
         const timestamp = Math.round(new Date().getTime() / 1000);
         this.repository
             .delete({ expiresAt: LessThan(timestamp) })
@@ -71,20 +71,78 @@ export class SessionStore extends Store {
             .catch((err: any) => {
                 if (callback) callback(err);
             });
-    }
+    };
 
-    setExpirationInterval = (time: number) => {
-        if (this.expirationIntervalId) {
-            window.clearInterval(this.expirationIntervalId);
+    setExpirationInterval(time: number) {
+        try {
+            log.info("set int 0");
+            if (this.expirationIntervalId) {
+                log.info("set int 1");
+                window.clearInterval(this.expirationIntervalId);
+                log.info("set int 2");
+            }
+
+            this.expirationIntervalId = window.setInterval(this.clearExpiredSessions, time);
+            log.info("set int 3");
+        } catch (e) {
+            log.info("FUCK!")
+            log.error(e);
+            throw e;
         }
+    };
 
-        this.expirationIntervalId = window.setInterval(this.clearExpiredSessions, time);
+    newExpireTime(ttl?: number) {
+        return Math.floor(new Date().getTime() / 1000) + (ttl ?? this.ttl);
     }
 
-    // Store API methods:
-    all = (cb: (err: any, result?: any) => void): void => {
+    // session.Store API methods
+    all = (cb: (err: any, result?: any) => void) => {
         this.repository
             .find()
-            .then((sessions: Session[]) => sessions
-    }
+            .then(sessions => sessions.map(s => cb(null, s.data)))
+            .catch(err => cb(err));
+    };
+
+    destroy = (sid: string, cb: (err?: any) => void) => {
+        this.repository
+            .delete({ sid })
+            .then(() => cb())
+            .catch(err => cb(err));
+    };
+
+    clear = (cb: (err?: any) => void) => {
+        this.repository
+            .clear()
+            .then(() => cb())
+            .catch(err => cb(err));
+    };
+
+    length = (cb: (err: any, len?: number) => void) => {
+        this.repository
+            .count()
+            .then(n => cb(null, n))
+            .catch(err => cb(err));
+    };
+
+    get = (sid: string, cb: (err: any, session?: any) => void) => {
+        this.repository
+            .findOne({ sid })
+            .then(s => cb(null, s?.data)) // TODO: is this the right way to use optional access?
+            .catch(err => cb(err));
+    };
+
+
+    set = (sid: string, data: any, cb?: (error?: any) => void) => {
+        this.repository
+            .save({ sid, expiresAt: this.newExpireTime(data?.ttl), data })
+            .then(() => cb())
+            .catch(err => cb(err));
+    };
+
+    touch = (sid: string, data: any, cb?: (error?: any) => void) => {
+        this.repository
+            .update(sid, { expiresAt: this.newExpireTime(data?.ttl) })
+            .then(() => cb())
+            .catch(err => cb(err));
+    };
 }

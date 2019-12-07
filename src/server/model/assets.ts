@@ -73,7 +73,7 @@ export class ImageAssetRepository extends Repository<ImageAsset> {
             throw new Error("Cannot handle identicon larger than 256 pixels");
         }
 
-        return this.findOneOrFail({
+        return this.findOneOrFail({ // TODO: woops, wrong. findOne returns null if there isn't one. that's not an error
             uri: ImageAssetRepository.identiconUri(token, size)
         })
             .then(asset => asset)

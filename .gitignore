@@ -6,3 +6,4 @@ logs/*
 *.swp
 src/sandbox
 notes.txt
+.vscode

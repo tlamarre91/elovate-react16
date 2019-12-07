@@ -6,13 +6,13 @@ import morgan from "morgan";
 import path from "path";
 import session from "express-session";
 
-import { getRepository } from "typeorm";
+import { getRepository, getCustomRepository } from "typeorm";
 import { log } from "./log";
 import * as Api from "../api";
 
 import { connectDb } from "./db";
 import routes from "./routes";
-import { SessionStore, Session } from "./model/Session";
+import { SessionStore, Session, SessionRepository } from "./model/Session";
 
 // TODO
 function getFreePort(port = 3000) {
@@ -31,8 +31,6 @@ const morganOpts: morgan.Options = {
         }
     }
 }
-
-let sessionStore: SessionStore;
 
 export const app = express();
 const port = getFreePort();
@@ -53,25 +51,37 @@ app.use(express.static(staticDir2));
 
 connectDb().then(() => {
     const day = 60* 60 * 24;
-    sessionStore = new SessionStore({
-        repository: getRepository(Session),
-        ttl: day,
-        expirationInterval: day,
-        clearExpired: true
-    });
 
-    app.use(session({
-        cookie: {
-            httpOnly: true,
-            secure: true
-        },
-        name: "elovate.sid",
-        saveUninitialized: false,
-        secret: "elovate_secretfj4dfsa00splkfjzvnklf!!dddd", // TODO: generate a seeeeecret
-        store: sessionStore
-    }));
+    const sessionRepo = getRepository(Session);
+    log.info("break1");
 
-    app.set("sessionStore", sessionStore);
+    let sessionStore: SessionStore;
+    try {
+        sessionStore = new SessionStore({
+            repository: sessionRepo,
+            ttl: day,
+            expirationInterval: day,
+            clearExpired: true
+        });
+    } catch(e) {
+        log.error("tough break"); // FFFFFFFUUUUUUUUUUUU
+        throw e;
+    }
+    log.info("break2");
+//
+//    app.use(session({
+//        cookie: {
+//            httpOnly: true,
+//            secure: true
+//        },
+//        name: "elovate.sid",
+//        saveUninitialized: false,
+//        resave: false,
+//        secret: "elovate_secretfj4dfsa00splkfjzvnklf!!dddd", // TODO: generate a seeeeecret
+//        store: sessionStore
+//    }));
+
+    //app.set("sessionStore", sessionStore);
 
     app.use(routes);
     app.listen(port);
