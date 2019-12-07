@@ -96,24 +96,29 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
     }
 
     render() {
+        return (
+            <div>
+                <p> AAHHHH </p>
+            </div>
+        );
 
-        return <div className="userSearchComponent">
-            <InputGroup
-                type="text"
-                placeholder="Search users"
-                onChange={this.handleInputChange}
-                fill={false}
-                leftIcon="search" />
-            <Button onClick={this.handleClick}>
-                search
-            </Button>
-            {
-                this.state.results.map((u, i) => <UserCard key={i}
-                    user={u}
-                    linkUser={false}
-                    interactive={this.props.interactiveResults} />)
-            }
-        </div>;
+        //        return <div className="userSearchComponent">
+        //            <InputGroup
+        //                type="text"
+        //                placeholder="Search users"
+        //                onChange={this.handleInputChange}
+        //                fill={false}
+        //                leftIcon="search" />
+        //            <Button onClick={this.handleClick}>
+        //                search
+        //            </Button>
+        //            {
+        //                this.state.results.map((u, i) => <UserCard key={i}
+        //                    user={u}
+        //                    linkUser={false}
+        //                    interactive={this.props.interactiveResults} />)
+        //            }
+        //        </div>;
     }
 }
 
