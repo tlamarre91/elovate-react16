@@ -16,7 +16,7 @@ import { log } from "../log";
 
 @Entity()
 export class Session {
-    @PrimaryColumn({ type: "uuid" })
+    @PrimaryColumn()
     sid: string;
 
     @Column()
@@ -28,9 +28,9 @@ export class Session {
 
 @EntityRepository(Session)
 export class SessionRepository extends Repository<Session> {
-//     async getUserSessions(userId: number): Promise<Session[]> {
-//         return [];
-//     }
+     async getUserSessions(userId: number): Promise<Session[]> {
+         return [];
+     }
 }
 
 export interface SessionStoreOpts {
@@ -41,27 +41,22 @@ export interface SessionStoreOpts {
 }
 
 export class SessionStore extends Store {
-    private readonly repository: Repository<Session>;
+    private readonly repository: SessionRepository;
     private readonly ttl: number;
     private readonly expirationInterval: number;
-    private expirationIntervalId: number;
+    private expirationIntervalId: NodeJS.Timeout;
 
     constructor(opts: SessionStoreOpts) {
         super();
-        log.info("constuctor 1");
         this.repository = opts.repository;
-        log.info("constuctor 2");
         this.ttl = opts.ttl;
-        log.info("constuctor 3");
         this.expirationInterval = opts.expirationInterval;
-        log.info("constuctor 4");
         if (opts.clearExpired) {
             this.setExpirationInterval(this.expirationInterval);
         }
-        log.info("constuctor return");
     }
 
-    clearExpiredSessions(callback?: (error: any) => void) {
+    clearExpiredSessions = (callback?: (error: any) => void) => {
         const timestamp = Math.round(new Date().getTime() / 1000);
         this.repository
             .delete({ expiresAt: LessThan(timestamp) })
@@ -73,19 +68,14 @@ export class SessionStore extends Store {
             });
     };
 
-    setExpirationInterval(time: number) {
+    setExpirationInterval = (time: number) => {
         try {
-            log.info("set int 0");
             if (this.expirationIntervalId) {
-                log.info("set int 1");
-                window.clearInterval(this.expirationIntervalId);
-                log.info("set int 2");
+                global.clearInterval(this.expirationIntervalId);
             }
 
-            this.expirationIntervalId = window.setInterval(this.clearExpiredSessions, time);
-            log.info("set int 3");
+            this.expirationIntervalId = global.setInterval(this.clearExpiredSessions, time);
         } catch (e) {
-            log.info("FUCK!")
             log.error(e);
             throw e;
         }

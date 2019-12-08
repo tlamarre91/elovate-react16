@@ -3,23 +3,28 @@ import { render } from "react-dom";
 import { Button } from "@material-ui/core";
 
 import { log } from "./log";
-
 import * as Api from "../api";
 
 interface AdminControlsProps {
+    log?: string[];
 }
 
 interface AdminControlsState {
-    status: string;
+    log: string[];
 }
 
 export class AdminControlsComponent extends React.Component<AdminControlsProps, AdminControlsState> {
     constructor(props: AdminControlsProps) {
-        super(props);
+    super(props);
         this.state = {
-            status: "loaded"
+            log: [],
+            ... props
         };
     }
+
+    log = (str: string) => this.setState(prevState => {
+        return { log: prevState.log.concat(str) };
+    });
 
     private newUserCall = () => {
         const baseStr = "user_" + Math.floor(Math.random() * 100000);
@@ -34,26 +39,32 @@ export class AdminControlsComponent extends React.Component<AdminControlsProps, 
             if (! res.success) {
                 const err = res.error;
                 log.error(err);
-                const newState = { status: `error: ${ JSON.stringify(err) }` };
-                this.setState(newState);
+                this.log(`error: ${ JSON.stringify(err) }`);
             } else {
-                this.setState({ status: `added user: ${ baseStr }` });
+                this.log(`added user: ${ baseStr }`);
             }
         }).catch(err => {
             log.error(err);
-            this.setState({ status: "SERIOS GOOFS" });
+            this.log("error: SERIOUS GOOFS");
         });
-    }
+    };
 
     render() {
+        const log = this.state.log;
+        const logElems = log.slice(log.length - 10).map(str => <div className="adminLogEntry">{ str }</div>);
+
         return (
             <div className="adminControls">
-                <div className="adminStatusMsg">{ this.state.status }</div>
+                <div className="adminLog">
+                    {logElems}
+                </div>
+                <Button variant="contained" color="primary">
+                    add user
+                </Button>
+                <Button variant="contained" color="secondary">
+                    poop farts
+                </Button>
             </div>
-            //                <Button
-            //                    onClick={ this.newUserCall }
-            //                    text="Add user"
-            //                />
         )
     }
 }

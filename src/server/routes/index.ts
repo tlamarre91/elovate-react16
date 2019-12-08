@@ -40,7 +40,8 @@ router.use("/api", apiRouter);
 
 router.get("/", async (req, res) => {
     log.info("got somethin here boss");
-    res.render("dev-test");
+    const session = JSON.stringify(req.session);
+    res.render("dev-test", { session });
 });
 
 router.get("/identicon/:token", async (req, res) => {
@@ -53,6 +54,17 @@ router.get("/identicons", async (req, res) => {
     const repo = getCustomRepository(ImageAssetRepository);
     const identicons: ImageAsset[] = await repo.find();
     res.render("identicon-test", { assets: identicons });
+});
+
+router.get("/setval/:val", async (req, res) => {
+    const val = req.params["val"];
+    req.session["testProp"] = val;
+    res.send(`set val: ${val}`);
+});
+
+router.get("/getval", async (req, res) => {
+    const val = req.session["testProp"];
+    res.json({ val, msg: "what" });
 });
 
 router.get("/clearSessions", async (req, res) => {

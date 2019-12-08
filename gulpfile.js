@@ -5,6 +5,7 @@ const del = require("del");
 const browserify = require("browserify");
 const ts = require("gulp-typescript");
 const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
 const tsify = require("tsify");
 const tsServerProj = ts.createProject("tsconfig-server.json");
 //const tsClientProj = ts.createProject("tsconfig-client.json");
@@ -19,8 +20,13 @@ function cleanApi() {
 
 function buildServer() {
     return tsServerProj.src()
+        .pipe(sourcemaps.init())
         .pipe(tsServerProj())
-        .js.pipe(gulp.dest("dist/"));
+        .pipe(sourcemaps.write('.', {
+            includeContent: false,
+            sourceRoot: "../src"
+        }))
+        .pipe(gulp.dest("dist/"));
 }
 
 function cleanClient() {

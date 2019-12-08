@@ -5,10 +5,11 @@ import { log } from "../log";
 
 import * as Model from "../model";
 
-const DB_LOGGING = true;
+type DbLogType = "query" | "error" | "schema" | "warn" | "info" | "log";
 
 export function connectDb() {
     try {
+        const loggingOpt: DbLogType[] = process.env.DB_LOGGING.split(" ").map(s => s as DbLogType);
         const conn = createConnection({
             type: "postgres",
             host: "localhost",
@@ -27,10 +28,8 @@ export function connectDb() {
                 Model.Session
             ],
             synchronize: true,
-            logging: DB_LOGGING
+            logging: loggingOpt
         });
-        log.info("connected");
-        log.info(JSON.stringify(conn));
         return conn;
     } catch (err) {
         log.error(err);

@@ -5,87 +5,123 @@ import createError from "http-errors";
 import morgan from "morgan";
 import path from "path";
 import session from "express-session";
+import { getCustomRepository } from "typeorm";
+import dotenv from "dotenv";
+dotenv.config();
 
-import { getRepository, getCustomRepository } from "typeorm";
 import { log } from "./log";
 import * as Api from "../api";
+Api.setLogger(log);
 
 import { connectDb } from "./db";
 import routes from "./routes";
 import { SessionStore, Session, SessionRepository } from "./model/Session";
 
-// TODO
+export enum Env {
+    DEV = "development",
+    PROD = "production"
+}
+
+export const app = express();
+
 function getFreePort(port = 3000) {
     return port;
 }
 
 function exitApp(reason: string, code: number) {
-    log.info(`exiting app: ${reason}`);
+    log.warn(`exiting app (${code}): ${reason}`);
     process.exit(code);
 };
 
-const morganOpts: morgan.Options = {
-    stream: {
-        write: msg => {
-            log.info(msg.trim());
+
+const main = async () => {
+    const env = process.env.NODE_ENV;
+
+    const logOutput = env === Env.DEV ? "dev" : "short";
+    app.use(morgan(logOutput, {
+        stream: {
+            write: msg => {
+                log.info(msg.trim());
+            }
+        }
+    }));
+
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
+
+    app.set("views", path.join(__dirname, "templates"));
+    app.set("view engine", "pug");
+
+    if (env === Env.DEV) {
+        try {
+            const staticDir1 = path.join(appRoot.toString(), "dist", "client");
+            app.use(express.static(staticDir1));
+
+            const staticDir2 = path.join(appRoot.toString(), "dist", "public");
+            app.use(express.static(staticDir2));
+            log.info("serving static content");
+        } catch (err) {
+            log.error("err");
+            exitApp("could not serve static content", 1);
         }
     }
-}
 
-export const app = express();
-const port = getFreePort();
+    try {
+        await connectDb();
+        log.info("connected to database");
+    } catch (err) {
+        log.error(err);
+        exitApp("could not connect to database", 1);
+    }
 
-Api.setLogger(log);
-app.use(morgan("dev", morganOpts));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.set("views", path.join(__dirname, "templates"));
-app.set("view engine", "pug");
-
-const staticDir1 = path.join(appRoot.toString(), "dist", "client"); // TODO: make gulp just put bundle in public
-app.use(express.static(staticDir1)); // TODO: won't be serving static through express anyway
-
-const staticDir2 = path.join(appRoot.toString(), "dist", "public");
-app.use(express.static(staticDir2));
-
-connectDb().then(() => {
-    const day = 60* 60 * 24;
-
-    const sessionRepo = getRepository(Session);
-    log.info("break1");
-
+    const dayInSeconds = 60 * 60 * 24;
     let sessionStore: SessionStore;
     try {
         sessionStore = new SessionStore({
-            repository: sessionRepo,
-            ttl: day,
-            expirationInterval: day,
+            repository: getCustomRepository(SessionRepository),
+            ttl: dayInSeconds,
+            expirationInterval: dayInSeconds * 1000,
             clearExpired: true
         });
-    } catch(e) {
-        log.error("tough break"); // FFFFFFFUUUUUUUUUUUU
-        throw e;
+        log.info("initialized session store");
+    } catch (err) {
+        log.error(err);
+        exitApp("could not initialize session store", 1);
     }
-    log.info("break2");
-//
-//    app.use(session({
-//        cookie: {
-//            httpOnly: true,
-//            secure: true
-//        },
-//        name: "elovate.sid",
-//        saveUninitialized: false,
-//        resave: false,
-//        secret: "elovate_secretfj4dfsa00splkfjzvnklf!!dddd", // TODO: generate a seeeeecret
-//        store: sessionStore
-//    }));
 
-    //app.set("sessionStore", sessionStore);
+    if (process.env.SESSION_SECRET) {
+        try {
+            app.use(session({
+                cookie: {
+                    httpOnly: true,
+                    //secure: true
+                    secure: false // TODO: this will need rework when behind nginx
+                },
+                name: "elovate.sid",
+                saveUninitialized: false,
+                resave: false,
+                secret: process.env.SESSION_SECRET,
+                store: sessionStore
+            }));
+            app.set("sessionStore", sessionStore);
+        } catch (err) {
+            log.error(err);
+            exitApp("could not add session middleware", 1);
+        }
+    } else {
+        exitApp("SESSION_SECRET is not defined", 1);
+    }
 
     app.use(routes);
-    app.listen(port);
-}).catch(err => {
-    log.error(err);
-    exitApp("could not connect to database", 1);
-});
+
+    try {
+        const port = getFreePort();
+        app.listen(port);
+        log.info(`listening on port ${ port }`);
+    } catch (err) {
+        log.error(err);
+        exitApp("could not set app to listen", 1);
+    }
+}
+
+main();

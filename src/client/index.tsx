@@ -4,7 +4,7 @@ import { render } from "react-dom";
 import { log } from "./log";
 import * as Api from "../api";
 Api.setLogger(log);
-
+import styleVars from "./styleVariables";
 import {
     UserSearchComponent,
 } from "./UserSearchComponent";
@@ -12,9 +12,6 @@ import {
 import {
     AdminControlsComponent
 } from "./AdminControlsComponent";
-
-
-// import * as Api from "../api";
 
 function main() {
     log.info("running main()");

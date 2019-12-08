@@ -43,17 +43,20 @@ export class User extends MappedEntity<Api.UserProps> {
     avatarAsset: ImageAsset;
 
     @Index({ unique: true })
-    @Column({ length: 64 })
+    @Column({ length: 64, nullable: true })
     username: string;
 
-    @Column({ length: 64, default: "" })
+    @Column({ length: 64 })
     displayName: string;
     
-    @Column({ length: 64, default: "" })
+    @Column({ length: 64, nullable: true })
     email: string;
 
     @Column({ default: false })
     hasAccount: boolean;
+
+    @Column({ default: false })
+    receivesEmail: boolean;
 
     @Column({ default: false })
     isPublic: boolean;
