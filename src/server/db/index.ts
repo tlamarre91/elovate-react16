@@ -14,9 +14,9 @@ export function connectDb() {
             type: "postgres",
             host: "localhost",
             port: 5432,
-            username: "tom",
-            password: "tom",
-            database: "elovate",
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
             entities: [ // TODO: feels gross to include these explicitly. get "could not connect" if i forget to add.
                         // should probably just do file reference to dist/server/model/* like every doc suggests
                 Model.User,

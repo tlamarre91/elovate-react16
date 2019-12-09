@@ -54,11 +54,14 @@ const main = async () => {
 
     if (env === Env.DEV) {
         try {
-            const staticDir1 = path.join(appRoot.toString(), "dist", "client");
-            app.use(express.static(staticDir1));
+            const clientDir = path.join(appRoot.toString(), "dist", "client"); // TODO: make gulp put bundle.js in assetDir
+            app.use(express.static(clientDir));
 
-            const staticDir2 = path.join(appRoot.toString(), "dist", "public");
-            app.use(express.static(staticDir2));
+            let assetDir = process.env.ASSET_DIR ?? "dist/public";
+            if (! assetDir.startsWith("/")) {
+                assetDir = path.join(appRoot.toString(), assetDir);
+            }
+            app.use(express.static(assetDir));
             log.info("serving static content");
         } catch (err) {
             log.error("err");
