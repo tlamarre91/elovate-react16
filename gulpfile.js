@@ -14,6 +14,14 @@ dotenv.config();
 const TARGET_DIR = process.env.TARGET_DIR;
 const STATIC_DIR = process.env.STATIC_DIR;
 
+if (! TARGET_DIR) {
+    throw Error("environment variable TARGET_DIR must be defined");
+}
+
+if (! STATIC_DIR) {
+    throw Error("environment variable STATIC_DIR must be defined");
+}
+
 function cleanServer() {
     //return del(["dist/server/**/*"]);
     return del([path.join(TARGET_DIR, "server/**/*")]);
