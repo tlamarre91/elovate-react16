@@ -17,6 +17,8 @@ import { connectDb } from "./db";
 import routes from "./routes";
 import { SessionStore, Session, SessionRepository } from "./model/Session";
 
+const EXPRESS_SERVE_STATIC = process.env.EXPRESS_SERVE_STATIC.toLowerCase() === "false" ? false : true;
+
 export enum Env {
     DEV = "development",
     PROD = "production"
@@ -52,7 +54,7 @@ const main = async () => {
     app.set("views", path.join(__dirname, "templates"));
     app.set("view engine", "pug");
 
-    if (env === Env.DEV) {
+    if (env === Env.DEV && EXPRESS_SERVE_STATIC) {
         try {
             const clientDir = path.join(appRoot.toString(), "dist", "client"); // TODO: make gulp put bundle.js in assetDir
             app.use(express.static(clientDir));
