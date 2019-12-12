@@ -56,8 +56,8 @@ const main = async () => {
 
     if (env === Env.DEV && EXPRESS_SERVE_STATIC) {
         try {
-            const clientDir = path.join(appRoot.toString(), "dist", "client"); // TODO: make gulp put bundle.js in assetDir
-            app.use(express.static(clientDir));
+            // const clientDir = path.join(appRoot.toString(), "dist", "client");
+            // app.use(express.static(clientDir));
 
             let assetDir = process.env.ASSET_DIR ?? "dist/public";
             if (! assetDir.startsWith("/")) {

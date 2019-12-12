@@ -57,7 +57,7 @@ function buildClient() {
     }).plugin(tsify, { project: "tsconfig-client.json" })
         .bundle()
         .pipe(source("bundle.js"))
-        .pipe(gulp.dest(path.join(STATIC_DIR, "js"))); // TODO: stopping point. make this subdir of STATIC_DIR
+        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
 }
 
 function cleanLess() {
@@ -79,7 +79,7 @@ function cleanTemplates() {
 }
 
 function copyTemplates() {
-    // TODO: there's some race condition here...
+    // TODO: there's some race condition here... think it's addressed by making sure buildServer happens BEFORE this
     return gulp.src("src/templates/*")
         .pipe(gulp.dest(path.join(TARGET_DIR, "server/templates")));
 }
@@ -96,7 +96,6 @@ function copyAssets() {
 function cleanTarget() {
     return del([path.join(TARGET_DIR, "*")]);
 }
-
 
 exports.buildServer = buildServer;
 exports.buildClient = buildClient;
@@ -117,5 +116,5 @@ exports.watch = cb => {
 
 exports.default = gulp.series(
     cleanTarget,
-    gulp.parallel(buildServer, gulp.series(copyAssets, buildClient), buildLess, copyTemplates)
+    gulp.parallel(gulp.series(buildServer, copyTemplates), gulp.series(copyAssets, buildClient), buildLess)
 );

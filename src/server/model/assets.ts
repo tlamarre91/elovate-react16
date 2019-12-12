@@ -23,8 +23,8 @@ import * as Api from "../../api";
 import { Group } from "./Group";
 import { Match } from "./Match";
 
-const assetDirName = "assets";
-const fsAssetDir = process.env.BASE_ASSET_DIR || path.join(appRoot.path, "dist", "public", assetDirName);
+//const assetDirName = process.env.STATIC_DIR
+const ASSET_DIR = process.env.STATIC_DIR || path.join(appRoot.path, "dist", "public");
 
 @Entity()
 abstract class FileAsset {
@@ -51,16 +51,17 @@ export class ImageAssetRepository extends Repository<ImageAsset> {
          return `${this.identiconDir}/${token}-${size}x${size}.png`;
     }
 
-    generateIdenticon(token: string, size: number = 50): Promise<ImageAsset> {
+    async generateIdenticon(token: string, size: number = 50): Promise<ImageAsset> {
 
         const png = jdenticon.toPng(token, size);
         const uri = ImageAssetRepository.identiconUri(token, size);
         try {
-            fs.mkdirSync(path.join(fsAssetDir, ImageAssetRepository.identiconDir));
+            fs.mkdirSync(path.join(ASSET_DIR, ImageAssetRepository.identiconDir));
         } catch (e) {
+            // woops TODO
         }
 
-        fs.writeFileSync(path.join(fsAssetDir, uri), png); // TODO: async!
+        fs.writeFileSync(path.join(ASSET_DIR, uri), png); // TODO: async!
         const newAsset = new ImageAsset();
         newAsset.uri = uri;
         newAsset.height = size;
