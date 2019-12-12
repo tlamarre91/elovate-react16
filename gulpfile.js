@@ -8,14 +8,19 @@ const source = require("vinyl-source-stream");
 const sourcemaps = require("gulp-sourcemaps");
 const tsify = require("tsify");
 const tsServerProj = ts.createProject("tsconfig-server.json");
-//const tsClientProj = ts.createProject("tsconfig-client.json");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const TARGET_DIR = process.env.TARGET_DIR;
+const STATIC_DIR = process.env.STATIC_DIR;
 
 function cleanServer() {
-    return del(["dist/server/**/*"]);
+    //return del(["dist/server/**/*"]);
+    return del([path.join(TARGET_DIR, "server/**/*")]);
 }
 
 function cleanApi() {
-    return del(["dist/api/**/*"]);
+    return del([path.join(TARGET_DIR, "api/**/*")]);
 }
 
 function buildServer() {
@@ -26,7 +31,7 @@ function buildServer() {
             includeContent: false,
             sourceRoot: "../src"
         }))
-        .pipe(gulp.dest("dist/"));
+        .pipe(gulp.dest(TARGET_DIR)); // TODO: stopping point. was "dist/" so make sure this works w/o trailing slash
 }
 
 function cleanClient() {
@@ -44,11 +49,11 @@ function buildClient() {
     }).plugin(tsify, { project: "tsconfig-client.json" })
         .bundle()
         .pipe(source("bundle.js"))
-        .pipe(gulp.dest("dist/client/js"));
+        .pipe(gulp.dest(path.join(STATIC_DIR, "js"))); // TODO: stopping point. make this subdir of STATIC_DIR
 }
 
 function cleanLess() {
-    return del(["dist/public/css/**/*"]);
+    return del([path.join(STATIC_DIR, "css/**/*")]);
 }
 
 function buildLess() {
@@ -58,26 +63,30 @@ function buildLess() {
                 path.join(__dirname, "node_modules"),
             ]
         }))
-        .pipe(gulp.dest("dist/public/css"));
+        .pipe(gulp.dest(path.join(STATIC_DIR, "css")));
+}
+
+function cleanTemplates() {
+    return del([path.join(TARGET_DIR, "server", "templates", "*")]);
 }
 
 function copyTemplates() {
     // TODO: there's some race condition here...
     return gulp.src("src/templates/*")
-        .pipe(gulp.dest("dist/server/templates"));
+        .pipe(gulp.dest(path.join(TARGET_DIR, "server/templates")));
 }
 
 function cleanAssets() {
-    return del(["dist/public/assets/*"]);
+    return del([path.join(STATIC_DIR, "assets/*")]);
 }
 
 function copyAssets() {
     return gulp.src("assets/**/*")
-        .pipe(gulp.dest("dist/public/assets"));
+        .pipe(gulp.dest(path.join(STATIC_DIR, "assets")));
 }
 
-function cleanDist() {
-    return del(["dist/*"]);
+function cleanTarget() {
+    return del([path.join(TARGET_DIR, "*")]);
 }
 
 
@@ -86,19 +95,19 @@ exports.buildClient = buildClient;
 exports.buildLess = buildLess;
 exports.copyAssets = copyAssets;
 exports.copyTemplates = copyTemplates;
-exports.clean = cleanDist;
+exports.clean = cleanTarget;
 
 exports.watch = cb => {
     const opts = { ignoreInitial: false };
     gulp.watch(["src/server/**/*", "src/api/**/*"], opts, gulp.series(cleanApi, cleanServer, buildServer, copyTemplates));
     gulp.watch(["src/client/**/*", "src/api/**/*"], opts, gulp.series(cleanClient, cleanLess, gulp.parallel(buildClient, buildLess)));
-    gulp.watch(["src/templates/**/*"], opts, copyTemplates);
+    gulp.watch(["src/templates/**/*"], opts, gulp.series(cleanTemplates, copyTemplates));
     gulp.watch(["src/less/**/*"], opts, gulp.series(cleanLess, buildLess));
     gulp.watch(["assets/**/*"], opts, gulp.series(cleanAssets, copyAssets));
     cb();
 };
 
 exports.default = gulp.series(
-    cleanDist,
-    gulp.parallel(buildServer, buildClient, buildLess, copyTemplates, copyAssets)
+    cleanTarget,
+    gulp.parallel(buildServer, gulp.series(copyAssets, buildClient), buildLess, copyTemplates)
 );
