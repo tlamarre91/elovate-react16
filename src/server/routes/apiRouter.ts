@@ -63,3 +63,7 @@ apiRouter.post(Api.Endpoint.AddUser, sanitizeBody(["username", "displayName", "e
             res.json(new Api.ApiError<Api.UserProps>(err));
         });
 });
+
+apiRouter.delete(Api.Endpoint.DeleteUser, sanitizeBody(["username", "id"]), async (req, res) => {
+    res.json(new Api.ApiError("not implemented adsfjfj!"));
+});

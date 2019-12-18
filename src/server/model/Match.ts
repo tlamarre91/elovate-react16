@@ -95,6 +95,6 @@ export class MatchRepository extends Repository<Match> {
         match.datePlayed = datePlayed ? datePlayed: new Date();
         match.changedOn = new Date();
         match.createdOn = new Date();
-        return match.save();
+        return this.save(match);
     }
 }

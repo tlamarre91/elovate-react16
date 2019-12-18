@@ -43,7 +43,7 @@ function buildServer() {
 }
 
 function cleanClient() {
-    return del(["dist/client/**/*"]);
+    return del([path.join(STATIC_DIR, "js", "bundle.js")]);
 }
 
 // see https://www.typescriptlang.org/docs/handbook/gulp.html
@@ -61,7 +61,7 @@ function buildClient() {
 }
 
 function cleanLess() {
-    return del([path.join(STATIC_DIR, "css/**/*")]);
+    return del([path.join(STATIC_DIR, "css/style.css")]);
 }
 
 function buildLess() {
@@ -75,42 +75,53 @@ function buildLess() {
 }
 
 function cleanTemplates() {
-    return del([path.join(TARGET_DIR, "server", "templates", "*")]);
+    return del([path.join(TARGET_DIR, "templates")]);
 }
 
 function copyTemplates() {
-    // TODO: there's some race condition here... think it's addressed by making sure buildServer happens BEFORE this
     return gulp.src("src/templates/*")
-        .pipe(gulp.dest(path.join(TARGET_DIR, "server/templates")));
+        .pipe(gulp.dest(path.join(TARGET_DIR, "/templates")));
 }
 
 function cleanAssets() {
-    return del([path.join(STATIC_DIR, "assets/*")]);
+    return del([
+        path.join(STATIC_DIR, "css/*"),
+        path.join(STATIC_DIR, "img/*"),
+        path.join(STATIC_DIR, "js/*"),
+        path.join(STATIC_DIR, "misc/*")
+    ])
 }
 
 function copyAssets() {
     return gulp.src("assets/**/*")
-        .pipe(gulp.dest(path.join(STATIC_DIR, "assets")));
+        .pipe(gulp.dest(path.join(STATIC_DIR)));
 }
 
 function cleanTarget() {
     return del([path.join(TARGET_DIR, "*")]);
 }
 
-exports.buildServer = buildServer;
-exports.buildClient = buildClient;
-exports.buildLess = buildLess;
-exports.copyAssets = copyAssets;
-exports.copyTemplates = copyTemplates;
+//exports.buildServer = buildServer;
+//exports.buildClient = buildClient;
+//exports.buildLess = buildLess;
+//exports.copyAssets = copyAssets;
+//exports.copyTemplates = copyTemplates;
+
 exports.clean = cleanTarget;
+
+exports.server = gulp.series(cleanApi, cleanServer, buildServer, copyTemplates);
+exports.templates = gulp.series(cleanTemplates, copyTemplates);
+exports.client = gulp.series(cleanClient, buildClient);
+exports.assets = gulp.series(cleanAssets, copyAssets);
+exports.less = gulp.series(cleanLess, buildLess);
 
 exports.watch = cb => {
     const opts = { ignoreInitial: false };
-    gulp.watch(["src/server/**/*", "src/api/**/*"], opts, gulp.series(cleanApi, cleanServer, buildServer, copyTemplates));
-    gulp.watch(["src/client/**/*", "src/api/**/*"], opts, gulp.series(cleanClient, cleanLess, gulp.parallel(buildClient, buildLess)));
-    gulp.watch(["src/templates/**/*"], opts, gulp.series(cleanTemplates, copyTemplates));
-    gulp.watch(["src/less/**/*"], opts, gulp.series(cleanLess, buildLess));
-    gulp.watch(["assets/**/*"], opts, gulp.series(cleanAssets, copyAssets));
+    gulp.watch(["src/server/**/*", "src/api/**/*"], opts, exports.server);
+    gulp.watch(["src/client/**/*", "src/api/**/*"], opts, exports.client);
+    gulp.watch(["src/templates/**/*"], opts, exports.templates);
+    gulp.watch(["src/less/**/*"], opts, exports.less);
+    gulp.watch(["assets/**/*"], opts, exports.assets);
     cb();
 };
 

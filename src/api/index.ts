@@ -20,7 +20,8 @@ export { EntityProps, UserProps, GroupProps, GameProps, MatchProps };
 
 export enum Endpoint {
     SearchUsers = "/searchUsers",
-    AddUser = "/addUser"
+    AddUser = "/addUser",
+    DeleteUser = "/deleteUser"
 }
 
 export class ApiGet<Receive> {
@@ -146,17 +147,11 @@ export class ApiError<T> implements ApiResponse<T> {
     }
 }
 
-export interface Receiver<T> {
-    id: string;
-    data(obj: T): void;
-}
-
 function queryString(keyVals: [string, string][]): string {
     // TODO: ensure reserved symbols are escaped
     const str: string = '?' + keyVals.map(pair => `${ pair[0] }=${ pair[1] }`).join("&");
     return str;
 }
-
 
 interface UrlQuery {
     toQueryStr(): string;

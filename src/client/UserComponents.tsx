@@ -7,7 +7,6 @@ import {
 import { log } from "./log";
 import {
     UserProps,
-    Receiver
 } from "../api";
 
 export interface UserCardProps {
