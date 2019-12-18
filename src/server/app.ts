@@ -13,7 +13,7 @@ import { log } from "./log";
 import * as Api from "../api";
 Api.setLogger(log);
 
-import { connectDb } from "./db";
+import { connectDb, DbLog } from "./db";
 import routes from "./routes";
 import { SessionStore, Session, SessionRepository } from "./model/Session";
 
@@ -72,7 +72,12 @@ const main = async () => {
     }
 
     try {
-        await connectDb();
+        await connectDb(
+            process.env.DB_USERNAME,
+            process.env.DB_PASSWORD,
+            process.env.DB_NAME,
+            process.env.DB_LOGGING.split(" ").map(s => s as DbLog)
+        );
         log.info("connected to database");
     } catch (err) {
         log.error(err);

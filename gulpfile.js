@@ -39,7 +39,7 @@ function buildServer() {
             includeContent: false,
             sourceRoot: "../src"
         }))
-        .pipe(gulp.dest(TARGET_DIR)); // TODO: stopping point. was "dist/" so make sure this works w/o trailing slash
+        .pipe(gulp.dest(TARGET_DIR));
 }
 
 function cleanClient() {
@@ -47,6 +47,7 @@ function cleanClient() {
 }
 
 // see https://www.typescriptlang.org/docs/handbook/gulp.html
+// can some of this be factored out into config?
 function buildClient() {
     return browserify({
         basedir: ".",
@@ -84,12 +85,7 @@ function copyTemplates() {
 }
 
 function cleanAssets() {
-    return del([
-        path.join(STATIC_DIR, "css/*"),
-        path.join(STATIC_DIR, "img/*"),
-        path.join(STATIC_DIR, "js/*"),
-        path.join(STATIC_DIR, "misc/*")
-    ])
+    return del(["css", "img", "js", "misc"].map(s => path.join(STATIC_DIR, s)));
 }
 
 function copyAssets() {
@@ -100,12 +96,6 @@ function copyAssets() {
 function cleanTarget() {
     return del([path.join(TARGET_DIR, "*")]);
 }
-
-//exports.buildServer = buildServer;
-//exports.buildClient = buildClient;
-//exports.buildLess = buildLess;
-//exports.copyAssets = copyAssets;
-//exports.copyTemplates = copyTemplates;
 
 exports.clean = cleanTarget;
 

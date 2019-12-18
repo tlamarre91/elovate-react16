@@ -4,7 +4,7 @@ import winston from "winston";
  */
 
 // TODO: get a function in here to take a logger and register it to be available to rest of module
-// TODO: test the following. lol
+// TODO: test the following. lol. also improve it. kinda clunky
 
 let log: winston.Logger;
 export function setLogger(logger: winston.Logger) {
@@ -18,10 +18,21 @@ export function setLogger(logger: winston.Logger) {
 import { EntityProps, UserProps, GroupProps, GameProps, MatchProps } from "./props";
 export { EntityProps, UserProps, GroupProps, GameProps, MatchProps };
 
+// hmmm no no no... can enums reference themselves? hmmmmm. see class ENDPOINT below
 export enum Endpoint {
     SearchUsers = "/searchUsers",
     AddUser = "/addUser",
     DeleteUser = "/deleteUser"
+}
+
+// Maybe just give up and use strings as endpoints... this might be overkill
+// another alternative: `${enum for entity types}/${enum for method}`
+export type Methods = "search" | "add" | "delete" | "update";
+export class ENDPOINT {
+    static Users(method?: Methods) {
+        const methodStr = method ? `/${method}` : "";
+        return `users${methodStr}`;
+    }
 }
 
 export class ApiGet<Receive> {
