@@ -1,5 +1,4 @@
-//import winston from "winston";
-
+import * as argon from "argon2";
 import { log } from "../log";
 
 import {
@@ -52,6 +51,9 @@ export class User extends MappedEntity<Api.UserProps> {
     @Column({ length: 64, nullable: true })
     email: string;
 
+    @Column()
+    emailVerified: boolean;
+
     @Column({ default: false })
     hasAccount: boolean;
 
@@ -61,8 +63,14 @@ export class User extends MappedEntity<Api.UserProps> {
     @Column({ default: false })
     isPublic: boolean;
 
+    @Column({ length: 128, nullable: true })
+    passwordDigest: string;
+
     @ManyToMany(type => Group, group => group.members)
     groups: Group[];
+
+    @OneToMany(type => Session, session => session.user)
+    loginSessions: Promise<Session[]>;
 
     @ManyToMany(type => MatchParty, matchParty => matchParty.users, { cascade: true })
     @JoinTable()
@@ -94,6 +102,22 @@ export class UserRepository extends Repository<User> {
     async getRandom(): Promise<User> {
         const allUsers: User[] = await this.find({ select: ["id"] });
         return allUsers[Math.floor(Math.random() * allUsers.length)];
+    }
+
+    async verifyPassword(user: User, password: string): Promise<boolean> {
+        if (! user.passwordDigest) {
+            throw Error(`user (${ user.email }) has no password set`);
+        } else {
+            return argon.verify(user.passwordDigest, password);
+        }
+    }
+
+    /*
+     * set a user's password. NOTE: validation must be performed prior to calling
+     */
+    async setPassword(user: User, password: string): Promise<User> {
+        user.passwordDigest = await argon.hash(password);
+        return this.save(user);
     }
 
 //     async findUserParties(userId: number): Promise<MatchParty[]> {

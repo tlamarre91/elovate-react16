@@ -56,10 +56,7 @@ const main = async () => {
 
     if (env === Env.DEV && EXPRESS_SERVE_STATIC) {
         try {
-            // const clientDir = path.join(appRoot.toString(), "dist", "client");
-            // app.use(express.static(clientDir));
-
-            let assetDir = process.env.ASSET_DIR ?? "dist/public";
+            let assetDir = process.env.ASSET_DIR ?? path.join("dist", "public");
             if (! assetDir.startsWith("/")) {
                 assetDir = path.join(appRoot.toString(), assetDir);
             }
@@ -99,7 +96,9 @@ const main = async () => {
         exitApp("could not initialize session store", 1);
     }
 
-    if (process.env.SESSION_SECRET) {
+    if (! process.env.SESSION_SECRET) {
+        exitApp("SESSION_SECRET environment variable must be defined", 1);
+    } else {
         try {
             app.use(session({
                 cookie: {
@@ -118,19 +117,17 @@ const main = async () => {
             log.error(err);
             exitApp("could not add session middleware", 1);
         }
-    } else {
-        exitApp("SESSION_SECRET is not defined", 1);
     }
 
     app.use(routes);
 
+    const port = getFreePort();
     try {
-        const port = getFreePort();
         app.listen(port);
         log.info(`listening on port ${ port }`);
     } catch (err) {
         log.error(err);
-        exitApp("could not set app to listen", 1);
+        exitApp(`could not set app to listen on port ${ port }`, 1);
     }
 }
 

@@ -13,6 +13,7 @@ import {
 } from "typeorm";
 
 import { log } from "../log";
+import { User } from "./User";
 
 @Entity()
 export class Session {
@@ -24,13 +25,13 @@ export class Session {
 
     @Column({ type: "jsonb" })
     data: any;
+
+    @ManyToOne(type => User, user => user.loginSessions)
+    user: User;
 }
 
 @EntityRepository(Session)
 export class SessionRepository extends Repository<Session> {
-     async getUserSessions(userId: number): Promise<Session[]> {
-         return [];
-     }
 }
 
 export interface SessionStoreOpts {
