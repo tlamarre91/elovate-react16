@@ -11,18 +11,15 @@ import {
 
 export interface UserCardProps {
     user: UserProps;
-    hidden?: boolean;
-    focused?: boolean;
-    linkUser?: boolean;
-    interactive?: boolean;
+    hidden: boolean;
+    focused: boolean;
+    linkUser: boolean;
+    interactive: boolean;
 }
 
 export const UserCard = (props: UserCardProps) => {
     const className = `userCard ${ props.focused ? "focused" : "" } ${ props.hidden ? "hidden" : "" }`;
     const { user, hidden, focused, linkUser, interactive } = { ... props };
-
-    //const displayNameElem = linkUser ? <h5><a href= { `/user/id/${user.id}` }>{ user.displayName }</a></h5>
-    //: <h4>{ user.displayName }</h4>;
 
     const displayNameElem = <h4>
         {

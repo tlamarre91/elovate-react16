@@ -26,10 +26,17 @@ export enum MatchResultType {
     singleWinner = "singleWinner"
 }
 
+class MatchResultData {
+    constructor() {
+        return "FUCK I DON'T KNOW WHAT I'M DOING";
+    }
+}
+
 export interface MatchResult {
     version: number;
     ranked: boolean;
     type: MatchResultType;
+    data: MatchResultData;
 }
 
 export interface PendingResult extends MatchResult {
