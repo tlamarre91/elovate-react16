@@ -5,12 +5,11 @@ import {
 } from "@material-ui/core";
 
 import { log } from "./log";
-import {
-    UserProps,
-} from "../api";
+import * as Api from "~shared/api";
+import * as Props from "~shared/props";
 
 export interface UserCardProps {
-    user: UserProps;
+    user: Props.UserProps;
     hidden: boolean;
     focused: boolean;
     linkUser: boolean;

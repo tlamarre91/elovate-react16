@@ -23,3 +23,4 @@ export interface MatchProps extends EntityProps {
 export interface GameProps extends EntityProps {
     name: string;
 }
+

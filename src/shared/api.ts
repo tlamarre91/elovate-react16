@@ -16,7 +16,6 @@ export function setLogger(logger: winston.Logger) {
  */
 
 import { EntityProps, UserProps, GroupProps, GameProps, MatchProps } from "./props";
-export { EntityProps, UserProps, GroupProps, GameProps, MatchProps };
 
 // hmmm no no no... can enums reference themselves? hmmmmm. see class ENDPOINT below
 export enum Endpoint {
@@ -25,15 +24,15 @@ export enum Endpoint {
     DeleteUser = "/deleteUser"
 }
 
-// Maybe just give up and use strings as endpoints... this might be overkill
-// another alternative: `${enum for entity types}/${enum for method}`
-export type Methods = "search" | "add" | "delete" | "update";
-export class ENDPOINT {
-    static Users(method?: Methods) {
-        const methodStr = method ? `/${method}` : "";
-        return `users${methodStr}`;
-    }
-}
+//// Maybe just give up and use strings as endpoints... this might be overkill
+//// another alternative: `${enum for entity types}/${enum for method}`
+//export type Methods = "search" | "add" | "delete" | "update";
+//export class ENDPOINT {
+//    static Users(method?: Methods) {
+//        const methodStr = method ? `/${method}` : "";
+//        return `users${methodStr}`;
+//    }
+//}
 
 export class ApiGet<Receive> {
     url: string;

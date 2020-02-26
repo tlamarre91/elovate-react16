@@ -17,7 +17,8 @@ import {
     Like
 } from "typeorm";
 
-import * as Api from "../../api";
+import * as Api from "~shared/api";
+import * as Props from "~shared/props";
 
 import { MappedEntity } from "./MappedEntity";
 import { Group, GroupRepository } from "./Group";
@@ -27,7 +28,7 @@ import { MatchParty } from "./MatchParty";
 import { Session } from "./Session";
 
 @Entity()
-export class User extends MappedEntity<Api.UserProps> {
+export class User extends MappedEntity<Props.UserProps> {
     toProps() {
         return { ... this, avatarAssetUrl: "TODOOOO" }; // TODO: resolve asset path here
     }
@@ -91,7 +92,7 @@ export class UserRepository extends Repository<User> {
         }
     }
 
-    createWithProps(props: Api.UserProps): Promise<User> {
+    createWithProps(props: Props.UserProps): Promise<User> {
         const user = this.create();
         user.username = props.username;
         user.displayName = props.displayName;

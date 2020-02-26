@@ -1,7 +1,7 @@
 import {
     UserProps,
     GroupProps
-} from "../../api";
+} from "~shared/props";
 
 import {
     getRepository,

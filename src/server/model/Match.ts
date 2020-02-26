@@ -15,7 +15,8 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "../../api";
+import * as Api from "~shared/api";
+import * as Props from "~shared/props";
 
 import { MappedEntity } from "./MappedEntity";
 import { User } from "./User";
@@ -54,7 +55,7 @@ export enum MatchVisibility {
 }
 
 @Entity()
-export class Match extends MappedEntity<Api.MatchProps> {
+export class Match extends MappedEntity<Props.MatchProps> {
     toProps() {
         return { ... this };
     }

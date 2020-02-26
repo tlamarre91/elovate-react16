@@ -5,6 +5,6 @@
     }, 
     "include": [
         "src/server/**/*",
-        "src/api/**/*"
+        "src/shared/**/*"
     ]
 }

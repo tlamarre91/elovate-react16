@@ -1,6 +1,6 @@
 import { BaseEntity } from "typeorm";
 
-import { EntityProps } from "../../api";
+import { EntityProps } from "~shared/props";
 
 export abstract class MappedEntity<T extends EntityProps> extends BaseEntity {
     abstract toProps(): T;

@@ -3,7 +3,8 @@ import { render } from "react-dom";
 import { Button } from "@material-ui/core";
 
 import { log } from "./log";
-import * as Api from "../api";
+import * as Api from "~shared/api";
+import * as Props from "~shared/props";
 
 interface AdminControlsProps {
     log?: string[];
@@ -28,13 +29,13 @@ export class AdminControlsComponent extends React.Component<AdminControlsProps, 
 
     private newUserCall = () => {
         const baseStr = "user_" + Math.floor(Math.random() * 100000);
-        const newProps: Partial<Api.UserProps> = {
+        const newProps: Partial<Props.UserProps> = {
             username: baseStr,
             displayName: baseStr + " display name",
             email: baseStr + "@test.com"
         };
 
-        const call = new Api.ApiPost<Partial<Api.UserProps>, Api.UserProps>(window.location.href, Api.Endpoint.AddUser, newProps);
+        const call = new Api.ApiPost<Partial<Props.UserProps>, Props.UserProps>(window.location.href, Api.Endpoint.AddUser, newProps);
         call.execute().then(res => {
             if (! res.success) {
                 const err = res.error;

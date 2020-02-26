@@ -14,14 +14,15 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "../../api";
+import * as Api from "~shared/api";
+import * as Props from "~shared/props";
 
 import { MappedEntity } from "./MappedEntity";
 import { User } from "./User";
 import { MatchParty } from "./MatchParty";
 
 @Entity()
-export class Group extends MappedEntity<Api.GroupProps> {
+export class Group extends MappedEntity<Props.GroupProps> {
     toProps() {
         return { ... this }; // TODO: no way this is good enough. will restrict to actual GroupProps properties
     }

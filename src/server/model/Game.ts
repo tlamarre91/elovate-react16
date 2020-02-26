@@ -14,13 +14,14 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "../../api";
+import * as Api from "~shared/api";
+import * as Props from "~shared/props";
 
 import { MappedEntity } from "./MappedEntity";
 import { Match } from "./Match";
 
 @Entity()
-export class Game extends MappedEntity<Api.GameProps> {
+export class Game extends MappedEntity<Props.GameProps> {
     toProps() {
         return { ... this };
     }

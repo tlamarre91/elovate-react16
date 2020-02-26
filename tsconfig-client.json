@@ -4,6 +4,6 @@
     }, 
     "include": [
         "src/client/**/*",
-        "src/api/**/*"
+        "src/shared/**/*"
     ]
 }

@@ -7,8 +7,15 @@ import {
 } from "@material-ui/core";
 
 import { log } from "./log";
-import * as Api from "../api";
+import * as Api from "~shared/api";
+import * as Props from "~shared/props";
 import { UserCard } from "./UserComponents";
+
+interface UserSearchComponentState {
+    value: string;
+    timeoutId: number;
+    results: Props.UserProps[];
+}
 
 interface UserSearchComponentProps {
     /**
@@ -33,12 +40,6 @@ interface UserSearchComponentProps {
     interactiveResults: boolean;
 };
 
-interface UserSearchComponentState {
-    value: string;
-    timeoutId: number;
-    results: Api.UserProps[];
-}
-
 export class UserSearchComponent extends React.Component<UserSearchComponentProps, UserSearchComponentState> {
     constructor(props: UserSearchComponentProps) {
         super(props);
@@ -52,7 +53,7 @@ export class UserSearchComponent extends React.Component<UserSearchComponentProp
 
     runSearch() {
         const params = new Api.UserSearchParams({ username: this.state.value }, Api.SearchType.ContainsAll);
-        const call = new Api.ApiQuery<Api.UserProps[]>(window.location.href, Api.Endpoint.SearchUsers, params);
+        const call = new Api.ApiQuery<Props.UserProps[]>(window.location.href, Api.Endpoint.SearchUsers, params);
         call.execute().then(res => {
             if (! res.success) {
                 const err = res.error;

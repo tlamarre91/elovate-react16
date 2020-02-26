@@ -13,7 +13,7 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "../../api";
+import * as Api from "~shared/api";
 
 import { MappedEntity } from "./MappedEntity";
 import { User } from "./User";

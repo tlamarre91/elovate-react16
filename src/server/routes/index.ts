@@ -28,9 +28,6 @@ import {
     ImageAssetRepository,
     SessionStore
 } from "../model";
-import {
-    UserProps,
-} from "../../api";
 
 import { apiRouter } from "./apiRouter";
 
@@ -38,6 +35,7 @@ const router = Router();
 
 router.use("/api", apiRouter);
 
+// TODO: factor out into webclientRouter module
 router.get("/", async (req, res) => {
     log.info("got somethin here boss");
     const session = JSON.stringify(req.session);

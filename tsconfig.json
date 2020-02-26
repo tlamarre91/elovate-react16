@@ -9,12 +9,12 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "allowJs": true,
-        "baseUrl": ".",
+        "baseUrl": "src",
         "jsx": "react",
         "paths": {
-            "*": [
-                "node_modules/*"
-            ]
+            "~shared/*": [ "shared/*" ],
+            "~server/*": [ "server/*" ],
+            "~client/*": [ "client/*" ]
         },
         "outDir": "/dev/null"
     }

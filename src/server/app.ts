@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { log } from "./log";
-import * as Api from "../api";
+import * as Api from "~shared/api";
 Api.setLogger(log);
 
 import { connectDb, DbLog } from "./db";
