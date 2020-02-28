@@ -1,6 +1,9 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
+        "module": "amd",
+        "target": "es6",
+        "outFile": "client.js"
     }, 
     "include": [
         "src/client/**/*",

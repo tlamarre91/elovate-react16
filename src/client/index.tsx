@@ -26,4 +26,5 @@ function main() {
 
 }
 
+console.log("ah fuck, i can't believe you've done this");
 document.addEventListener("DOMContentLoaded", main);

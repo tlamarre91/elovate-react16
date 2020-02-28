@@ -2,12 +2,11 @@ const gulp = require("gulp");
 const path = require('path');
 const less = require('gulp-less');
 const del = require("del");
-const browserify = require("browserify");
+//const browserify = require("browserify");
 const ts = require("gulp-typescript");
 const source = require("vinyl-source-stream");
 const sourcemaps = require("gulp-sourcemaps");
-const tsify = require("tsify");
-const tsServerProj = ts.createProject("tsconfig-server.json");
+//const tsify = require("tsify");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -32,6 +31,7 @@ function cleanApi() {
 }
 
 function buildServer() {
+    const tsServerProj = ts.createProject("tsconfig-server.json");
     return tsServerProj.src()
         .pipe(sourcemaps.init())
         .pipe(tsServerProj())
@@ -43,23 +43,41 @@ function buildServer() {
 }
 
 function cleanClient() {
-    return del([path.join(STATIC_DIR, "js", "bundle.js")]);
+    return del([path.join(STATIC_DIR, "js", "client.js")]);
+}
+
+function copyRequireJS() {
+    return gulp.src("node_modules/requirejs/require.js")
+        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
+}
+
+function buildClient() {
+    const tsClientProj = ts.createProject("tsconfig-client.json");
+    return tsClientProj.src()
+        .pipe(sourcemaps.init())
+        .pipe(tsClientProj())
+        .pipe(sourcemaps.write('.', {
+            includeContent: false,
+            sourceRoot: "../src"
+        }))
+        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
 }
 
 // see https://www.typescriptlang.org/docs/handbook/gulp.html
 // can some of this be factored out into config?
-function buildClient() {
-    return browserify({
-        basedir: ".",
-        debug: true,
-        entries: ["src/client/index.tsx"],
-        cache: {},
-        packageCache: {}
-    }).plugin(tsify, { project: "tsconfig-client.json" })
-        .bundle()
-        .pipe(source("bundle.js"))
-        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
-}
+// ******* OLD *******
+//function buildClient() {
+//    return browserify({
+//        basedir: ".",
+//        debug: true,
+//        entries: ["src/client/index.tsx"],
+//        cache: {},
+//        packageCache: {}
+//    }).plugin(tsify, { project: "tsconfig-client.json" })
+//        .bundle()
+//        .pipe(source("bundle.js"))
+//        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
+//}
 
 function cleanLess() {
     return del([path.join(STATIC_DIR, "css/style.css")]);
@@ -101,7 +119,7 @@ exports.clean = cleanTarget;
 
 exports.server = gulp.series(cleanApi, cleanServer, buildServer, copyTemplates);
 exports.templates = gulp.series(cleanTemplates, copyTemplates);
-exports.client = gulp.series(cleanClient, buildClient);
+exports.client = gulp.series(cleanClient, copyRequireJS, buildClient);
 exports.assets = gulp.series(cleanAssets, copyAssets);
 exports.less = gulp.series(cleanLess, buildLess);
 
@@ -117,5 +135,6 @@ exports.watch = cb => {
 
 exports.default = gulp.series(
     cleanTarget,
-    gulp.parallel(gulp.series(buildServer, copyTemplates), gulp.series(copyAssets, buildClient), buildLess)
+    // TODO: factor out, replace with calls to exports.*** so i don't have to repeat everything
+    gulp.parallel(gulp.series(buildServer, copyTemplates), gulp.series(copyAssets, copyRequireJS, buildClient), buildLess)
 );
