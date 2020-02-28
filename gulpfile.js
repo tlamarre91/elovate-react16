@@ -1,6 +1,6 @@
 const gulp = require("gulp");
 const path = require('path');
-const less = require('gulp-less');
+const gulpLess = require('gulp-less');
 const del = require("del");
 //const browserify = require("browserify");
 const ts = require("gulp-typescript");
@@ -85,7 +85,7 @@ function cleanLess() {
 
 function buildLess() {
     return gulp.src("src/less/**/style.less")
-        .pipe(less({
+        .pipe(gulpLess({
             paths: [
                 path.join(__dirname, "node_modules"),
             ]
@@ -116,7 +116,6 @@ function cleanTarget() {
 }
 
 exports.clean = cleanTarget;
-
 exports.server = gulp.series(cleanApi, cleanServer, buildServer, copyTemplates);
 exports.templates = gulp.series(cleanTemplates, copyTemplates);
 exports.client = gulp.series(cleanClient, copyRequireJS, buildClient);
@@ -135,6 +134,9 @@ exports.watch = cb => {
 
 exports.default = gulp.series(
     cleanTarget,
-    // TODO: factor out, replace with calls to exports.*** so i don't have to repeat everything
-    gulp.parallel(gulp.series(buildServer, copyTemplates), gulp.series(copyAssets, copyRequireJS, buildClient), buildLess)
+    gulp.parallel(
+        gulp.series(buildServer, copyTemplates),
+        gulp.series(copyAssets, buildClient),
+        buildLess
+    )
 );

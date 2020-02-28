@@ -2,6 +2,7 @@
   "name": "elovate",
   "version": "1.0.0",
   "main": "dist/server/app.js",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "prestart": "gulp",
@@ -51,7 +52,6 @@
     "@types/passport": "^1.0.2",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
-    "browserify": "^16.5.0",
     "del": "^5.1.0",
     "faker": "^4.1.0",
     "gulp": "^4.0.2",
@@ -60,10 +60,13 @@
     "gulp-typescript": "^5.0.1",
     "nodemon": "^1.19.4",
     "requirejs": "^2.3.6",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.1",
     "ts-node": "^8.4.1",
-    "tsify": "^4.0.1",
     "typescript": "^3.8.2",
-    "vinyl-source-stream": "^2.0.0"
+    "vinyl-source-stream": "^2.0.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   },
   "_moduleAliases": {
     "~shared": "dist/shared",
