@@ -73,4 +73,25 @@ router.get("/clearSessions", async (req, res) => {
     });
 });
 
+router.get("/user/:query", async (req, res) => {
+    // TODO: return proper http status code
+    const repo = getRepository(User);
+    const template = "user-profile";
+    const query = req.params["query"];
+
+    if (query.includes("=")) {
+        res.render(template, { error: "gotta enter an id, sorry" }); // TODO: keyval user query
+    } else {
+        const re = /^[0-9]*$/;
+        const idStr = query.match(re)[0];
+        if (idStr !== null) {
+            const id = parseInt(idStr);
+            const user = await repo.findOne(id);
+            res.render(template, { user });
+        } else {
+            res.render(template, { error: "enter a NUMERIC id" }); // TODO: obvious
+        }
+    }
+});
+
 export default router;

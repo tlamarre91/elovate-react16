@@ -10,13 +10,13 @@ import { getCustomRepository } from "typeorm";
 import dotenv from "dotenv";
 dotenv.config();
 
-import { log } from "./log";
+import { log } from "~server/log";
 import * as Api from "~shared/api";
 Api.setLogger(log);
 
-import { connectDb, DbLog } from "./db";
-import routes from "./routes";
-import { SessionStore, Session, SessionRepository } from "./model/Session";
+import { connectDb, DbLog } from "~server/db";
+import routes from "~server/routes";
+import { SessionStore, Session, SessionRepository } from "~server/model/Session";
 
 const EXPRESS_SERVE_STATIC = process.env.EXPRESS_SERVE_STATIC.toLowerCase() === "false" ? false : true;
 

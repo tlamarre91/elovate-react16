@@ -35,6 +35,7 @@
     "pug": "^2.0.4",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-router-dom": "^5.1.2",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.20",
     "winston": "^3.2.1"

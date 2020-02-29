@@ -1,7 +1,19 @@
 import * as React from "react";
 import { render } from "react-dom";
 
-import { log } from "./log";
 import * as Api from "~shared/api";
 
-log.info("what up dude");
+import { elmt } from "~client/util";
+import { log } from "~client/log";
+
+import { UserCard } from "~client/components/cards";
+
+function main() {
+    Api.setLogger(log);
+    render(UserCard({ 
+        username: "tombo",
+        email: "tombo@mambo.com"
+    }), document.getElementById("userSearchContainer"));
+}
+
+document.addEventListener("DOMContentLoaded", main);

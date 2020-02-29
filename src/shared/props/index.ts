@@ -7,8 +7,8 @@ export interface EntityProps {
 
 export interface UserProps extends EntityProps {
     username: string;
-    displayName: string;
     email: string;
+    displayName?: string;
     hasAccount?: boolean;
     avatarAssetUrl?: string;
 }
