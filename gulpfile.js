@@ -2,11 +2,10 @@ const gulp = require("gulp");
 const path = require('path');
 const gulpLess = require('gulp-less');
 const del = require("del");
-//const browserify = require("browserify");
 const ts = require("gulp-typescript");
 const source = require("vinyl-source-stream");
 const sourcemaps = require("gulp-sourcemaps");
-//const tsify = require("tsify");
+const webpack = require("webpack-stream");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -22,7 +21,6 @@ if (! STATIC_DIR) {
 }
 
 function cleanServer() {
-    //return del(["dist/server/**/*"]);
     return del([path.join(TARGET_DIR, "server/**/*")]);
 }
 
@@ -46,38 +44,11 @@ function cleanClient() {
     return del([path.join(STATIC_DIR, "js", "client.js")]);
 }
 
-function copyRequireJS() {
-    return gulp.src("node_modules/requirejs/require.js")
-        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
-}
-
 function buildClient() {
-    const tsClientProj = ts.createProject("tsconfig-client.json");
-    return tsClientProj.src()
-        .pipe(sourcemaps.init())
-        .pipe(tsClientProj())
-        .pipe(sourcemaps.write('.', {
-            includeContent: false,
-            sourceRoot: "../src"
-        }))
+    return gulp.src("src/client/index.ts")
+        .pipe(webpack(require("./webpack.config")))
         .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
 }
-
-// see https://www.typescriptlang.org/docs/handbook/gulp.html
-// can some of this be factored out into config?
-// ******* OLD *******
-//function buildClient() {
-//    return browserify({
-//        basedir: ".",
-//        debug: true,
-//        entries: ["src/client/index.tsx"],
-//        cache: {},
-//        packageCache: {}
-//    }).plugin(tsify, { project: "tsconfig-client.json" })
-//        .bundle()
-//        .pipe(source("bundle.js"))
-//        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
-//}
 
 function cleanLess() {
     return del([path.join(STATIC_DIR, "css/style.css")]);
@@ -118,7 +89,7 @@ function cleanTarget() {
 exports.clean = cleanTarget;
 exports.server = gulp.series(cleanApi, cleanServer, buildServer, copyTemplates);
 exports.templates = gulp.series(cleanTemplates, copyTemplates);
-exports.client = gulp.series(cleanClient, copyRequireJS, buildClient);
+exports.client = gulp.series(cleanClient, buildClient);
 exports.assets = gulp.series(cleanAssets, copyAssets);
 exports.less = gulp.series(cleanLess, buildLess);
 

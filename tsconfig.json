@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "outDir": "/dev/null",
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
