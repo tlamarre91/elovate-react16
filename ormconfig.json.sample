@@ -1,0 +1,13 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "tom",
+    "password": "tom",
+    "database": "elovate",
+    "logging": ["error", "query"],
+    "entities": [
+        "dist/server/model/entities/*.js"
+    ],
+    "synchronize": true
+}
