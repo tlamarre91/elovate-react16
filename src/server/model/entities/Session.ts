@@ -12,7 +12,7 @@ import {
     LessThan
 } from "typeorm";
 
-import { log } from "../log";
+import { log } from "~server/log";
 import { User } from "./User";
 
 @Entity()

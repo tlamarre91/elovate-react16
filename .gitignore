@@ -8,3 +8,4 @@ src/sandbox
 notes.txt
 .vscode
 .env
+ormconfig.json

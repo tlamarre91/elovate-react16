@@ -6,19 +6,20 @@ import createError from "http-errors";
 import morgan from "morgan";
 import path from "path";
 import session from "express-session";
-import { getCustomRepository } from "typeorm";
+import * as Orm from "typeorm";
 import dotenv from "dotenv";
 dotenv.config();
 
+import * as Util from "~server/util";
 import { log } from "~server/log";
 import * as Api from "~shared/api";
-Api.setLogger(log);
 
 import { connectDb, DbLog } from "~server/db";
 import routes from "~server/routes";
-import { SessionStore, Session, SessionRepository } from "~server/model/Session";
+import { SessionStore, Session, SessionRepository } from "~server/model/entities/Session";
+import * as Model from "~server/model";
 
-const EXPRESS_SERVE_STATIC = process.env.EXPRESS_SERVE_STATIC.toLowerCase() === "false" ? false : true;
+const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() === "false" ? false : true;
 
 export enum Env {
     DEV = "development",
@@ -37,7 +38,8 @@ function exitApp(reason: string, code: number) {
 };
 
 
-const main = async () => {
+async function main() {
+    Api.setLogger(log);
     const env = process.env.NODE_ENV;
 
     const logOutput = env === Env.DEV ? "dev" : "short";
@@ -55,9 +57,9 @@ const main = async () => {
     app.set("views", path.join(__dirname, "..", "templates"));
     app.set("view engine", "pug");
 
-    if (env === Env.DEV && EXPRESS_SERVE_STATIC) {
+    if (env === Env.DEV && ELOVATE_SERVE_STATIC) {
         try {
-            let assetDir = process.env.ASSET_DIR ?? path.join("dist", "public");
+            let assetDir = process.env.ELOVATE_ASSET_DIR ?? path.join("dist", "public");
             if (! assetDir.startsWith("/")) {
                 assetDir = path.join(appRoot.toString(), assetDir);
             }
@@ -70,13 +72,24 @@ const main = async () => {
     }
 
     try {
-        await connectDb(
-            process.env.DB_USERNAME,
-            process.env.DB_PASSWORD,
-            process.env.DB_NAME,
-            process.env.DB_LOGGING.split(" ").map(s => s as DbLog)
-        );
+        await connectDb();
         log.info("connected to database");
+
+        if (process.env.ELOVATE_CLEAR_DB) {
+            const models = [
+                Model.User,
+                Model.Group,
+                Model.Game,
+                Model.MatchParty,
+                Model.Match,
+            ]
+
+            models.forEach(async m => await Orm.getRepository(m).clear());
+        }
+
+        if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
+            Util.populateTestData();
+        }
     } catch (err) {
         log.error(err);
         exitApp("could not connect to database", 1);
@@ -86,7 +99,7 @@ const main = async () => {
     let sessionStore: SessionStore;
     try {
         sessionStore = new SessionStore({
-            repository: getCustomRepository(SessionRepository),
+            repository: Orm.getCustomRepository(SessionRepository),
             ttl: dayInSeconds,
             expirationInterval: dayInSeconds * 1000,
             clearExpired: true
@@ -97,8 +110,8 @@ const main = async () => {
         exitApp("could not initialize session store", 1);
     }
 
-    if (! process.env.SESSION_SECRET) {
-        exitApp("SESSION_SECRET environment variable must be defined", 1);
+    if (! process.env.ELOVATE_SESSION_SECRET) {
+        exitApp("ELOVATE_SESSION_SECRET environment variable must be defined", 1);
     } else {
         try {
             app.use(session({
@@ -110,7 +123,7 @@ const main = async () => {
                 name: "elovate.sid",
                 saveUninitialized: false,
                 resave: false,
-                secret: process.env.SESSION_SECRET,
+                secret: process.env.ELOVATE_SESSION_SECRET,
                 store: sessionStore
             }));
             app.set("sessionStore", sessionStore);

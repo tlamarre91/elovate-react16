@@ -18,13 +18,13 @@ import {
 import * as Api from "~shared/api";
 import * as Props from "~shared/props";
 
-import { MappedEntity } from "./MappedEntity";
+import { MappedEntity } from "../MappedEntity";
 import { User } from "./User";
 import { Game } from "./Game";
 import { MatchParty } from "./MatchParty";
 
 export enum MatchResultType {
-    singleWinner = "singleWinner"
+    singleWinner = "s"
 }
 
 class MatchResultData {
@@ -74,7 +74,7 @@ export class Match extends MappedEntity<Props.MatchProps> {
     @Column()
     createdOn: Date;
 
-    @Column()
+    @Column({ nullable: true })
     @Index()
     datePlayed: Date;
 

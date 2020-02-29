@@ -6,6 +6,14 @@ block nav
 block content
     if !error
         div.userProfileContainer
-            div.username= 
+            div.usernameContainer= user.username
+            div.avatarContainer
+                avatar placeholder
+            div.groupsSectionContainer
+                groups section placeholder
+            div.pinnedItemsContainer
+                pinned items placeholder
+            div.matchHistoryContainer
+                match history container
     else
         p= error

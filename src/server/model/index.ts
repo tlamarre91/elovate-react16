@@ -1,28 +1,7 @@
-import {
-    UserProps,
-    GroupProps
-} from "~shared/props";
-
-import {
-    getRepository,
-    Entity,
-    Column,
-    Index,
-    JoinTable,
-    PrimaryGeneratedColumn,
-    ManyToOne,
-    OneToMany,
-    ManyToMany
-} from "typeorm";
-
-import {
-    IsEmail
-} from "class-validator";
-
-export { User, UserRepository } from "./User";
-export { Match, MatchRepository } from "./Match";
-export { Game, GameRepository } from "./Game";
-export { Group, GroupRepository } from "./Group";
-export { MatchParty } from "./MatchParty";
-export { Session, SessionRepository, SessionStore } from "./Session";
-export { ImageAsset, ImageAssetRepository } from "./assets";
+export * from "./entities/User";
+export * from "./entities/Match";
+export * from "./entities/Game";
+export * from "./entities/Group";
+export * from "./entities/MatchParty";
+export * from "./entities/Session";
+export * from "./entities/assets";

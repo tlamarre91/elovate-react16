@@ -9,23 +9,23 @@ const webpack = require("webpack-stream");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const TARGET_DIR = process.env.TARGET_DIR;
-const STATIC_DIR = process.env.STATIC_DIR;
+const ELOVATE_TARGET_DIR = process.env.ELOVATE_TARGET_DIR;
+const ELOVATE_STATIC_DIR = process.env.ELOVATE_STATIC_DIR;
 
-if (! TARGET_DIR) {
-    throw Error("environment variable TARGET_DIR must be defined");
+if (! ELOVATE_TARGET_DIR) {
+    throw Error("environment variable ELOVATE_TARGET_DIR must be defined");
 }
 
-if (! STATIC_DIR) {
-    throw Error("environment variable STATIC_DIR must be defined");
+if (! ELOVATE_STATIC_DIR) {
+    throw Error("environment variable ELOVATE_STATIC_DIR must be defined");
 }
 
 function cleanServer() {
-    return del([path.join(TARGET_DIR, "server/**/*")]);
+    return del([path.join(ELOVATE_TARGET_DIR, "server/**/*")]);
 }
 
 function cleanApi() {
-    return del([path.join(TARGET_DIR, "api/**/*")]);
+    return del([path.join(ELOVATE_TARGET_DIR, "api/**/*")]);
 }
 
 function buildServer() {
@@ -37,21 +37,21 @@ function buildServer() {
             includeContent: false,
             sourceRoot: "../src"
         }))
-        .pipe(gulp.dest(TARGET_DIR));
+        .pipe(gulp.dest(ELOVATE_TARGET_DIR));
 }
 
 function cleanClient() {
-    return del([path.join(STATIC_DIR, "js", "client.js")]);
+    return del([path.join(ELOVATE_STATIC_DIR, "js", "client.js")]);
 }
 
 function buildClient() {
     return gulp.src("src/client/index.ts")
         .pipe(webpack(require("./webpack.config")))
-        .pipe(gulp.dest(path.join(STATIC_DIR, "js")));
+        .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR, "js")));
 }
 
 function cleanLess() {
-    return del([path.join(STATIC_DIR, "css/style.css")]);
+    return del([path.join(ELOVATE_STATIC_DIR, "css/style.css")]);
 }
 
 function buildLess() {
@@ -61,29 +61,29 @@ function buildLess() {
                 path.join(__dirname, "node_modules"),
             ]
         }))
-        .pipe(gulp.dest(path.join(STATIC_DIR, "css")));
+        .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR, "css")));
 }
 
 function cleanTemplates() {
-    return del([path.join(TARGET_DIR, "templates")]);
+    return del([path.join(ELOVATE_TARGET_DIR, "templates")]);
 }
 
 function copyTemplates() {
     return gulp.src("src/templates/*")
-        .pipe(gulp.dest(path.join(TARGET_DIR, "/templates")));
+        .pipe(gulp.dest(path.join(ELOVATE_TARGET_DIR, "/templates")));
 }
 
 function cleanAssets() {
-    return del(["css", "img", "js", "misc"].map(s => path.join(STATIC_DIR, s)));
+    return del(["css", "img", "js", "misc"].map(s => path.join(ELOVATE_STATIC_DIR, s)));
 }
 
 function copyAssets() {
     return gulp.src("assets/**/*")
-        .pipe(gulp.dest(path.join(STATIC_DIR)));
+        .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR)));
 }
 
 function cleanTarget() {
-    return del([path.join(TARGET_DIR, "*")]);
+    return del([path.join(ELOVATE_TARGET_DIR, "*")]);
 }
 
 exports.clean = cleanTarget;

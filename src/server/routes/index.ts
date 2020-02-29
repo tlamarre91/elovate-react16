@@ -74,7 +74,8 @@ router.get("/clearSessions", async (req, res) => {
 });
 
 router.get("/user/:query", async (req, res) => {
-    // TODO: return proper http status code
+    // TODO: return proper http status code, use express-validator
+    // TODO: just do parseInt and use isNaN, ya dingus
     const repo = getRepository(User);
     const template = "user-profile";
     const query = req.params["query"];
@@ -83,11 +84,15 @@ router.get("/user/:query", async (req, res) => {
         res.render(template, { error: "gotta enter an id, sorry" }); // TODO: keyval user query
     } else {
         const re = /^[0-9]*$/;
-        const idStr = query.match(re)[0];
+        const idStr = query.match(re)?.[0] ?? null;
         if (idStr !== null) {
             const id = parseInt(idStr);
             const user = await repo.findOne(id);
-            res.render(template, { user });
+            if (user) {
+                res.render(template, { user });
+            } else {
+                res.render(template, { error: "user not found" });
+            }
         } else {
             res.render(template, { error: "enter a NUMERIC id" }); // TODO: obvious
         }

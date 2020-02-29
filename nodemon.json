@@ -3,5 +3,5 @@
         "dist/server",
         "dist/api"
     ],
-    "delay": 3
+    "delay": 3000
 }

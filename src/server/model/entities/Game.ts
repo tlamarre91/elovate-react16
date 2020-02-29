@@ -17,7 +17,7 @@ import {
 import * as Api from "~shared/api";
 import * as Props from "~shared/props";
 
-import { MappedEntity } from "./MappedEntity";
+import { MappedEntity } from "../MappedEntity";
 import { Match } from "./Match";
 
 @Entity()

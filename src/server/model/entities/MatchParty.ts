@@ -15,7 +15,7 @@ import {
 
 import * as Api from "~shared/api";
 
-import { MappedEntity } from "./MappedEntity";
+import { MappedEntity } from "../MappedEntity";
 import { User } from "./User";
 import { Game } from "./Game";
 import { Group } from "./Group";

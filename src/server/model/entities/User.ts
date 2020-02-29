@@ -1,5 +1,5 @@
 import * as argon from "argon2";
-import { log } from "../log";
+import { log } from "~server/log";
 
 import {
     getRepository,
@@ -20,7 +20,7 @@ import {
 import * as Api from "~shared/api";
 import * as Props from "~shared/props";
 
-import { MappedEntity } from "./MappedEntity";
+import { MappedEntity } from "../MappedEntity";
 import { Group, GroupRepository } from "./Group";
 import { Match, MatchRepository } from "./Match";
 import { ImageAsset, ImageAssetRepository } from "./assets";
@@ -52,7 +52,7 @@ export class User extends MappedEntity<Props.UserProps> {
     @Column({ length: 64, nullable: true })
     email: string;
 
-    @Column()
+    @Column({ default: false })
     emailVerified: boolean;
 
     @Column({ default: false })
@@ -86,7 +86,7 @@ export class UserRepository extends Repository<User> {
                 username: Like(`%${ params.searchProps.username }%`) // TODO: Factor out, check each field in Partial<UserProps>
             });
         } else {
-            const err = `match type not yet implemented: ${ params.searchType }`;
+            const err = `search type not yet implemented: ${ params.searchType }`;
             log.error(err);
             throw Error(err);
         }
