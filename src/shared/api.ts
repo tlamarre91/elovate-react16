@@ -1,11 +1,6 @@
 import winston from "winston";
-/**
- * Classes, interfaces, and values shared between client and server for typesafe API communication
- */
 
-// TODO: get a function in here to take a logger and register it to be available to rest of module
-// TODO: test the following. lol. also improve it. kinda clunky
-
+import * as Model from "~shared/model";
 let log: winston.Logger;
 export function setLogger(logger: winston.Logger) {
     log = logger;
@@ -14,8 +9,6 @@ export function setLogger(logger: winston.Logger) {
 /**
  * Base URLs for API endpoints
  */
-
-import { EntityProps, UserProps, GroupProps, GameProps, MatchProps } from "./props";
 
 // hmmm no no no... can enums reference themselves? hmmmmm. see class ENDPOINT below
 export enum Endpoint {
@@ -176,17 +169,17 @@ export enum SearchType {
 export class UserSearchParams implements UrlQuery {
     // TODO: implement isSubset() for client-side checking.
     // eg: if newParams.isSubset(lastParams) then don't hit API - filter results in client
-    searchProps: Partial<UserProps>;
+    searchProps: Partial<Model.User>;
     searchType: SearchType;
 
-    constructor(searchProps: Partial<UserProps>, searchType: SearchType) {
+    constructor(searchProps: Partial<Model.User>, searchType: SearchType) {
         this.searchProps = searchProps;
         this.searchType = searchType;
     }
 
     static fromQuery(query: any): UserSearchParams {
         // TODO: Is it ok that this totally shits with a malformed query? validate elsewhere, i guess
-        let props: Partial<UserProps> = { ... query }; // TODO: does query.searchType get stuck into props too?
+        let props: Partial<Model.User> = { ... query }; // TODO: should query.searchType get stuck into props too?
         let searchType: SearchType = query["searchType"];
         return new UserSearchParams(props, searchType);
     }
@@ -195,7 +188,7 @@ export class UserSearchParams implements UrlQuery {
         let pairs: [string, string][] = [];
 
         for (let k in this.searchProps) {
-            pairs.push([k, this.searchProps[k as keyof UserProps].toString()]);
+            pairs.push([k, this.searchProps[k as keyof Model.User].toString()]);
         }
 
         pairs.push(["searchType", this.searchType]);

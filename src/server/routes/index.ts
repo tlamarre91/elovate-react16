@@ -27,7 +27,7 @@ import {
     ImageAsset,
     ImageAssetRepository,
     SessionStore
-} from "../model";
+} from "~shared/model";
 
 import { apiRouter } from "./apiRouter";
 

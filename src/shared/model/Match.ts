@@ -15,10 +15,6 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "~shared/api";
-import * as Props from "~shared/props";
-
-import { MappedEntity } from "../MappedEntity";
 import { User } from "./User";
 import { Game } from "./Game";
 import { MatchParty } from "./MatchParty";
@@ -55,23 +51,17 @@ export enum MatchVisibility {
 }
 
 @Entity()
-export class Match extends MappedEntity<Props.MatchProps> {
-    toProps() {
-        return { ... this };
-    }
-
+export class Match {
     @PrimaryGeneratedColumn()
     id: number;
 
     @ManyToOne(type => Game, game => game.matches)
     game: Game;
 
-    //@Column({ default: () => "NOW()" })
-    @Column()
+    @Column({ default: () => "NOW()" })
     changedOn: Date;
     
-    //@Column({ default: () => "NOW()" })
-    @Column()
+    @Column({ default: () => "NOW()" })
     createdOn: Date;
 
     @Column({ nullable: true })

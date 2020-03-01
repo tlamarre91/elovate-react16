@@ -17,10 +17,6 @@ import {
     Like
 } from "typeorm";
 
-import * as Api from "~shared/api";
-import * as Props from "~shared/props";
-
-import { MappedEntity } from "../MappedEntity";
 import { Group, GroupRepository } from "./Group";
 import { Match, MatchRepository } from "./Match";
 import { ImageAsset, ImageAssetRepository } from "./assets";
@@ -28,11 +24,7 @@ import { MatchParty } from "./MatchParty";
 import { Session } from "./Session";
 
 @Entity()
-export class User extends MappedEntity<Props.UserProps> {
-    toProps() {
-        return { ... this, avatarAssetUrl: "TODOOOO" }; // TODO: resolve asset path here
-    }
-
+export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -80,25 +72,17 @@ export class User extends MappedEntity<Props.UserProps> {
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    search(params: Api.UserSearchParams): Promise<User[]> {
-        if (params.searchType === Api.SearchType.ContainsAll) {
-            return this.find({
-                username: Like(`%${ params.searchProps.username }%`) // TODO: Factor out, check each field in Partial<UserProps>
-            });
-        } else {
-            const err = `search type not yet implemented: ${ params.searchType }`;
-            log.error(err);
-            throw Error(err);
-        }
-    }
-
-    createWithProps(props: Props.UserProps): Promise<User> {
-        const user = this.create();
-        user.username = props.username;
-        user.displayName = props.displayName;
-        user.email = props.email;
-        return this.save(user);
-    }
+//    search(params: Api.UserSearchParams): Promise<User[]> {
+//        if (params.searchType === Api.SearchType.ContainsAll) {
+//            return this.find({
+//                username: Like(`%${ params.searchProps.username }%`) // TODO: Factor out, check each field in Partial<UserProps>
+//            });
+//        } else {
+//            const err = `search type not yet implemented: ${ params.searchType }`;
+//            log.error(err);
+//            throw Error(err);
+//        }
+//    }
 
     async getRandom(): Promise<User> {
         const allUsers: User[] = await this.find({ select: ["id"] });

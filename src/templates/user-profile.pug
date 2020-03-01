@@ -1,19 +1,29 @@
 extends base.pug
 
+block title
+    title= `${ user.username } - elovate`
+
 block nav
     p user profile
 
 block content
     if !error
-        div.userProfileContainer
-            div.usernameContainer= user.username
-            div.avatarContainer
+        .userProfileContainer
+            .usernameContainer= user.username
+            .profileTabContainer
+                .profileTabButton
+                    Overview
+                .profileTabButton
+                    Groups
+                .profileTabButton
+                    Detailed history
+            .avatarContainer
                 avatar placeholder
-            div.groupsSectionContainer
-                groups section placeholder
-            div.pinnedItemsContainer
+            .infoSectionContainer
+                info section placeholder
+            .pinnedItemsContainer
                 pinned items placeholder
-            div.matchHistoryContainer
+            .matchHistoryContainer
                 match history container
     else
         p= error

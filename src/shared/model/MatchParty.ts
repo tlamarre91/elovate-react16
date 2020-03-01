@@ -13,17 +13,14 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "~shared/api";
-
-import { MappedEntity } from "../MappedEntity";
 import { User } from "./User";
 import { Game } from "./Game";
 import { Group } from "./Group";
 import { Match } from "./Match";
 
 export enum MatchPartyType {
-    adhoc = "adhoc",
-    premade = "premade", // "team?" "named?" "season?"
+    adhoc = "a",
+    premade = "p"
 }
 
 @Entity()
@@ -69,7 +66,7 @@ export class MatchPartyRepository extends Repository<MatchParty> {
 
         user.matchParties.push(party);
         party.users.push(user);
-        user.save();
+        //user.save(); // TODO: save both sides of the relation!!!
         this.save(party);
     }
 

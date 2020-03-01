@@ -1,6 +1,6 @@
 import * as Orm from "typeorm";
 import { log } from "~server/log";
-import * as Model from "~server/model";
+import * as Model from "~shared/model";
 
 export async function populateTestData() {
     const TEST_USER_COUNT = 2;
@@ -18,7 +18,7 @@ export async function populateTestData() {
     const games: Array<Model.Game> = [];
     for (let i = 0; i < TEST_GAME_COUNT; i += 1) {
         const game = gameRepo.create({ name: `${BASE_GAME_STR}${i}` });
-        game.save();
+        gameRepo.save(game);
         games.push(game);
     }
 
@@ -31,7 +31,7 @@ export async function populateTestData() {
         const displayName = `${BASE_USER_STR}${i} display name`;
         //const user = await userRepo.createWithProps({ username, email, displayName });
         const user = userRepo.create({ username, email, displayName });
-        user.save();
+        userRepo.save(user);
         users.push(user);
     }
 }

@@ -18,14 +18,11 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "~shared/api";
-
 import { Group } from "./Group";
 import { Match } from "./Match";
 
 const ASSET_DIR = process.env.ELOVATE_STATIC_DIR || path.join(appRoot.path, "dist", "public");
 
-@Entity()
 abstract class FileAsset {
     @Column()
     uri: string;

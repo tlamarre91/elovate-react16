@@ -1,10 +1,18 @@
 doctype html
 html
     head
-        title elovate
+        block title
         link(rel="stylesheet", type="text/css" href="/css/style.css")
     body
-        div(id="mainNav", class="nav")
-            block nav
-        block content
+        .pageHeader
+            .logo
+                img(src="/img/elovate.png")
+            .nav
+                a(href="/") Report a match
+                a(href="/")
+                block nav
+        .contentContainer
+            block content
+        .pageFooter
+            page footer
         script(src="/js/client.js")

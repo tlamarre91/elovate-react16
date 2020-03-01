@@ -14,10 +14,10 @@ import * as Util from "~server/util";
 import { log } from "~server/log";
 import * as Api from "~shared/api";
 
-import { connectDb, DbLog } from "~server/db";
+import { connectDb } from "~server/db";
 import routes from "~server/routes";
-import { SessionStore, Session, SessionRepository } from "~server/model/entities/Session";
-import * as Model from "~server/model";
+import { SessionStore, Session, SessionRepository } from "~shared/model/Session";
+import * as Model from "~shared/model";
 
 const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() === "false" ? false : true;
 
@@ -75,7 +75,7 @@ async function main() {
         await connectDb();
         log.info("connected to database");
 
-        if (process.env.ELOVATE_CLEAR_DB) {
+        if (process.env.ELOVATE_CLEAR_DB === "true") {
             const models = [
                 Model.User,
                 Model.Group,

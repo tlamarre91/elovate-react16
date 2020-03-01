@@ -5,6 +5,7 @@ import {
     Repository,
     EntityRepository,
     Entity,
+    BaseEntity,
     Column,
     Index,
     JoinTable,
@@ -14,18 +15,10 @@ import {
     ManyToMany
 } from "typeorm";
 
-import * as Api from "~shared/api";
-import * as Props from "~shared/props";
-
-import { MappedEntity } from "../MappedEntity";
 import { Match } from "./Match";
 
 @Entity()
-export class Game extends MappedEntity<Props.GameProps> {
-    toProps() {
-        return { ... this };
-    }
-
+export class Game {
     @PrimaryGeneratedColumn()
     id: number;
 

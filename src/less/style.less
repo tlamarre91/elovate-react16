@@ -3,15 +3,26 @@
 @import "./variables";
 @import "./userCard";
 
+@fullWidthGrid: ~"1 / 13";
+@leftContentGrid: ~"1 / 3";
+@middleContentGrid: ~"3 / 11";
+@rightContentGrid: ~"11 / 13";
+
+@headerRowGrid: ~"1 / 2";
+@contentRowGrid: ~"2 / 3";
+@footerRowGrid: ~"3 / 4";
+
 body {
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 50px auto 100px;
     background-color: @bgColorOuter;
     font: 90% @fontStack;
     color: @textColor;
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
 }
 
 div {
+    display: grid;
     color: @textColor;
 }
 
@@ -23,33 +34,92 @@ a {
     display: flex;
 }
 
-.adminContainer {
-    display: flex;
-    background-color: @bgColorInner;
+.pageHeader {
+    grid-template-columns: subgrid;
+    grid-row: @headerRowGrid;
+    grid-column: @fullWidthGrid;
+    
+    background-color: @color1Light2;
+
+    .logo {
+        grid-column: @leftContentGrid;
+        padding: 2px;
+    }
+
+    .nav {
+        background-color: @color2;
+        grid-column: @middleContentGrid;
+    }
 }
 
-.uiColumn {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #888;
-    margin-right: 5px;
-    min-width: 400px;
+.pageFooter {
+    grid-template-columns: subgrid;
+    grid-row: @footerRowGrid;
+    grid-column: @fullWidthGrid;
+
+    background-color: @color1Dark2;
 }
 
-.uiElement {
-    background-color: @bgColorInner;
-    border: 1px solid #ccc;
-    margin: 5px;
-    padding: 5px;
-    min-height: 30px;
+.contentContainer {
+    grid-template-columns: subgrid;
+    grid-row: @contentRowGrid;
+    grid-column: @fullWidthGrid;
 }
 
-input {
-    color: @textColor;
-}
+//.adminContainer { /* make floating, absolute pos */
+//    display: flex;
+//    background-color: @bgColorInner;
+//}
+//
+//.uiColumn {
+//    display: flex;
+//    flex-direction: column;
+//    border: 1px solid #888;
+//    margin-right: 5px;
+//    min-width: 400px;
+//}
+//
+//.uiElement {
+//    background-color: @bgColorInner;
+//    border: 1px solid #ccc;
+//    margin: 5px;
+//    padding: 5px;
+//    min-height: 30px;
+//}
+//
+//input {
+//    color: @textColor;
+//}
 
 .userProfileContainer {
+    grid-template-columns: subgrid;
+    grid-template-rows: 100px auto;
+
     .usernameContainer {
+        grid-column: @leftContentGrid;
+        grid-row: ~"1 / 2";
+        background-color: @color1;
+    }
+
+    .profileTabContainer {
+        grid-column: @middleContentGrid;
+        grid-row: ~"1 / 2";
+    }
+
+    .avatarContainer {
+        background-color: @color2;
+    }
+
+    .infoSectionContainer {
+        grid-column: @leftContentGrid;
+        background-color: @color3;
+    }
+
+    .pinnedItemsContainer {
+        background-color: @color2;
+    }
+
+    .matchHistoryContainer {
         background-color: @color1;
     }
 }
