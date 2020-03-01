@@ -15,4 +15,6 @@ import {
 
 @Entity()
 export class GroupUser {
+    @PrimaryGeneratedColumn()
+    id: number;
 }
