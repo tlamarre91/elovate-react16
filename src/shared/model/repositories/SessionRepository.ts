@@ -1,37 +1,11 @@
 import { Store } from "express-session";
-import {
-    getRepository,
-    Repository,
-    Entity,
-    EntityRepository,
-    Index,
-    Column,
-    PrimaryColumn,
-    PrimaryGeneratedColumn,
-    ManyToOne,
-    LessThan
-} from "typeorm";
+import * as Orm from "typeorm";
 
 import { log } from "~server/log";
-import { User } from "./User";
+import { Session } from "../entities";
 
-@Entity()
-export class Session {
-    @PrimaryColumn()
-    sid: string;
-
-    @Column()
-    expiresAt: number;
-
-    @Column({ type: "jsonb" })
-    data: any;
-
-    @ManyToOne(type => User, user => user.loginSessions)
-    user: User;
-}
-
-@EntityRepository(Session)
-export class SessionRepository extends Repository<Session> {
+@Orm.EntityRepository(Session)
+export class SessionRepository extends Orm.Repository<Session> {
 }
 
 export interface SessionStoreOpts {
@@ -60,7 +34,7 @@ export class SessionStore extends Store {
     clearExpiredSessions = (callback?: (error: any) => void) => {
         const timestamp = Math.round(new Date().getTime() / 1000);
         this.repository
-            .delete({ expiresAt: LessThan(timestamp) })
+            .delete({ expiresAt: Orm.LessThan(timestamp) })
             .then(() => {
                 if (callback) callback(null);
             })

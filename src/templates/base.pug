@@ -6,11 +6,12 @@ html
     body
         .pageHeader
             .logo
-                img(src="/img/elovate.png")
-            .nav
-                a(href="/") Report a match
                 a(href="/")
+                    img(src="/img/elovate.png" alt="elovate home")
+            nav
                 block nav
+                    a(href="/") Report a match
+                    a(href="/") Other nav link
         .contentContainer
             block content
         .pageFooter

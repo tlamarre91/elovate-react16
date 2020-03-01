@@ -5,4 +5,4 @@ export * from "./Game";
 export * from "./Group";
 export * from "./MatchParty";
 export * from "./Session";
-export * from "./assets";
+export * from "./Asset";

@@ -12,16 +12,13 @@ import {
     Result
 } from "express-validator";
 
-import {
-    getCustomRepository,
-    Like
-} from "typeorm";
+import * as Orm from "typeorm";
 
 import { LoremIpsum } from "lorem-ipsum";
 
 import { log } from "../log";
 
-import * as Model from "~shared/model";
+import * as Entity from "~shared/model/entities";
 
 import * as Api from "~shared/api";
 

@@ -26,10 +26,6 @@ div {
     color: @textColor;
 }
 
-a {
-    text-decoration: none;
-}
-
 .appContainer {
     display: flex;
 }
@@ -39,16 +35,36 @@ a {
     grid-row: @headerRowGrid;
     grid-column: @fullWidthGrid;
     
-    background-color: @color1Light2;
+    background-color: @bgColorDark;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
 
     .logo {
         grid-column: @leftContentGrid;
         padding: 2px;
     }
 
-    .nav {
-        background-color: @color2;
+    nav {
+        display: flex;
+        flex-direction: row;
         grid-column: @middleContentGrid;
+
+        a {
+            transition: all 0.2s ease;
+            font: 100% @fontStack;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 6px;
+            color: @textColorLight2;
+            background-color: lighten(@bgColorDark, 15%);
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            background-color: lighten(@bgColorDark, 30%);
+        }
     }
 }
 

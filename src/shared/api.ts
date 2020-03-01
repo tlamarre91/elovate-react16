@@ -1,6 +1,6 @@
 import winston from "winston";
 
-import * as Model from "~shared/model";
+import * as Entity from "~shared/model/entities";
 let log: winston.Logger;
 export function setLogger(logger: winston.Logger) {
     log = logger;
@@ -169,17 +169,17 @@ export enum SearchType {
 export class UserSearchParams implements UrlQuery {
     // TODO: implement isSubset() for client-side checking.
     // eg: if newParams.isSubset(lastParams) then don't hit API - filter results in client
-    searchProps: Partial<Model.User>;
+    searchProps: Partial<Entity.User>;
     searchType: SearchType;
 
-    constructor(searchProps: Partial<Model.User>, searchType: SearchType) {
+    constructor(searchProps: Partial<Entity.User>, searchType: SearchType) {
         this.searchProps = searchProps;
         this.searchType = searchType;
     }
 
     static fromQuery(query: any): UserSearchParams {
         // TODO: Is it ok that this totally shits with a malformed query? validate elsewhere, i guess
-        let props: Partial<Model.User> = { ... query }; // TODO: should query.searchType get stuck into props too?
+        let props: Partial<Entity.User> = { ... query }; // TODO: should query.searchType get stuck into props too?
         let searchType: SearchType = query["searchType"];
         return new UserSearchParams(props, searchType);
     }
@@ -188,7 +188,7 @@ export class UserSearchParams implements UrlQuery {
         let pairs: [string, string][] = [];
 
         for (let k in this.searchProps) {
-            pairs.push([k, this.searchProps[k as keyof Model.User].toString()]);
+            pairs.push([k, this.searchProps[k as keyof Entity.User].toString()]);
         }
 
         pairs.push(["searchType", this.searchType]);

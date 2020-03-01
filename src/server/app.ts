@@ -16,8 +16,8 @@ import * as Api from "~shared/api";
 
 import { connectDb } from "~server/db";
 import routes from "~server/routes";
-import { SessionStore, Session, SessionRepository } from "~shared/model/Session";
-import * as Model from "~shared/model";
+import { SessionStore, SessionRepository } from "~shared/model/repositories";
+import * as Entity from "~shared/model/entities";
 
 const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() === "false" ? false : true;
 
@@ -75,17 +75,17 @@ async function main() {
         await connectDb();
         log.info("connected to database");
 
-        if (process.env.ELOVATE_CLEAR_DB === "true") {
-            const models = [
-                Model.User,
-                Model.Group,
-                Model.Game,
-                Model.MatchParty,
-                Model.Match,
-            ]
+        //if (process.env.ELOVATE_CLEAR_DB === "true") {
+        //    const entities = [
+        //        Entity.User,
+        //        Entity.Group,
+        //        Entity.Game,
+        //        Entity.MatchParty,
+        //        Entity.Match,
+        //    ]
 
-            models.forEach(async m => await Orm.getRepository(m).clear());
-        }
+        //    entities.forEach(async m => await Orm.getRepository(m).clear());
+        //}
 
         if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
             Util.populateTestData();

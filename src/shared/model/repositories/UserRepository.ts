@@ -1,77 +1,10 @@
+import * as Orm from "typeorm";
 import * as argon from "argon2";
-import { log } from "~server/log";
 
-import {
-    getRepository,
-    Repository,
-    EntityRepository,
-    BaseEntity,
-    Entity,
-    Column,
-    Index,
-    JoinTable,
-    PrimaryGeneratedColumn,
-    ManyToOne,
-    OneToMany,
-    ManyToMany,
-    Like
-} from "typeorm";
+import { User } from "../entities";
 
-import { Group, GroupRepository } from "./Group";
-import { Match, MatchRepository } from "./Match";
-import { ImageAsset, ImageAssetRepository } from "./assets";
-import { MatchParty } from "./MatchParty";
-import { Session } from "./Session";
-
-@Entity()
-export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column({ default: () => "NOW()" })
-    dateCreated: Date;
-
-    @ManyToOne(type => ImageAsset)
-    avatarAsset: ImageAsset;
-
-    @Index({ unique: true })
-    @Column({ length: 64, nullable: true })
-    username: string;
-
-    @Column({ length: 64 })
-    displayName: string;
-    
-    @Column({ length: 64, nullable: true })
-    email: string;
-
-    @Column({ default: false })
-    emailVerified: boolean;
-
-    @Column({ default: false })
-    hasAccount: boolean;
-
-    @Column({ default: false })
-    receivesEmail: boolean;
-
-    @Column({ default: false })
-    isPublic: boolean;
-
-    @Column({ length: 128, nullable: true })
-    passwordDigest: string;
-
-    @ManyToMany(type => Group, group => group.members)
-    groups: Group[];
-
-    @OneToMany(type => Session, session => session.user)
-    loginSessions: Promise<Session[]>;
-
-    @ManyToMany(type => MatchParty, matchParty => matchParty.users, { cascade: true })
-    @JoinTable()
-    matchParties: MatchParty[];
-}
-
-@EntityRepository(User)
-export class UserRepository extends Repository<User> {
+@Orm.EntityRepository(User)
+export class UserRepository extends Orm.Repository<User> {
 //    search(params: Api.UserSearchParams): Promise<User[]> {
 //        if (params.searchType === Api.SearchType.ContainsAll) {
 //            return this.find({
@@ -129,3 +62,4 @@ export class UserRepository extends Repository<User> {
 //        }).then(u => u.matches);
 //    }
 }
+

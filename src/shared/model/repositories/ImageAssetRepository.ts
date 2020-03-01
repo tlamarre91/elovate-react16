@@ -4,44 +4,14 @@ import appRoot from "app-root-path";
 import jdenticon from "jdenticon";
 import winston from "winston";
 
-import {
-    getRepository,
-    Repository,
-    EntityRepository,
-    Entity,
-    Column,
-    Index,
-    JoinTable,
-    PrimaryGeneratedColumn,
-    ManyToOne,
-    OneToMany,
-    ManyToMany
-} from "typeorm";
+import * as Orm from "typeorm";
 
-import { Group } from "./Group";
-import { Match } from "./Match";
+import { ImageAsset } from "../entities/Asset";
 
 const ASSET_DIR = process.env.ELOVATE_STATIC_DIR || path.join(appRoot.path, "dist", "public");
 
-abstract class FileAsset {
-    @Column()
-    uri: string;
-}
-
-@Entity()
-export class ImageAsset extends FileAsset {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column()
-    height: number;
-
-    @Column({ type: "integer" })
-    width: number;
-}
-
-@EntityRepository(ImageAsset)
-export class ImageAssetRepository extends Repository<ImageAsset> {
+@Orm.EntityRepository(ImageAsset)
+export class ImageAssetRepository extends Orm.Repository<ImageAsset> {
     static identiconDir = path.join("img", "identicons");
     static identiconUri(token: string, size: number): string {
          return `${this.identiconDir}/${token}-${size}x${size}.png`;

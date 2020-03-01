@@ -3,27 +3,20 @@ extends base.pug
 block title
     title= `${ user.username } - elovate`
 
-block nav
-    p user profile
+block append nav
+    a(href="/user") Users
 
 block content
     if !error
         .userProfileContainer
             .usernameContainer= user.username
             .profileTabContainer
-                .profileTabButton
-                    Overview
-                .profileTabButton
-                    Groups
-                .profileTabButton
-                    Detailed history
-            .avatarContainer
-                avatar placeholder
-            .infoSectionContainer
-                info section placeholder
-            .pinnedItemsContainer
-                pinned items placeholder
-            .matchHistoryContainer
-                match history container
+                .profileTabButton Overview
+                .profileTabButton Groups
+                .profileTabButton Detailed history
+            .avatarContainer avatar placeholder
+            .infoSectionContainer info section placeholder
+            .pinnedItemsContainer pinned items placeholder
+            .matchHistoryContainer match history container
     else
         p= error

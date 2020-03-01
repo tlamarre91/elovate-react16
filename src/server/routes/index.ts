@@ -11,23 +11,19 @@ import {
     Result
 } from "express-validator";
 
-import {
-    getRepository,
-    getCustomRepository,
-    Like
-} from "typeorm";
+import * as Orm from "typeorm";
 
 import { LoremIpsum } from "lorem-ipsum";
 
-import { app } from "../app";
-import { log } from "../log";
+import { app } from "~server/app";
+import { log } from "~server/log";
 import {
     User,
     Match,
-    ImageAsset,
-    ImageAssetRepository,
-    SessionStore
-} from "~shared/model";
+    ImageAsset
+} from "~shared/model/entities";
+
+import { ImageAssetRepository, SessionStore } from "~shared/model/repositories";
 
 import { apiRouter } from "./apiRouter";
 
@@ -43,13 +39,13 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/identicon/:token", async (req, res) => {
-    const repo = getCustomRepository(ImageAssetRepository);
+    const repo = Orm.getCustomRepository(ImageAssetRepository);
     const identicon: ImageAsset = await repo.getIdenticon(req.params["token"], 50);
     res.json({ made: identicon.uri });
 });
 
 router.get("/identicons", async (req, res) => {
-    const repo = getCustomRepository(ImageAssetRepository);
+    const repo = Orm.getCustomRepository(ImageAssetRepository);
     const identicons: ImageAsset[] = await repo.find();
     res.render("identicon-test", { assets: identicons });
 });
@@ -76,7 +72,7 @@ router.get("/clearSessions", async (req, res) => {
 router.get("/user/:query", async (req, res) => {
     // TODO: return proper http status code, use express-validator
     // TODO: just do parseInt and use isNaN, ya dingus
-    const repo = getRepository(User);
+    const repo = Orm.getRepository(User);
     const template = "user-profile";
     const query = req.params["query"];
 
