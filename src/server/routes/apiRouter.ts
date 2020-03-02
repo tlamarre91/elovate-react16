@@ -29,13 +29,28 @@ apiRouter.post("/auth", async (req, res) => {
         const password = req.body["password"];
         const userRepo = Orm.getCustomRepository(UserRepository);
         const user = await userRepo.find({ username }).then(res => res[0]);
+        const isWebClient = req.body["client"] === "web";
         if (user) {
             if (await userRepo.basicAuth(user, password)) {
-                res.cookie("elovateJwt", jwt.sign({ uid: user.id, loginTime: new Date() }, req.app.get("secret")));
-                res.json(new Api.Response(true, null, { result: `logged in as ${username}` }));
+                // TODO CRITICAL: enforce use of argon or similar signing algo
+                const newToken = jwt.sign({ uid: user.id, loginTime: new Date() }, req.app.get("secret"))
+                res.cookie("elovateJwt", newToken, { signed: true });
+                if (isWebClient) {
+                    if (req.query["redirect"]) {
+                        res.redirect(req.query["redirect"]); // TODO: nice fancy interactive login
+                    } else {
+                        res.redirect("/");
+                    }
+                } else {
+                    res.json(new Api.Response(true, null, { result: `authenticated as ${username}` }));
+                }
             } else {
                 res.status(403);
-                res.json(new Api.Response(false, `incorrect password for user: ${ username }`));
+                if (isWebClient) {
+                    res.redirect(`/login?msg=${ encodeURIComponent("username/password combination was invalid") }`);
+                } else {
+                    res.json(new Api.Response(false, `invalid username/password`));
+                }
             }
         } else {
             res.status(404);
@@ -47,7 +62,8 @@ apiRouter.post("/auth", async (req, res) => {
     }
 })
 
-apiRouter.post(`/${Api.Resource.User}/setPassword`, async (req, res) => {
+const userRouter = Router();
+userRouter.post(`/setPassword`, async (req, res) => {
     const { username, password } = req.body;
     const userRepo = Orm.getCustomRepository(UserRepository);
     try {
@@ -62,6 +78,9 @@ apiRouter.post(`/${Api.Resource.User}/setPassword`, async (req, res) => {
         res.json(new Api.Response(false, err));
     }
 });
+
+apiRouter.use(`/${Api.Resource.User}`, userRouter);
+
 
 //apiRouter.get(Api.Endpoint.SearchUsers, sanitizeQuery(["username"]).escape(), async (req, res) => {
 //    const errors = validationResult(req);

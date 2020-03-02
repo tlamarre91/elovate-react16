@@ -75,7 +75,7 @@ function copyTemplates() {
 
 function cleanAssets() {
     // note: does not clean public/js
-    return del(["css", "img", "misc"].map(s => path.join(ELOVATE_STATIC_DIR, s)));
+    return del(["img", "misc"].map(s => path.join(ELOVATE_STATIC_DIR, s)));
 }
 
 function copyAssets() {

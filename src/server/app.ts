@@ -7,6 +7,7 @@ import createError from "http-errors";
 import morgan from "morgan";
 import path from "path";
 import jwt from "jsonwebtoken";
+import fav from "serve-favicon";
 import * as Orm from "typeorm";
 import dotenv from "dotenv";
 dotenv.config();
@@ -46,7 +47,6 @@ function exitApp(reason: string, code: number) {
 
 async function main() {
     Api.setLogger(log);
-    app.set("secret", process.env.ELOVATE_SESSION_SECRET);
     const env = process.env.NODE_ENV;
 
     const logOutput = env === Env.DEV ? "dev" : "short";
@@ -58,14 +58,6 @@ async function main() {
         }
     }));
 
-    app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(bodyParser.json());
-    
-    app.use(cookieParser(process.env.ELOVATE_SESSION_SECRET));
-
-    app.set("views", path.join(__dirname, "..", "templates"));
-    app.set("view engine", "pug");
-
     if (env === Env.DEV && ELOVATE_SERVE_STATIC) {
         try {
             let assetDir = process.env.ELOVATE_ASSET_DIR ?? path.join("dist", "public");
@@ -73,12 +65,23 @@ async function main() {
                 assetDir = path.join(appRoot.toString(), assetDir);
             }
             app.use(express.static(assetDir));
+            app.use(fav(path.join(assetDir, "img", "elovate-16x16.png"))); // TODO: make less terrible
             log.info("serving static content");
         } catch (err) {
-            log.error("err");
+            log.error(err);
             exitApp("could not serve static content", 1);
         }
     }
+
+    app.set("secret", process.env.ELOVATE_SESSION_SECRET);
+
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
+    
+    app.use(cookieParser(process.env.ELOVATE_SESSION_SECRET));
+
+    app.set("views", path.join(__dirname, "..", "templates"));
+    app.set("view engine", "pug");
 
     try {
         await connectDb();
@@ -93,11 +96,33 @@ async function main() {
         exitApp("could not connect to database", 1);
     }
 
-    // basic auth middleware
-    app.use((req, res, next) => {
+    // user session middleware // TODO: factor out into module
+    app.set("userRepo", Orm.getCustomRepository(UserRepository));
+    app.use(async (req, res, next) => {
         const jwtCookie = req.signedCookies["elovateJwt"];
         log.info(`jwt cookie: ${ JSON.stringify(jwtCookie) }`);
-        next();
+        if (jwtCookie) {
+            jwt.verify(jwtCookie, app.get("secret"), async (err: jwt.VerifyErrors, payload: { [key: string]: string }) => {
+                if (err) {
+                    log.warn(`jwt.verify: ${err}`);
+                } else {
+                    try {
+                        const userRepo = app.get("userRepo") as UserRepository;
+                        const user = await userRepo.findOne(parseInt(payload["uid"]));
+                        log.info(`middleware sees user ${ user.username }`);
+                        if (user) {
+                            req.user = user;
+                        }
+                    } catch (err) {
+                        log.warn(`ElovateUserMiddleware: ${err}`);
+                    }
+                }
+                next();
+            });
+        } else {
+            log.info("request passed with no JWT");
+            next();
+        }
     });
 
     app.use(routes);

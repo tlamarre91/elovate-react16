@@ -39,6 +39,11 @@ router.get("/", async (req, res) => {
     res.render("dev-test", { session });
 });
 
+router.get("/login", async (req, res) => {
+    const user = req.user;
+    res.render("login", { user });
+});
+
 router.get("/identicon/:token", async (req, res) => {
     const repo = Orm.getCustomRepository(ImageAssetRepository);
     const identicon: ImageAsset = await repo.getIdenticon(req.params["token"], 50);
