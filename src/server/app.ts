@@ -2,10 +2,11 @@ import "module-alias/register"; // required to allow module path aliases (i.e. "
 import appRoot from "app-root-path";
 import bodyParser from "body-parser";
 import express from "express";
+import cookieParser from "cookie-parser";
 import createError from "http-errors";
 import morgan from "morgan";
 import path from "path";
-import session from "express-session";
+import jwt from "jsonwebtoken";
 import * as Orm from "typeorm";
 import dotenv from "dotenv";
 dotenv.config();
@@ -16,10 +17,16 @@ import * as Api from "~shared/api";
 
 import { connectDb } from "~server/db";
 import routes from "~server/routes";
-import { SessionStore, SessionRepository } from "~shared/model/repositories";
+// import { SessionStore, SessionRepository } from "~shared/model/repositories";
 import * as Entity from "~shared/model/entities";
+import { UserRepository } from "~shared/model/repositories";
 
 const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() === "false" ? false : true;
+
+export interface JwtPayload {
+    uid: number;
+    loginTime: Date;
+}
 
 export enum Env {
     DEV = "development",
@@ -37,9 +44,9 @@ function exitApp(reason: string, code: number) {
     process.exit(code);
 };
 
-
 async function main() {
     Api.setLogger(log);
+    app.set("secret", process.env.ELOVATE_SESSION_SECRET);
     const env = process.env.NODE_ENV;
 
     const logOutput = env === Env.DEV ? "dev" : "short";
@@ -53,6 +60,8 @@ async function main() {
 
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
+    
+    app.use(cookieParser(process.env.ELOVATE_SESSION_SECRET));
 
     app.set("views", path.join(__dirname, "..", "templates"));
     app.set("view engine", "pug");
@@ -75,18 +84,7 @@ async function main() {
         await connectDb();
         log.info("connected to database");
 
-        //if (process.env.ELOVATE_CLEAR_DB === "true") {
-        //    const entities = [
-        //        Entity.User,
-        //        Entity.Group,
-        //        Entity.Game,
-        //        Entity.MatchParty,
-        //        Entity.Match,
-        //    ]
-
-        //    entities.forEach(async m => await Orm.getRepository(m).clear());
-        //}
-
+        // TODO: make an external script to do this (and to clear DB)
         if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
             Util.populateTestData();
         }
@@ -95,43 +93,12 @@ async function main() {
         exitApp("could not connect to database", 1);
     }
 
-    const dayInSeconds = 60 * 60 * 24;
-    let sessionStore: SessionStore;
-    try {
-        sessionStore = new SessionStore({
-            repository: Orm.getCustomRepository(SessionRepository),
-            ttl: dayInSeconds,
-            expirationInterval: dayInSeconds * 1000,
-            clearExpired: true
-        });
-        log.info("initialized session store");
-    } catch (err) {
-        log.error(err);
-        exitApp("could not initialize session store", 1);
-    }
-
-    if (! process.env.ELOVATE_SESSION_SECRET) {
-        exitApp("ELOVATE_SESSION_SECRET environment variable must be defined", 1);
-    } else {
-        try {
-            app.use(session({
-                cookie: {
-                    httpOnly: true,
-                    //secure: true
-                    secure: false // TODO: this will need rework when behind nginx
-                },
-                name: "elovate.sid",
-                saveUninitialized: false,
-                resave: false,
-                secret: process.env.ELOVATE_SESSION_SECRET,
-                store: sessionStore
-            }));
-            app.set("sessionStore", sessionStore);
-        } catch (err) {
-            log.error(err);
-            exitApp("could not add session middleware", 1);
-        }
-    }
+    // basic auth middleware
+    app.use((req, res, next) => {
+        const jwtCookie = req.signedCookies["elovateJwt"];
+        log.info(`jwt cookie: ${ JSON.stringify(jwtCookie) }`);
+        next();
+    });
 
     app.use(routes);
 

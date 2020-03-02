@@ -96,8 +96,8 @@ exports.less = gulp.series(cleanLess, buildLess);
 
 exports.watch = cb => {
     const opts = { ignoreInitial: false };
-    gulp.watch(["src/server/**/*", "src/api/**/*"], opts, exports.server);
-    gulp.watch(["src/client/**/*", "src/api/**/*"], opts, exports.client);
+    gulp.watch(["src/server/**/*", "src/shared/**/*"], opts, exports.server);
+    gulp.watch(["src/client/**/*", "src/shared/**/*"], opts, exports.client);
     gulp.watch(["src/templates/**/*"], opts, exports.templates);
     gulp.watch(["src/less/**/*"], opts, exports.less);
     gulp.watch(["assets/**/*"], opts, exports.assets);

@@ -6,37 +6,24 @@ export function setLogger(logger: winston.Logger) {
     log = logger;
 }
 
-/**
- * Base URLs for API endpoints
- */
+export const API_ROOT = "/api/v1"
 
-// hmmm no no no... can enums reference themselves? hmmmmm. see class ENDPOINT below
-export enum Endpoint {
-    SearchUsers = "/searchUsers",
-    AddUser = "/addUser",
-    DeleteUser = "/deleteUser"
+export enum Resource {
+    User = "users",
+    Group = "groups",
+    Match = "matches"
 }
 
-//// Maybe just give up and use strings as endpoints... this might be overkill
-//// another alternative: `${enum for entity types}/${enum for method}`
-//export type Methods = "search" | "add" | "delete" | "update";
-//export class ENDPOINT {
-//    static Users(method?: Methods) {
-//        const methodStr = method ? `/${method}` : "";
-//        return `users${methodStr}`;
-//    }
-//}
-
-export class ApiGet<Receive> {
+export class Get<Receive> {
     url: string;
     origin: string;
 
-    constructor(origin: string, endpoint: Endpoint) {
-        this.url = `/api${ endpoint }`;
+    constructor(origin: string, resource: Resource, query: string) {
+        this.url = `${API_ROOT}/${resource}/${query}`;
         this.origin = origin;
     }
 
-    async execute(): Promise<ApiResponse<Receive>> {
+    async execute(): Promise<Response<Receive>> {
         log?.info("running a get (TODO: remove. just testing)");
         let fetchParams: any = {
             method: "GET",
@@ -48,58 +35,26 @@ export class ApiGet<Receive> {
 
         return fetch(this.url, fetchParams)
             .then(response => response.json())
-            .then(obj => obj as ApiResponse<Receive>); // TODO: not enough to just assert type. need validation.
+            .then(obj => obj as Response<Receive>); // TODO: not enough to just assert type. need validation.
     }
 }
 
-export class ApiQuery<Receive> {
-    url: string;
-    origin: string;
-
-    constructor(origin: string, endpoint: Endpoint, query: UrlQuery) {
-        this.origin = origin;
-        this.url = `/api${ endpoint }${ query.toQueryStr() }`;
-    }
-
-    async execute(): Promise<ApiResponse<Receive>> {
-        let fetchParams: any = {
-            method: "GET",
-            credentials: "same-origin",
-            headers: {
-                Accept: "application/json",
-            }
-        };
-
-        return fetch(this.url, fetchParams)
-            .then(response => response.json())
-            .then(obj => {
-                if (obj["success"] === true) {
-                    return obj as ApiResponse<Receive>;
-                }
-            });
-    }
-}
-
-/**
- * Representation of a client => server API call via HTTP POST
- * sending a Send instance and expecting a Receive instance
- */
-export class ApiPost<Send, Receive> {
+export class Post<Send, Receive> {
     url: string;
     origin: string;
     body: string;
 
-    constructor(origin: string, endpoint: Endpoint, obj: Send) {
-        this.url = `/api${ endpoint }`; // TODO: client-side sanitize?
+    constructor(origin: string, resource: Resource, obj: Send) {
+        this.url = `${API_ROOT}/${resource}`; // TODO: client-side sanitize?
         this.origin = origin;
         this.body = JSON.stringify({
             origin,
-            targetEndpoint: endpoint,
+            targetResource: resource,
             data: obj
         });
     }
 
-    async execute(): Promise<ApiResponse<Receive>> {
+    async execute(): Promise<Response<Receive>> {
         let fetchParams: any = {
             method: "POST",
             credentials: "same-origin",
@@ -112,86 +67,64 @@ export class ApiPost<Send, Receive> {
 
         return fetch(this.url, fetchParams)
             .then(response => response.json())
-            .then(obj => obj as ApiResponse<Receive>);
+            .then(obj => obj as Response<Receive>);
     }
 }
 
-/**
- * Representation of a server => client API response, containing an error or an instance of T
- * TODO: maybe change to class - have error | T union type and infer success instead of deciding
- * which property to refer to based on value of success
- */
-export interface ApiResponse<T> {
+export class Response<T> {
     success: boolean;
     error: string | null;
     data: T | null;
-}
 
-export class ApiSuccess<T> implements ApiResponse<T> {
-    success: boolean;
-    error: string | null;
-    data: T | null;
-    constructor(data: T) {
-        this.success = true;
-        this.error = null;
+    constructor(success: boolean, error?: string, data?: T) {
+        this.success = success;
+        this.error = error;
         this.data = data;
     }
 }
 
-// NOTE: might need to just make this a method to construct a response. or whatever
-export class ApiError<T> implements ApiResponse<T> {
-    success: boolean;
-    error: string | null;
-    data: T | null;
-    constructor(errorMsg: string) {
-        this.success = false;
-        this.error = errorMsg;
-        this.data =  null;
-    }
-}
-
-function queryString(keyVals: [string, string][]): string {
-    // TODO: ensure reserved symbols are escaped
-    const str: string = '?' + keyVals.map(pair => `${ pair[0] }=${ pair[1] }`).join("&");
-    return str;
-}
-
-interface UrlQuery {
-    toQueryStr(): string;
-}
-
-export enum SearchType {
-    Exact = "exact",
-    ContainsAll = "containsAll",
-    ContainsAny = "containsAny",
-}
-
-export class UserSearchParams implements UrlQuery {
-    // TODO: implement isSubset() for client-side checking.
-    // eg: if newParams.isSubset(lastParams) then don't hit API - filter results in client
-    searchProps: Partial<Entity.User>;
-    searchType: SearchType;
-
-    constructor(searchProps: Partial<Entity.User>, searchType: SearchType) {
-        this.searchProps = searchProps;
-        this.searchType = searchType;
-    }
-
-    static fromQuery(query: any): UserSearchParams {
-        // TODO: Is it ok that this totally shits with a malformed query? validate elsewhere, i guess
-        let props: Partial<Entity.User> = { ... query }; // TODO: should query.searchType get stuck into props too?
-        let searchType: SearchType = query["searchType"];
-        return new UserSearchParams(props, searchType);
-    }
-
-    toQueryStr(): string {
-        let pairs: [string, string][] = [];
-
-        for (let k in this.searchProps) {
-            pairs.push([k, this.searchProps[k as keyof Entity.User].toString()]);
-        }
-
-        pairs.push(["searchType", this.searchType]);
-        return queryString(pairs);
-    }
-}
+//function queryString(keyVals: [string, string][]): string {
+//    // TODO: ensure reserved symbols are escaped
+//    const str: string = '?' + keyVals.map(pair => `${ pair[0] }=${ pair[1] }`).join("&");
+//    return str;
+//}
+//
+//interface UrlQuery {
+//    toQueryStr(): string;
+//}
+//
+//export enum SearchType {
+//    Exact = "exact",
+//    ContainsAll = "containsAll",
+//    ContainsAny = "containsAny",
+//}
+//
+//export class UserSearchParams implements UrlQuery {
+//    // TODO: implement isSubset() for client-side checking.
+//    // eg: if newParams.isSubset(lastParams) then don't hit API - filter results in client
+//    searchProps: Partial<Entity.User>;
+//    searchType: SearchType;
+//
+//    constructor(searchProps: Partial<Entity.User>, searchType: SearchType) {
+//        this.searchProps = searchProps;
+//        this.searchType = searchType;
+//    }
+//
+//    static fromQuery(query: any): UserSearchParams {
+//        // TODO: Is it ok that this totally shits with a malformed query? validate elsewhere, i guess
+//        let props: Partial<Entity.User> = { ... query }; // TODO: should query.searchType get stuck into props too?
+//        let searchType: SearchType = query["searchType"];
+//        return new UserSearchParams(props, searchType);
+//    }
+//
+//    toQueryStr(): string {
+//        let pairs: [string, string][] = [];
+//
+//        for (let k in this.searchProps) {
+//            pairs.push([k, this.searchProps[k as keyof Entity.User].toString()]);
+//        }
+//
+//        pairs.push(["searchType", this.searchType]);
+//        return queryString(pairs);
+//    }
+//}

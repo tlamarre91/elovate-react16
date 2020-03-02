@@ -2,7 +2,7 @@ import * as Orm from "typeorm";
 import { log } from "~server/log";
 
 
-import { Group, Match, MatchParty, ImageAsset, Session } from ".";
+import { Group, Match, MatchParty, ImageAsset } from ".";
 
 @Orm.Entity()
 export class User {
@@ -22,6 +22,7 @@ export class User {
     @Orm.Column({ length: 64 })
     displayName: string;
     
+    @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
     email: string;
 
@@ -43,8 +44,8 @@ export class User {
     @Orm.ManyToMany(type => Group, group => group.members)
     groups: Group[];
 
-    @Orm.OneToMany(type => Session, session => session.user)
-    loginSessions: Promise<Session[]>;
+//    @Orm.OneToMany(type => Session, session => session.user)
+//    loginSessions: Promise<Session[]>;
 
     @Orm.ManyToMany(type => MatchParty, matchParty => matchParty.users, { cascade: true })
     @Orm.JoinTable()

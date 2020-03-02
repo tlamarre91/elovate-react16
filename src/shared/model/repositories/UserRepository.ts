@@ -22,13 +22,40 @@ export class UserRepository extends Orm.Repository<User> {
         return allUsers[Math.floor(Math.random() * allUsers.length)];
     }
 
-    async verifyPassword(user: User, password: string): Promise<boolean> {
+//    async verifyPassword(user: User, password: string): Promise<boolean> {
+//        if (! user.passwordDigest) {
+//            throw Error(`user (${ user.email }) has no password set`);
+//        } else {
+//            return argon.verify(user.passwordDigest, password);
+//        }
+//    }
+
+    async basicAuth(user: User, password: string): Promise<boolean> {
         if (! user.passwordDigest) {
-            throw Error(`user (${ user.email }) has no password set`);
-        } else {
-            return argon.verify(user.passwordDigest, password);
-        }
+            throw `user ${ user.username } has no password`;
+        } else return await argon.verify(user.passwordDigest, password) 
     }
+
+    //async basicAuth(username: string, password: string): Promise<User> {
+    //    try {
+    //    const user: User = await this.find({ where: { username } })
+    //        .then(r => r[0])
+    //        .catch(err => {
+    //            throw err;
+    //        });
+    //        if (! user) {
+    //            throw `user not found: ${username}`;
+    //        } else if (! user.passwordDigest) {
+    //            throw `user ${ username } has no password set`;
+    //        } else if (await argon.verify(user.passwordDigest, password)) {
+    //            return user;
+    //        } else {
+    //            throw `invalid password for user ${username}`;
+    //        }
+    //    } catch (err) {
+    //        throw `basicAuth: ${err}`;
+    //    }
+    //}
 
     /*
      * set a user's password. NOTE: validation must be performed prior to calling
