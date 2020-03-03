@@ -14,7 +14,10 @@ html
                     a(href="/") Other nav link
             if user
                 .loggedInUser
-                    user.username
+                    .username= user.username
+                a.button(href="/logout") Log out
+            else
+                a.button(href="/login") Log in
         .contentContainer
             block content
         .pageFooter

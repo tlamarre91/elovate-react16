@@ -56,7 +56,11 @@ apiRouter.post("/auth", async (req, res) => {
             }
         } else {
             res.status(404);
-            res.json(new Api.Response(false, `user not found: ${ username }`));
+            if (isWebClient) {
+                res.redirect(`/login?msg=${ encodeURIComponent("user/password combination was invalid") }`);
+            } else {
+                res.json(new Api.Response(false, `user not found: ${ username }`));
+            }
         }
     } else {
         res.status(401)

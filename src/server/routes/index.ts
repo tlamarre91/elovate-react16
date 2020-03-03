@@ -34,9 +34,8 @@ router.use(Api.API_ROOT, apiRouter);
 
 // TODO: factor out into webclientRouter module
 router.get("/", async (req, res) => {
-    log.info("got somethin here boss");
     const session = JSON.stringify(req.session);
-    res.render("dev-test", { session });
+    res.render("base", { user: req.user });
 });
 
 router.get("/login", async (req, res) => {
@@ -55,25 +54,6 @@ router.get("/identicons", async (req, res) => {
     const identicons: ImageAsset[] = await repo.find();
     res.render("identicon-test", { assets: identicons });
 });
-
-//router.get("/setval/:val", async (req, res) => {
-//    const val = req.params["val"];
-//    req.session["testProp"] = val;
-//    res.send(`set val: ${val}`);
-//});
-//
-//router.get("/getval", async (req, res) => {
-//    const val = req.session["testProp"];
-//    res.json({ val, msg: "what" });
-//});
-
-//router.get("/clearSessions", async (req, res) => {
-//    const sessionStore: SessionStore = app.get("sessionStore");
-//    sessionStore.clear(err => {
-//        if (err) res.json({ success: false });
-//        else res.json({ success: true });
-//    });
-//});
 
 router.get("/user/:query", async (req, res) => {
     // TODO: return proper http status code, use express-validator

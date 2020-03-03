@@ -49,22 +49,27 @@ div {
         display: flex;
         flex-direction: row;
         grid-column: @middleContentGrid;
+    }
 
-        a {
-            transition: all 0.2s ease;
-            font: 100% @fontStack;
-            font-weight: bold;
-            text-decoration: none;
-            padding: 6px;
-            color: @textColorLight2;
-            background-color: @color1Dark1;
-            border-radius: 3px;
-            margin-right: 10px;
-        }
+    a {
+        font: 100% @fontStack;
+        font-weight: bold;
+        color: @textColorLight2;
+        text-decoration: none;
+        padding: 6px;
+        margin-right: 10px;
+    }
 
-        a:hover {
-            background-color: @color1;
-        }
+    a.button {
+        grid-column: ~"12 / 13";
+        background-color: @color1Dark1;
+        border-radius: 3px;
+        transition: all 0.2s ease;
+        margin: auto;
+    }
+
+    a.button:hover {
+        background-color: @color1;
     }
 }
 
