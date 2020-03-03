@@ -19,6 +19,7 @@ import * as Entity from "~shared/model/entities";
 import { UserRepository } from "~shared/model/repositories";
 
 import * as Api from "~shared/api";
+import * as Util from "~server/util";
 
 export const apiRouter = Router();
 
@@ -33,7 +34,7 @@ apiRouter.post("/auth", async (req, res) => {
         if (user) {
             if (await userRepo.basicAuth(user, password)) {
                 // TODO CRITICAL: enforce use of argon or similar signing algo
-                const newToken = jwt.sign({ uid: user.id, loginTime: new Date() }, req.app.get("secret"))
+                const newToken = Util.generateUserJwt(user.id, req.app.get("secret"));
                 res.cookie("elovateJwt", newToken, { signed: true });
                 if (isWebClient) {
                     if (req.query["redirect"]) {
@@ -61,6 +62,9 @@ apiRouter.post("/auth", async (req, res) => {
         res.json(new Api.Response(false, `auth method not supported: ${ req.body["auth-method"] }`));
     }
 })
+
+apiRouter.post("/deauth", async (req, res) => {
+});
 
 const userRouter = Router();
 userRouter.post(`/setPassword`, async (req, res) => {

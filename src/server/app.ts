@@ -15,6 +15,7 @@ dotenv.config();
 import * as Util from "~server/util";
 import { log } from "~server/log";
 import * as Api from "~shared/api";
+import { sessionManager } from "~server/middleware";
 
 import { connectDb } from "~server/db";
 import routes from "~server/routes";
@@ -96,34 +97,47 @@ async function main() {
         exitApp("could not connect to database", 1);
     }
 
+    app.use(sessionManager(Orm.getCustomRepository(UserRepository)));
+
     // user session middleware // TODO: factor out into module
-    app.set("userRepo", Orm.getCustomRepository(UserRepository));
-    app.use(async (req, res, next) => {
-        const jwtCookie = req.signedCookies["elovateJwt"];
-        log.info(`jwt cookie: ${ JSON.stringify(jwtCookie) }`);
-        if (jwtCookie) {
-            jwt.verify(jwtCookie, app.get("secret"), async (err: jwt.VerifyErrors, payload: { [key: string]: string }) => {
-                if (err) {
-                    log.warn(`jwt.verify: ${err}`);
-                } else {
-                    try {
-                        const userRepo = app.get("userRepo") as UserRepository;
-                        const user = await userRepo.findOne(parseInt(payload["uid"]));
-                        log.info(`middleware sees user ${ user.username }`);
-                        if (user) {
-                            req.user = user;
-                        }
-                    } catch (err) {
-                        log.warn(`ElovateUserMiddleware: ${err}`);
-                    }
-                }
-                next();
-            });
-        } else {
-            log.info("request passed with no JWT");
-            next();
-        }
-    });
+    //app.set("userRepo", Orm.getCustomRepository(UserRepository));
+    //app.use(async (req, res, next) => {
+    //    const jwtCookie = req.signedCookies["elovateJwt"];
+    //    log.info(`jwt cookie: ${ JSON.stringify(jwtCookie) }`);
+    //    if (jwtCookie) {
+    //        jwt.verify(jwtCookie, app.get("secret"),
+    //            async (err: jwt.VerifyErrors, payload: { [key: string]: string }) => {
+    //                if (err) {
+    //                    log.warn(`jwt.verify: ${err}`);
+    //                } else {
+    //                    log.info(`decoded cookie: ${JSON.stringify(payload)}`);
+    //                    try {
+    //                        const userRepo = app.get("userRepo") as UserRepository;
+    //                        const user = await userRepo.findOne(parseInt(payload["uid"]));
+    //                        log.info(`middleware sees user ${ user.username }`);
+    //                        if (user) {
+    //                            const exp = parseInt(payload["exp"])
+    //                            const expired = exp > (user.loginExp ?? 0);
+    //                            const invalidated = exp > (user.invalidateLoginsBefore ?? 0);
+    //                            if (expired || invalidated) {
+    //                                log.info(`saw expired JWT for user: ${user.username}`);
+    //                            } else {
+    //                                req.user = user;
+    //                                const newToken = Util.generateUserJwt(user.id, req.app.get("secret"));
+    //                                res.cookie("elovateJwt", newToken, { signed: true });
+    //                            }
+    //                        }
+    //                    } catch (err) {
+    //                        log.warn(`ElovateUserMiddleware: ${err}`);
+    //                    }
+    //                }
+    //                next();
+    //        });
+    //    } else {
+    //        log.info("request passed with no JWT");
+    //        next();
+    //    }
+    //});
 
     app.use(routes);
 

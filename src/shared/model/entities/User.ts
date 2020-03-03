@@ -44,6 +44,12 @@ export class User {
     @Orm.ManyToMany(type => Group, group => group.members)
     groups: Group[];
 
+    @Orm.Column({ type: "int", nullable: true })
+    loginExp: number;
+
+    @Orm.Column({ type: "int", nullable: true })
+    invalidateLoginsBefore: number;
+
 //    @Orm.OneToMany(type => Session, session => session.user)
 //    loginSessions: Promise<Session[]>;
 
