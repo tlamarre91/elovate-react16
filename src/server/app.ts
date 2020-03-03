@@ -15,7 +15,7 @@ dotenv.config();
 import * as Util from "~server/util";
 import { log } from "~server/log";
 import * as Api from "~shared/api";
-import { sessionManager } from "~server/middleware";
+import * as jwtManager from "~server/middleware";
 
 import { connectDb } from "~server/db";
 import routes from "~server/routes";
@@ -97,7 +97,7 @@ async function main() {
         exitApp("could not connect to database", 1);
     }
 
-    app.use(sessionManager(Orm.getCustomRepository(UserRepository)));
+    app.use(jwtManager.init(Orm.getCustomRepository(UserRepository)));
 
     app.use(routes);
 

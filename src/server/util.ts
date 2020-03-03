@@ -3,15 +3,6 @@ import * as Orm from "typeorm";
 import { log } from "~server/log";
 import * as Entity from "~shared/model/entities";
 
-export const JWT_EXP_TIME = 60 * 60 * 24;
-export function generateUserJwt(uid: number, secret: string) {
-    return jwt.sign({
-        uid,
-        loginTime: new Date()
-    }, secret, {
-        expiresIn: JWT_EXP_TIME
-    });
-}
 
 export async function populateTestData() {
     const TEST_USER_COUNT = 2;

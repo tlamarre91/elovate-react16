@@ -17,6 +17,7 @@ import { log } from "../log";
 
 import * as Entity from "~shared/model/entities";
 import { UserRepository } from "~shared/model/repositories";
+import * as jwtManager from "~server/middleware";
 
 import * as Api from "~shared/api";
 import * as Util from "~server/util";
@@ -33,8 +34,8 @@ apiRouter.post("/auth", async (req, res) => {
         const isWebClient = req.body["client"] === "web";
         if (user) {
             if (await userRepo.basicAuth(user, password)) {
-                // TODO CRITICAL: enforce use of argon or similar signing algo
-                const newToken = Util.generateUserJwt(user.id, req.app.get("secret"));
+                // TODO: don't necessarily assign refresh: true to all JWTs...
+                const newToken = jwtManager.generateUserJwt(user.id, req.app.get("secret"), true);
                 res.cookie("elovateJwt", newToken, { signed: true });
                 if (isWebClient) {
                     if (req.query["redirect"]) {
