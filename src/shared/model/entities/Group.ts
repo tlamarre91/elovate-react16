@@ -1,10 +1,9 @@
-import winston from "winston";
 import * as Orm from "typeorm";
-
-import { User, MatchParty } from ".";
+import * as Entity from ".";
+import { Resource } from "../Resource";
 
 @Orm.Entity()
-export class Group {
+export class Group extends Resource {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
@@ -14,11 +13,11 @@ export class Group {
     @Orm.Column({ default: () => "NOW()" })
     dateCreated: Date;
 
-    @Orm.ManyToMany(type => User, user => user.groups)
+    @Orm.OneToMany(() => Entity.GroupUser, groupUser => groupUser.group)
     @Orm.JoinTable()
-    members: User[];
+    users: Entity.GroupUser[];
 
-    @Orm.OneToMany(type => MatchParty, matchParty => matchParty.group)
+    @Orm.OneToMany(() => Entity.MatchParty, matchParty => matchParty.group)
     @Orm.JoinTable()
-    matchParties: MatchParty[];
+    matchParties: Entity.MatchParty[];
 }

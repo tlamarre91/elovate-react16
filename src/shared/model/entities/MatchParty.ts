@@ -1,6 +1,6 @@
 import * as Orm from "typeorm";
-
-import { User, Game, Group, Match } from ".";
+import * as Entity from ".";
+import { Resource } from "../Resource";
 
 export enum MatchPartyType {
     adhoc = "a",
@@ -8,15 +8,15 @@ export enum MatchPartyType {
 }
 
 @Orm.Entity()
-export class MatchParty {
+export class MatchParty extends Resource {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.ManyToMany(type => User, user => user.matchParties)
-    users: User[];
+    @Orm.ManyToMany(() => Entity.User, user => user.matchParties)
+    users: Entity.User[];
 
-    @Orm.ManyToOne(type => Match, match => match.matchParties)
-    match: Match;
+    @Orm.ManyToOne(() => Entity.Match, match => match.matchParties)
+    match: Entity.Match;
 
     @Orm.Column()
     partyNumber: number;
@@ -28,6 +28,6 @@ export class MatchParty {
     })
     partyType: MatchPartyType;
 
-    @Orm.ManyToOne(type => Group, group => group.matchParties)
-    group: Group;
+    @Orm.ManyToOne(() => Entity.Group, group => group.matchParties)
+    group: Entity.Group;
 }

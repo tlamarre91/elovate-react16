@@ -1,15 +1,14 @@
 import * as Orm from "typeorm";
+import * as Entity from ".";
+import { Resource } from "../Resource";
 
-abstract class FileAsset {
+abstract class FileAsset extends Resource {
     @Orm.Column()
     uri: string;
 }
 
 @Orm.Entity()
 export class ImageAsset extends FileAsset {
-    @Orm.PrimaryGeneratedColumn()
-    id: number;
-
     @Orm.Column()
     height: number;
 

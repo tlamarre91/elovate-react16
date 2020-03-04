@@ -1,30 +1,31 @@
 import * as Orm from "typeorm";
-import { log } from "~server/log";
-
-
-import { Group, Match, MatchParty, ImageAsset } from ".";
+import * as Entity from ".";
+import { Resource } from "../Resource";
 
 @Orm.Entity()
-export class User {
+export class User extends Resource {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
     @Orm.Column({ default: () => "NOW()" })
     dateCreated: Date;
 
-    @Orm.ManyToOne(type => ImageAsset)
-    avatarAsset: ImageAsset;
+    @Orm.Column({ nullable: true})
+    lastLogin: Date;
+
+    @Orm.ManyToOne(() => Entity.ImageAsset)
+    avatarAsset: Entity.ImageAsset;
 
     @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
-    username: string;
+    username?: string;
 
     @Orm.Column({ length: 64 })
     displayName: string;
     
     @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
-    email: string;
+    email?: string;
 
     @Orm.Column({ default: false })
     emailVerified: boolean;
@@ -39,21 +40,18 @@ export class User {
     isPublic: boolean;
 
     @Orm.Column({ length: 128, nullable: true })
-    passwordDigest: string;
+    passwordDigest?: string;
 
-    @Orm.ManyToMany(type => Group, group => group.members)
-    groups: Group[];
-
-    @Orm.Column({ type: "int", nullable: true })
-    loginExp: number;
+    @Orm.OneToMany(() => Entity.GroupUser, groupUser => groupUser.user)
+    groupMemberships: Entity.GroupUser[];
 
     @Orm.Column({ type: "int", nullable: true })
-    invalidateLoginsBefore: number;
+    loginExp?: number;
 
-//    @Orm.OneToMany(type => Session, session => session.user)
-//    loginSessions: Promise<Session[]>;
+    @Orm.Column({ type: "int", nullable: true })
+    invalidateLoginsBefore?: number;
 
-    @Orm.ManyToMany(type => MatchParty, matchParty => matchParty.users, { cascade: true })
+    @Orm.ManyToMany(() => Entity.MatchParty, matchParty => matchParty.users, { cascade: true })
     @Orm.JoinTable()
-    matchParties: MatchParty[];
+    matchParties: Entity.MatchParty[];
 }

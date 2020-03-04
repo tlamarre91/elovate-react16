@@ -1,9 +1,9 @@
 import * as Orm from "typeorm";
-
-import { Match } from ".";
+import * as Entity from ".";
+import { Resource } from "../Resource";
 
 @Orm.Entity()
-export class Game {
+export class Game extends Resource {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
@@ -13,6 +13,6 @@ export class Game {
     @Orm.Column()
     name: string;
 
-    @Orm.OneToMany(type => Match, match => match.game)
-    matches: Match[];
+    @Orm.OneToMany(() => Entity.Match, match => match.game)
+    matches: Entity.Match[];
 }

@@ -24,6 +24,8 @@ import {
     ImageAsset
 } from "~shared/model/entities";
 
+import * as Dto from "~shared/model/data-transfer-objects";
+
 import { ImageAssetRepository } from "~shared/model/repositories";
 
 import { apiRouter } from "./apiRouter";
@@ -55,7 +57,7 @@ router.get("/identicons", async (req, res) => {
     res.render("identicon-test", { assets: identicons });
 });
 
-router.get("/user/:query", async (req, res) => {
+router.get("/users/:query", async (req, res) => {
     // TODO: return proper http status code, use express-validator
     // TODO: just do parseInt and use isNaN, ya dingus
     const repo = Orm.getRepository(User);
@@ -63,20 +65,22 @@ router.get("/user/:query", async (req, res) => {
     const query = req.params["query"];
 
     if (query.includes("=")) {
-        res.render(template, { error: "gotta enter an id, sorry" }); // TODO: keyval user query
+        res.status(404);
+        res.render(template, { error: "gotta use an id, sorry" }); // TODO: keyval user query
     } else {
         const re = /^[0-9]*$/;
         const idStr = query.match(re)?.[0] ?? null;
         if (idStr !== null) {
             const id = parseInt(idStr);
-            const user = await repo.findOne(id);
+            const user = new Dto.UserDto(await repo.findOne(id));
             if (user) {
                 res.render(template, { user });
             } else {
                 res.render(template, { error: "user not found" });
             }
         } else {
-            res.render(template, { error: "enter a NUMERIC id" }); // TODO: obvious
+            res.status(404);
+            res.render(template, { error: "use a NUMERIC id" }); // TODO: obvious
         }
     }
 });

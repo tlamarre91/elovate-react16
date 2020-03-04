@@ -1,7 +1,6 @@
-import winston from "winston";
 import * as Orm from "typeorm";
-
-import { User, Game, MatchParty } from ".";
+import * as Entity from ".";
+import { Resource } from "../Resource";
 
 export enum MatchResultType {
     singleWinner = "s"
@@ -35,12 +34,12 @@ export enum MatchVisibility {
 }
 
 @Orm.Entity()
-export class Match {
+export class Match extends Resource {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.ManyToOne(type => Game, game => game.matches)
-    game: Game;
+    @Orm.ManyToOne(() => Entity.Game, game => game.matches)
+    game: Entity.Game;
 
     @Orm.Column({ default: () => "NOW()" })
     changedOn: Date;
@@ -59,9 +58,9 @@ export class Match {
     })
     visibility: MatchVisibility;
 
-    @Orm.OneToMany(type => MatchParty, matchParty => matchParty.match, { cascade: true })
+    @Orm.OneToMany(() => Entity.MatchParty, matchParty => matchParty.match, { cascade: true })
     @Orm.JoinTable()
-    matchParties: MatchParty[];
+    matchParties: Entity.MatchParty[];
 
     @Orm.Column({ type: "jsonb", nullable: true })
     @Orm.Index()
