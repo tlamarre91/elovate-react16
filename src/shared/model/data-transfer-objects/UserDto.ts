@@ -18,6 +18,6 @@ export class UserDto extends BaseDto<Entity.User> {
         this.id = base.id;
         this.dateCreated = base.dateCreated;
         this.lastLogin = base.lastLogin;
-        this.avatarAsset = new Dto.ImageAssetDto(base.avatarAsset);
+        //this.avatarAsset = new Dto.ImageAssetDto(base.avatarAsset);
     }
 }

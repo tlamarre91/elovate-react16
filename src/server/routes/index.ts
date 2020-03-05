@@ -18,15 +18,11 @@ import { LoremIpsum } from "lorem-ipsum";
 import * as Api from "~shared/api";
 import { app } from "~server/app";
 import { log } from "~server/log";
-import {
-    User,
-    Match,
-    ImageAsset
-} from "~shared/model/entities";
 
+import * as Entity from "~shared/model/entities";
 import * as Dto from "~shared/model/data-transfer-objects";
 
-import { ImageAssetRepository } from "~shared/model/repositories";
+// import { ImageAssetRepository } from "~shared/model/repositories";
 
 import { apiRouter } from "./apiRouter";
 
@@ -36,7 +32,6 @@ router.use(Api.API_ROOT, apiRouter);
 
 // TODO: factor out into webclientRouter module
 router.get("/", async (req, res) => {
-    const session = JSON.stringify(req.session);
     res.render("base", { user: req.user });
 });
 
@@ -45,22 +40,22 @@ router.get("/login", async (req, res) => {
     res.render("login", { user });
 });
 
-router.get("/identicon/:token", async (req, res) => {
-    const repo = Orm.getCustomRepository(ImageAssetRepository);
-    const identicon: ImageAsset = await repo.getIdenticon(req.params["token"], 50);
-    res.json({ made: identicon.uri });
-});
-
-router.get("/identicons", async (req, res) => {
-    const repo = Orm.getCustomRepository(ImageAssetRepository);
-    const identicons: ImageAsset[] = await repo.find();
-    res.render("identicon-test", { assets: identicons });
-});
+// router.get("/identicon/:token", async (req, res) => {
+//     const repo = Orm.getCustomRepository(ImageAssetRepository);
+//     const identicon: ImageAsset = await repo.getIdenticon(req.params["token"], 50);
+//     res.json({ made: identicon.uri });
+// });
+// 
+// router.get("/identicons", async (req, res) => {
+//     const repo = Orm.getCustomRepository(ImageAssetRepository);
+//     const identicons: ImageAsset[] = await repo.find();
+//     res.render("identicon-test", { assets: identicons });
+// });
 
 router.get("/users/:query", async (req, res) => {
     // TODO: return proper http status code, use express-validator
     // TODO: just do parseInt and use isNaN, ya dingus
-    const repo = Orm.getRepository(User);
+    const repo = Orm.getRepository(Entity.User);
     const template = "user-profile";
     const query = req.params["query"];
 

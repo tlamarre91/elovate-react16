@@ -1,10 +1,10 @@
 import * as Orm from "typeorm";
 
-import { Match, MatchResult, MatchResultType, MatchParty } from "../entities";
+import * as Entity from "../entities";
 
-@Orm.EntityRepository(Match)
-export class MatchRepository extends Orm.Repository<Match> {
-    reportMatch(matchParties: MatchParty[], result: MatchResult, datePlayed?: Date): Promise<Match> {
+@Orm.EntityRepository(Entity.Match)
+export class MatchRepository extends Orm.Repository<Entity.Match> {
+    reportMatch(matchParties: Entity.MatchParty[], result: Entity.MatchResult, datePlayed?: Date): Promise<Entity.Match> {
         const match = this.create();
         match.matchParties = matchParties;
         match.result = result;

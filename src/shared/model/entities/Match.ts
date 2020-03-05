@@ -38,8 +38,8 @@ export class Match extends Resource {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.ManyToOne(() => Entity.Game, game => game.matches)
-    game: Entity.Game;
+//    @Orm.ManyToOne(() => Entity.Game, game => game.matches)
+//    game: Entity.Game;
 
     @Orm.Column({ default: () => "NOW()" })
     changedOn: Date;

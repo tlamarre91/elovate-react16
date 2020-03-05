@@ -51,7 +51,10 @@ export class User extends Resource {
     @Orm.Column({ type: "int", nullable: true })
     invalidateLoginsBefore?: number;
 
-    @Orm.ManyToMany(() => Entity.MatchParty, matchParty => matchParty.users, { cascade: true })
+    @Orm.ManyToMany(() => Entity.MatchParty, matchParty => matchParty.users)
     @Orm.JoinTable()
     matchParties: Entity.MatchParty[];
+
+    @Orm.OneToMany(() => Entity.Notification, notification => notification.recipient)
+    notifications: Entity.Notification[];
 }

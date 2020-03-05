@@ -66,7 +66,7 @@ async function main() {
                 assetDir = path.join(appRoot.toString(), assetDir);
             }
             app.use(express.static(assetDir));
-            app.use(fav(path.join(assetDir, "img", "elovate-16x16.png"))); // TODO: make less terrible
+            app.use(fav(path.join(assetDir, "img", "elovate-16x16.png"))); // TODO: make favicon serving less terrible
             log.info("serving static content");
         } catch (err) {
             log.error(err);
@@ -89,9 +89,9 @@ async function main() {
         log.info("connected to database");
 
         // TODO: make an external script to do this (and to clear DB)
-        if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
-            Util.populateTestData();
-        }
+        // if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
+        //     Util.populateTestData();
+        // }
     } catch (err) {
         log.error(err);
         exitApp("could not connect to database", 1);
