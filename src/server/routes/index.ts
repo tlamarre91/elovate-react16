@@ -16,21 +16,23 @@ import * as Orm from "typeorm";
 import { LoremIpsum } from "lorem-ipsum";
 
 import * as Api from "~shared/api";
-import { app } from "~server/app";
 import { log } from "~server/log";
 
 import * as Entity from "~shared/model/entities";
-import * as Dto from "~shared/model/data-transfer-objects";
+
+import userRouter from "./user-router";
+import groupRouter from "./group-router";
 
 // import { ImageAssetRepository } from "~shared/model/repositories";
 
-import { apiRouter } from "./apiRouter";
+import { apiRouter } from "./api-router";
 
 const router = Router();
 
 router.use(Api.API_ROOT, apiRouter);
+router.use("/users", userRouter);
+router.use("/groups", groupRouter);
 
-// TODO: factor out into webclientRouter module
 router.get("/", async (req, res) => {
     res.render("base", { user: req.user });
 });
@@ -51,33 +53,5 @@ router.get("/login", async (req, res) => {
 //     const identicons: ImageAsset[] = await repo.find();
 //     res.render("identicon-test", { assets: identicons });
 // });
-
-router.get("/users/:query", async (req, res) => {
-    // TODO: return proper http status code, use express-validator
-    // TODO: just do parseInt and use isNaN, ya dingus
-    const repo = Orm.getRepository(Entity.User);
-    const template = "user-profile";
-    const query = req.params["query"];
-
-    if (query.includes("=")) {
-        res.status(404);
-        res.render(template, { error: "gotta use an id, sorry" }); // TODO: keyval user query
-    } else {
-        const re = /^[0-9]*$/;
-        const idStr = query.match(re)?.[0] ?? null;
-        if (idStr !== null) {
-            const id = parseInt(idStr);
-            const user = new Dto.UserDto(await repo.findOne(id));
-            if (user) {
-                res.render(template, { user });
-            } else {
-                res.render(template, { error: "user not found" });
-            }
-        } else {
-            res.status(404);
-            res.render(template, { error: "use a NUMERIC id" }); // TODO: obvious
-        }
-    }
-});
 
 export default router;

@@ -68,8 +68,8 @@ async function main() {
             app.use(express.static(assetDir));
             app.use(fav(path.join(assetDir, "img", "elovate-16x16.png"))); // TODO: make favicon serving less terrible
             log.info("serving static content");
-        } catch (err) {
-            log.error(err);
+        } catch (error) {
+            log.error(error);
             exitApp("could not serve static content", 1);
         }
     }
@@ -92,8 +92,8 @@ async function main() {
         // if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
         //     Util.populateTestData();
         // }
-    } catch (err) {
-        log.error(err);
+    } catch (error) {
+        log.error(error);
         exitApp("could not connect to database", 1);
     }
 
@@ -105,8 +105,8 @@ async function main() {
     try {
         app.listen(port);
         log.info(`listening on port ${ port }`);
-    } catch (err) {
-        log.error(err);
+    } catch (error) {
+        log.error(error);
         exitApp(`could not set app to listen on port ${ port }`, 1);
     }
 }

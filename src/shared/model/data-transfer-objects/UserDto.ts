@@ -11,7 +11,7 @@ export class UserDto extends BaseDto<Entity.User> {
     displayName?: string;
     email?: string;
     groupMemberships?: Dto.GroupUserDto[];
-    matchParties?: Dto.MatchPartyDto[];
+    matchParties?: Dto.PartyDto[];
 
     constructor(base: Entity.User, origin?: string) {
         super(base, origin);

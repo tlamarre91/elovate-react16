@@ -1,12 +1,12 @@
 import * as Orm from "typeorm";
-import * as Entity from ".";
+import { User } from "./User";
 import { Resource } from "../Resource";
 
 // TODO: notification "thumbnails" or whatever should be computed from context.
 @Orm.Entity()
 export class Notification extends Resource {
-    @Orm.ManyToOne(() => Entity.User, user => user.notifications)
-    recipient: Entity.User;
+    @Orm.ManyToOne(() => User, user => user.notifications)
+    recipient: User;
 
     @Orm.Column({ type: "date", default: "NOW()" })
     @Orm.Index()

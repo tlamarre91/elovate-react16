@@ -1,23 +1,23 @@
 import * as Orm from "typeorm";
-import * as Entity from ".";
 import { Resource } from "../Resource";
+import { GroupUser } from "./GroupUser";
+import { Party } from "./Party";
 
 @Orm.Entity()
 export class Group extends Resource {
-    @Orm.PrimaryGeneratedColumn()
-    id: number;
-
     @Orm.Column()
     name: string;
+
+    // TODO: validate alphanumeric with dashes/underscore/whatever
+    @Orm.Column({ length: 64, nullable: true })
+    customUrlName: string;
 
     @Orm.Column({ default: () => "NOW()" })
     dateCreated: Date;
 
-    @Orm.OneToMany(() => Entity.GroupUser, groupUser => groupUser.group)
-    @Orm.JoinTable()
-    users: Entity.GroupUser[];
+    @Orm.OneToMany(() => GroupUser, groupUser => groupUser.group)
+    users: GroupUser[];
 
-    @Orm.OneToMany(() => Entity.MatchParty, matchParty => matchParty.group)
-    @Orm.JoinTable()
-    matchParties: Entity.MatchParty[];
+    @Orm.OneToMany(() => Party, party => party.group)
+    parties: Party[];
 }

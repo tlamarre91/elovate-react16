@@ -1,4 +1,5 @@
 import * as Orm from "typeorm";
+import { User, Group } from "./entities";
 
 // NOTE: some combinations of flags won't make sense... but maybe that's ok.
 export enum PermissionFlag {
@@ -14,7 +15,11 @@ export enum PermissionFlag {
     modRead = 1 << 9,
     modInsert = 1 << 10,
     modUpdate = 1 << 11,
-    modDelete = 1 << 12
+    modDelete = 1 << 12,
+    adminRead = 1 << 13,
+    adminInsert = 1 << 14,
+    adminUpdate = 1 << 15,
+    adminDelete = 1 << 16
 }
 
 export class Resource {
@@ -24,5 +29,9 @@ export class Resource {
     @Orm.Column({ type: "int" })
     permissionPolicy: number; // permissionPolicy: bitmask of PermissionFlags
 
-    //@Orm.ManyToMany(() => 
+    @Orm.ManyToOne(() => User)
+    ownerUser: User;
+
+    @Orm.ManyToOne(() => Group, { nullable: true })
+    ownerGroup: Group;
 }

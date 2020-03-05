@@ -1,5 +1,6 @@
 import * as Orm from "typeorm";
-import * as Entity from ".";
+import { User } from "./User";
+import { Group } from "./Group";
 import { Resource } from "../Resource";
 
 // need granularity... maybe bitmask for each permission type?
@@ -11,14 +12,11 @@ export enum GroupUserPrivilege {
 
 @Orm.Entity()
 export class GroupUser extends Resource {
-    @Orm.PrimaryGeneratedColumn()
-    id: number;
+    @Orm.ManyToOne(() => Group, group => group.users)
+    group: Group;
 
-    @Orm.ManyToOne(() => Entity.Group, group => group.users)
-    group: Entity.Group;
-
-    @Orm.ManyToOne(() => Entity.User, user => user.groupMemberships)
-    user: Entity.User;
+    @Orm.ManyToOne(() => User, user => user.groupMemberships)
+    user: User;
 
     @Orm.Column({
         type: "enum",

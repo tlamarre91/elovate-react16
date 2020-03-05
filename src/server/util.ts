@@ -3,7 +3,6 @@ import * as Orm from "typeorm";
 import { log } from "~server/log";
 import * as Entity from "~shared/model/entities";
 
-
 // export async function populateTestData() {
 //     const TEST_USER_COUNT = 2;
 //     const TEST_GROUP_COUNT = 5;

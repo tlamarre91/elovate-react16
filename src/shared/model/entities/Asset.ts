@@ -1,5 +1,4 @@
 import * as Orm from "typeorm";
-import * as Entity from ".";
 import { Resource } from "../Resource";
 
 abstract class FileAsset extends Resource {

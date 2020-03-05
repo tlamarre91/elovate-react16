@@ -29,35 +29,20 @@ export class UserRepository extends Orm.Repository<User> {
     }
 
     /*
-     * set a user's password. NOTE: validation must be performed prior to calling
+     * NOTE: validation must be performed prior to calling
      */
     async setPassword(user: User, password: string): Promise<User> {
         user.passwordDigest = await argon.hash(password);
         return this.save(user);
     }
 
-//     async findUserParties(userId: number): Promise<MatchParty[]> {
-//         return this.findOne({
-//             where: { id: userId },
-//             join: {
-//                 alias: "user",
-//                 leftJoinAndSelect: {
-//                     matchParties: "user.matchParties"
-//                 }
-//             }
-//         }).then(user => user.matchParties);
-//     }
-
-//    async findUserMatches(userId: number): Promise<Match[]> {
-//        return this.findOne({
-//            where: { id: userId },
-//            join: {
-//                alias: "user",
-//                leftJoinAndSelect: {
-//                    matches: "user.matches"
-//                }
-//            }
-//        }).then(u => u.matches);
-//    }
+    async findOneFromQuery(query: string): Promise<User> {
+        const id = parseInt(query);
+        if (! isNaN(id)) {
+            return this.findOne(id);
+        } else {
+            throw "UserRepository.findOneFromQuery: query not yet implemented";
+        }
+    }
 }
 

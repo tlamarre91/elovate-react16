@@ -1,20 +1,20 @@
 import * as Orm from "typeorm";
-import * as Entity from ".";
+import { ImageAsset } from "./Asset";
+import { GroupUser } from "./GroupUser";
+import { Party } from "./Party";
+import { Notification } from "./Notification";
 import { Resource } from "../Resource";
 
 @Orm.Entity()
 export class User extends Resource {
-    @Orm.PrimaryGeneratedColumn()
-    id: number;
-
     @Orm.Column({ default: () => "NOW()" })
     dateCreated: Date;
 
-    @Orm.Column({ nullable: true})
+    @Orm.Column({ nullable: true })
     lastLogin: Date;
 
-    @Orm.ManyToOne(() => Entity.ImageAsset)
-    avatarAsset: Entity.ImageAsset;
+    @Orm.ManyToOne(() => ImageAsset)
+    avatarAsset: ImageAsset;
 
     @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
@@ -42,8 +42,8 @@ export class User extends Resource {
     @Orm.Column({ length: 128, nullable: true })
     passwordDigest?: string;
 
-    @Orm.OneToMany(() => Entity.GroupUser, groupUser => groupUser.user)
-    groupMemberships: Entity.GroupUser[];
+    @Orm.OneToMany(() => GroupUser, groupUser => groupUser.user)
+    groupMemberships: GroupUser[];
 
     @Orm.Column({ type: "int", nullable: true })
     loginExp?: number;
@@ -51,10 +51,9 @@ export class User extends Resource {
     @Orm.Column({ type: "int", nullable: true })
     invalidateLoginsBefore?: number;
 
-    @Orm.ManyToMany(() => Entity.MatchParty, matchParty => matchParty.users)
-    @Orm.JoinTable()
-    matchParties: Entity.MatchParty[];
+    @Orm.ManyToMany(() => Party, party => party.users)
+    parties: Party[];
 
-    @Orm.OneToMany(() => Entity.Notification, notification => notification.recipient)
-    notifications: Entity.Notification[];
+    @Orm.OneToMany(() => Notification, notification => notification.recipient)
+    notifications: Notification[];
 }

@@ -1,12 +1,12 @@
 import * as Orm from "typeorm";
-import * as Entity from ".";
+import { Party } from "./Party";
 import { Resource } from "../Resource";
 
 export enum MatchResultType {
     singleWinner = "s"
 }
 
-class MatchResultData {
+export class MatchResultData {
     constructor() {
         return "FUCK I DON'T KNOW WHAT I'M DOING";
     }
@@ -35,9 +35,6 @@ export enum MatchVisibility {
 
 @Orm.Entity()
 export class Match extends Resource {
-    @Orm.PrimaryGeneratedColumn()
-    id: number;
-
 //    @Orm.ManyToOne(() => Entity.Game, game => game.matches)
 //    game: Entity.Game;
 
@@ -58,9 +55,8 @@ export class Match extends Resource {
     })
     visibility: MatchVisibility;
 
-    @Orm.OneToMany(() => Entity.MatchParty, matchParty => matchParty.match, { cascade: true })
-    @Orm.JoinTable()
-    matchParties: Entity.MatchParty[];
+    //@Orm.OneToMany(() => Party, party => party.match, { cascade: true })
+    //parties: Party[];
 
     @Orm.Column({ type: "jsonb", nullable: true })
     @Orm.Index()

@@ -31,7 +31,7 @@ export function init(userRepo: UserRepository) {
                         try {
                             const user = await userRepo.findOne(parseInt(payload["uid"]));
                             if (user) {
-                                const exp = parseInt(payload["exp"])
+                                const exp = parseInt(payload["exp"]);
                                 const iat = parseInt(payload["iat"]);
                                 // TODO: if i really need to i can code golf this down a bit
                                 const expired = exp < (user.loginExp ?? 0);
