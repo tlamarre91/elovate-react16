@@ -55,8 +55,8 @@ export class Match extends Resource {
     })
     visibility: MatchVisibility;
 
-    //@Orm.OneToMany(() => Party, party => party.match, { cascade: true })
-    //parties: Party[];
+    @Orm.OneToMany(() => Party, party => party.match, { cascade: true })
+    parties: Party[];
 
     @Orm.Column({ type: "jsonb", nullable: true })
     @Orm.Index()
