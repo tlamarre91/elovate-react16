@@ -9,12 +9,12 @@ export class NotificationDto extends BaseDto<Entity.Notification> {
     message?: string;
     linkedResourceUri?: string;
 
-    constructor(base: Entity.Notification, origin?: string) {
-        super(base, origin);
-        this.recipient = new Dto.UserDto(base.recipient);
-        this.dateCreated = base.dateCreated;
-        this.read = base.read;
-        this.message = base.message;
-        this.linkedResourceUri = base.linkedResourceUri;
+    constructor(obj: Entity.Notification, origin?: string) {
+        super(obj, origin);
+        this.recipient = new Dto.UserDto(obj.recipient);
+        this.dateCreated = obj.dateCreated;
+        this.read = obj.read;
+        this.message = obj.message;
+        this.linkedResourceUri = obj.linkedResourceUri;
     }
 }

@@ -13,11 +13,10 @@ export class UserDto extends BaseDto<Entity.User> {
     groupMemberships?: Dto.GroupUserDto[];
     matchParties?: Dto.PartyDto[];
 
-    constructor(base: Entity.User, origin?: string) {
-        super(base, origin);
-        this.id = base.id;
-        this.dateCreated = base.dateCreated;
-        this.lastLogin = base.lastLogin;
+    constructor(obj: Entity.User, origin?: string) {
+        super(obj, origin);
+        this.dateCreated = obj.dateCreated;
+        this.lastLogin = obj.lastLogin;
         //this.avatarAsset = new Dto.ImageAssetDto(base.avatarAsset);
     }
 }
