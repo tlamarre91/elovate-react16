@@ -1,3 +1,4 @@
+// TODO: put this down in the dto module
 export class BaseDto<T> {
     origin?: string;
     ownerUserId?: number;

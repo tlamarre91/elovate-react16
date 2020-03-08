@@ -5,7 +5,7 @@ import { User, Group } from "./entities";
 export enum PermissionFlag {
     publicRead = 1 << 0,
     publicInsert = 1 << 1,
-    wnerInsert = 1 << 2,
+    ownerInsert = 1 << 2,
     ownerUpdate = 1 << 3,
     ownerDelete = 1 << 4,
     groupRead = 1 << 5,
@@ -28,6 +28,16 @@ export class Resource {
 
     @Orm.Column({ type: "int" })
     permissionPolicy: number; // permissionPolicy: bitmask of PermissionFlags
+
+    hasAllPermissions(... flags: PermissionFlag[]) {
+        const mask = flags.reduce((mask, val) => mask | val);
+        return (mask & this.permissionPolicy) === mask;
+    }
+
+    hasAnyPermissions(... flags: PermissionFlag[]) {
+        const mask = flags.reduce((mask, val) => mask | val);
+        return (mask & this.permissionPolicy) !== 0;
+    }
 
     @Orm.ManyToOne(() => User)
     ownerUser: User;

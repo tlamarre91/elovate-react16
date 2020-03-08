@@ -1,9 +1,17 @@
 import * as Orm from "typeorm";
 
+import { BaseRepository } from "./BaseRepository";
 import * as Entity from "../entities";
+import * as Dto from "../data-transfer-objects";
 
 @Orm.EntityRepository(Entity.Party)
-export class PartyRepository extends Orm.Repository<Entity.Party> {
+export class PartyRepository extends BaseRepository<Entity.Party> {
+    findOneFromQuery(query: string): Promise<Entity.Party> {
+        throw new Error("Method not implemented.");
+    }
+    createFromDto(dto: Dto.PartyDto): Entity.Party {
+        throw new Error("Method not implemented.");
+    }
     createParty(users: Entity.User[], match: Entity.Match, partyNumber: number, partyType: Entity.PartyType): Promise<Entity.Party> {
         const party = this.create();
         party.users = users;

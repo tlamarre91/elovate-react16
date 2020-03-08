@@ -25,11 +25,6 @@ import { UserRepository } from "~shared/model/repositories";
 
 const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() === "false" ? false : true;
 
-export interface JwtPayload {
-    uid: number;
-    loginTime: Date;
-}
-
 export enum Env {
     DEV = "development",
     PROD = "production"

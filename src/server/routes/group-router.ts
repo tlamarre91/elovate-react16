@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import * as Orm from "typeorm";
 
 import * as Api from "~shared/api";
@@ -27,5 +27,12 @@ router.get("/:query", async (req, res) => {
         res.render("group-profile", { error });
     }
 });
+
+// router.get("/:query/dashboard", async (req, res) => {
+//     try {
+//         const query = req.params["query"];
+//         const group = Orm.getCustomRepository(Repository.GroupRepository);
+//             .findOneFromQuery(query);
+// }
 
 export default router;

@@ -1,3 +1,4 @@
+export * from "./BaseRepository";
 export * from "./CalendarEventRepository";
 // export * from "./GameRepository";
 export * from "./GroupRepository";

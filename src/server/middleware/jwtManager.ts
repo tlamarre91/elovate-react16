@@ -1,4 +1,4 @@
-import express from "express";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 import { log } from "~server/log";
@@ -19,7 +19,7 @@ export function generateUserJwt(uid: number, secret: string, refresh: boolean) {
 }
 
 export function init(userRepo: UserRepository) {
-    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    return (req: Request, res: Response, next: NextFunction) => {
         const jwtCookie = req.signedCookies["elovateJwt"];
         if (jwtCookie) {
             jwt.verify(jwtCookie, req.app.get("secret"), { algorithms: [JWT_ALGO] },

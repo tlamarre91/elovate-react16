@@ -1,8 +1,11 @@
 import * as Orm from "typeorm";
+
+import { BaseRepository } from "./BaseRepository";
 import { Group } from "../entities";
+import * as Dto from "../data-transfer-objects";
 
 @Orm.EntityRepository(Group)
-export class GroupRepository extends Orm.Repository<Group> {
+export class GroupRepository extends BaseRepository<Group> {
     async findOneFromQuery(query: string): Promise<Group> {
         const id = parseInt(query);
         if (! isNaN(id)) {
@@ -10,6 +13,10 @@ export class GroupRepository extends Orm.Repository<Group> {
         } else {
             throw "GroupRepository.findOneFromQuery: query not yet implemented";
         }
+    }
+
+    createFromDto(dto: Dto.GroupDto): Group {
+        throw "not yet implemented";
     }
 }
 

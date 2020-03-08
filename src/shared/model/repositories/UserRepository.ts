@@ -1,10 +1,15 @@
 import * as Orm from "typeorm";
 import * as argon from "argon2";
 
+import { BaseRepository } from "./BaseRepository";
 import { User } from "../entities";
+import * as Dto from "../data-transfer-objects";
 
 @Orm.EntityRepository(User)
-export class UserRepository extends Orm.Repository<User> {
+export class UserRepository extends BaseRepository<User> {
+    createFromDto(dto: Dto.UserDto): User {
+        throw new Error("Method not implemented.");
+    }
 //    search(params: Api.UserSearchParams): Promise<User[]> {
 //        if (params.searchType === Api.SearchType.ContainsAll) {
 //            return this.find({

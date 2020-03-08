@@ -6,12 +6,20 @@ import winston from "winston";
 
 import * as Orm from "typeorm";
 
+import * as Dto from "../data-transfer-objects";
+import { BaseRepository } from "./BaseRepository";
 import { ImageAsset } from "../entities/Asset";
 
 const ASSET_DIR = process.env.ELOVATE_STATIC_DIR || path.join(appRoot.path, "dist", "public");
 
 @Orm.EntityRepository(ImageAsset)
-export class ImageAssetRepository extends Orm.Repository<ImageAsset> {
+export class ImageAssetRepository extends BaseRepository<ImageAsset> {
+    findOneFromQuery(query: string): Promise<ImageAsset> {
+        throw new Error("Method not implemented.");
+    }
+    createFromDto(dto: Dto.ImageAssetDto): ImageAsset {
+        throw new Error("Method not implemented.");
+    }
     static identiconDir = path.join("img", "identicons");
     static identiconUri(token: string, size: number): string {
          return `${this.identiconDir}/${token}-${size}x${size}.png`;
