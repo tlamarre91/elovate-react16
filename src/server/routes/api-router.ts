@@ -1,5 +1,4 @@
 import { Router } from "express";
-import jwt from "jsonwebtoken";
 
 import {
     sanitizeBody,
@@ -17,7 +16,7 @@ import { log } from "../log";
 
 import * as Entity from "~shared/model/entities";
 import { UserRepository } from "~shared/model/repositories";
-import * as jwtManager from "~server/middleware";
+import { Authorization } from "~server/middleware";
 
 import * as Api from "~shared/api";
 import * as Util from "~server/util";
@@ -35,7 +34,7 @@ apiRouter.post("/auth", async (req, res) => {
         if (user) {
             if (await userRepo.basicAuth(user, password)) {
                 // TODO: don't necessarily assign refresh: true to all JWTs...
-                const newToken = jwtManager.generateUserJwt(user.id, req.app.get("secret"), true);
+                const newToken = Authorization.generateUserJwt(user.id, req.app.get("secret"), true);
                 res.cookie("elovateJwt", newToken, { signed: true });
                 if (isWebClient) {
                     if (req.query["redirect"]) {

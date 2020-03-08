@@ -13,6 +13,11 @@ const router = Router();
 
 router.get("/:query", async (req, res) => {
     try {
+        log.info(`autoquery got group ${ req.resource.id }`);
+    } catch (err) {
+        log.warn(`group-router: ${err}`);
+    }
+    try {
         const query = req.params["query"];
         const group = await Orm.getCustomRepository(Repository.GroupRepository)
             .findOneFromQuery(query);

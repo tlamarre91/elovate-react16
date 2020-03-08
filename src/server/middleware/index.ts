@@ -1,1 +1,1 @@
-export * from "./jwtManager";
+export * as Authorization from "./authorization";

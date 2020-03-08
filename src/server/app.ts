@@ -6,8 +6,7 @@ import cookieParser from "cookie-parser";
 import createError from "http-errors";
 import morgan from "morgan";
 import path from "path";
-import jwt from "jsonwebtoken";
-import fav from "serve-favicon";
+import favicon from "serve-favicon";
 import * as Orm from "typeorm";
 import dotenv from "dotenv";
 dotenv.config();
@@ -15,7 +14,7 @@ dotenv.config();
 import * as Util from "~server/util";
 import { log } from "~server/log";
 import * as Api from "~shared/api";
-import * as jwtManager from "~server/middleware";
+import { Authorization } from "~server/middleware";
 
 import { connectDb } from "~server/db";
 import routes from "~server/routes";
@@ -61,7 +60,7 @@ async function main() {
                 assetDir = path.join(appRoot.toString(), assetDir);
             }
             app.use(express.static(assetDir));
-            app.use(fav(path.join(assetDir, "img", "elovate-16x16.png"))); // TODO: make favicon serving less terrible
+            app.use(favicon(path.join(assetDir, "img", "elovate-16x16.png"))); // TODO: make favicon serving less terrible
             log.info("serving static content");
         } catch (error) {
             log.error(error);
@@ -84,15 +83,15 @@ async function main() {
         log.info("connected to database");
 
         // TODO: make an external script to do this (and to clear DB)
-        // if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
-        //     Util.populateTestData();
-        // }
+        if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
+            Util.populateTestData();
+        }
     } catch (error) {
         log.error(error);
         exitApp("could not connect to database", 1);
     }
 
-    app.use(jwtManager.init(Orm.getCustomRepository(UserRepository)));
+    app.use(Authorization.init(Orm.getCustomRepository(UserRepository)));
 
     app.use(routes);
 

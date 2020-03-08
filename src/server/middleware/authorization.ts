@@ -38,6 +38,7 @@ export function init(userRepo: UserRepository) {
                                 const invalidated = Math.min(exp, iat) < (user.invalidateLoginsBefore ?? 0);
                                 if (!(expired || invalidated)) {
                                     req.user = user;
+                                    req.groupMemberships = user.groupMemberships;
                                     if (payload["refresh"]) {
                                         const newToken = generateUserJwt(user.id, req.app.get("secret"), true);
                                         res.cookie("elovate.jwt", newToken, { signed: true });
