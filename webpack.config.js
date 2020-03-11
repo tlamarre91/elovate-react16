@@ -6,7 +6,7 @@ module.exports = {
     node: {
         fs: "empty" // TODO: determine if this is an appropriate fix for webpack error with winston importing fs
     },
-    entry: "./src/client/index.ts",
+    entry: "./src/client/index.tsx",
     devtool: "inline-source-map",
     module: {
         rules: [

@@ -9,7 +9,6 @@ export class BaseDto<T extends Resource> {
     constructor(obj: T, origin?: string) {
         this.origin = origin;
         this.id = obj.id;
-        this.permissionPolicy = obj.permissionPolicy;
     }
 }
 

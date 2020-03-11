@@ -45,7 +45,7 @@ function cleanClient() {
 }
 
 function buildClient() {
-    return gulp.src("src/client/index.ts")
+    return gulp.src("src/client/index.tsx")
         .pipe(webpack(require("./webpack.config")))
         .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR, "js")));
 }

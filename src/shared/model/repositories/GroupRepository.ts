@@ -17,7 +17,6 @@ export class GroupRepository extends BaseRepository<Group> {
 
     createFromDto(dto: Dto.GroupDto): Group {
         const group = this.create();
-        group.permissionPolicy = dto.permissionPolicy;
         return group;
     }
 
