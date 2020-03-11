@@ -41,6 +41,7 @@ function exitApp(reason: string, code: number) {
 };
 
 async function main() {
+    //app.set("config", import(path.resolve(appRoot.toString(), "config.json")));
     Api.setLogger(log);
     const env = process.env.NODE_ENV;
 

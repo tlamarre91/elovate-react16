@@ -12,7 +12,7 @@ export enum GroupUserPrivilege {
 
 @Orm.Entity()
 export class GroupUser extends Resource {
-    @Orm.ManyToOne(() => Group, group => group.users)
+    @Orm.ManyToOne(() => Group, group => group.memberships)
     group: Group;
 
     @Orm.ManyToOne(() => User, user => user.groupMemberships)

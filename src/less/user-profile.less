@@ -1,0 +1,32 @@
+.userProfileContainer {
+    grid-template-columns: subgrid;
+    grid-template-rows: 100px auto;
+
+    .usernameContainer {
+        grid-column: @leftContentGrid;
+        grid-row: ~"1 / 2";
+        background-color: @color1;
+    }
+
+    .profileTabContainer {
+        grid-column: @middleContentGrid;
+        grid-row: ~"1 / 2";
+    }
+
+    .avatarContainer {
+        background-color: @color2;
+    }
+
+    .infoSectionContainer {
+        grid-column: @leftContentGrid;
+        background-color: @color3;
+    }
+
+    .pinnedItemsContainer {
+        background-color: @color2;
+    }
+
+    .matchHistoryContainer {
+        background-color: @color1;
+    }
+}

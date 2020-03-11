@@ -4,20 +4,20 @@ block title
     title log in - elovate
 
 block content
-    if !error
-        .loginContainer
-            if user
-                p= `logged in as ${ user.username }`
-            form.login(action="/api/v1/auth?redirect=/" method="post")
-                input(type="hidden" name="auth-method" value="basic")
-                input(type="hidden" name="client" value="web")
-                .usernameInput
-                    label(for="usernameInput") username
-                    input(type="text" name="username" id="usernameInput" required)
+    .pageTitle log in
+    .loginContainer.content
+        if user
+            p= `logged in as ${ user.username }`
+        form.login(action="/api/v1/auth?redirect=/" method="post")
+            input(type="hidden" name="auth-method" value="basic")
+            input(type="hidden" name="client" value="web")
+            .input
+                label(for="usernameInput") username
+                input(type="text" name="username" id="usernameInput" required)
 
-                .passwordInput
-                    label(for="passwordInput") password
-                    input(type="text" name="password" id="passwordInput" required)
+            .input
+                label(for="passwordInput") password
+                input(type="text" name="password" id="passwordInput" required)
 
-                .submitButton
-                    input(type="submit" value="log in" id="submitButton")
+            .submit
+                input(type="submit" value="log in" id="submitButton")

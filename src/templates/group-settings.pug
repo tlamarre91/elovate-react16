@@ -1,0 +1,15 @@
+extends base.pug
+
+block title
+    title group settings - elovate
+
+block content
+    .pageTitle= `${group} group settings`
+    form.groupSettings(action="/api/v1/groups/${ group.id }/settings" method="post")
+        input(type="hidden" name="client" value="web")
+        .input
+            label(for="customUrlInput") custom URL
+            input(type="text" name="customUrl" id="customUrlInput")
+
+        .submit
+            input(type="submit" value="save settings" id="submitButton")

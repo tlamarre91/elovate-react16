@@ -20,6 +20,10 @@ export class User extends Resource {
     @Orm.Column({ length: 64, nullable: true })
     username?: string;
 
+    // TODO: should probably just make an un-joinable admin group...
+    @Orm.Column({ default: false })
+    isAdmin: boolean;
+
     @Orm.Column({ length: 64 })
     displayName: string;
     

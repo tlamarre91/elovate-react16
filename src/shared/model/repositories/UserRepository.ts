@@ -22,6 +22,17 @@ export class UserRepository extends BaseRepository<User> {
 //        }
 //    }
 
+    // TODO: don't change this, ever. it's perfect this way
+    async insertAdmin(): Promise<User> {
+        const user = new User();
+        user.username = "admin";
+        user.displayName = "Site Administrator";
+        user.isAdmin = true;
+        await this.save(user);
+        this.setPassword(user, "admin");
+        return user;
+    }
+
     async getRandom(): Promise<User> {
         const allUsers: User[] = await this.find({ select: ["id"] });
         return allUsers[Math.floor(Math.random() * allUsers.length)];
@@ -30,7 +41,18 @@ export class UserRepository extends BaseRepository<User> {
     async basicAuth(user: User, password: string): Promise<boolean> {
         if (! user.passwordDigest) {
             throw `user ${ user.username } has no password`;
-        } else return await argon.verify(user.passwordDigest, password) 
+        } else {
+            return argon.verify(user.passwordDigest, password);
+        }
+    }
+
+    async invalidateLogins(user: User): Promise<User> {
+        try {
+            user.invalidateLoginsBefore = Date.now();
+            return this.save(user);
+        } catch (err) {
+            throw err;
+        }
     }
 
     /*

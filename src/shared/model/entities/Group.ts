@@ -10,13 +10,19 @@ export class Group extends Resource {
 
     // TODO: validate alphanumeric with dashes/underscore/whatever
     @Orm.Column({ length: 64, nullable: true })
-    customUrlName: string;
+    customUrl: string;
 
     @Orm.Column({ default: () => "NOW()" })
     dateCreated: Date;
 
+    @Orm.Column({ default: false })
+    publicVisible: boolean;
+
+    @Orm.Column({ default: false })
+    publicJoinable: boolean;
+
     @Orm.OneToMany(() => GroupUser, groupUser => groupUser.group)
-    users: GroupUser[];
+    memberships: GroupUser[];
 
     @Orm.OneToMany(() => Party, party => party.group)
     parties: Party[];

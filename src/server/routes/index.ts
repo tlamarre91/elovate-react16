@@ -22,6 +22,7 @@ import * as Entity from "~shared/model/entities";
 
 import userRouter from "./user-router";
 import groupRouter from "./group-router";
+import adminRouter from "./admin-router";
 
 // import { ImageAssetRepository } from "~shared/model/repositories";
 
@@ -32,6 +33,7 @@ const router = Router();
 router.use(Api.API_ROOT, apiRouter);
 router.use("/users", userRouter);
 router.use("/groups", groupRouter);
+router.use("/admin", adminRouter);
 
 router.get("/", async (req, res) => {
     res.render("base", { user: req.user });

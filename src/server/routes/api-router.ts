@@ -19,7 +19,7 @@ import { UserRepository } from "~shared/model/repositories";
 import { Authorization } from "~server/middleware";
 
 import * as Api from "~shared/api";
-import * as Util from "~server/util";
+//import * as Util from "~server/util";
 
 export const apiRouter = Router();
 
@@ -68,6 +68,9 @@ apiRouter.post("/auth", async (req, res) => {
 })
 
 apiRouter.post("/deauth", async (req, res) => {
+    if (req.user) {
+        const userRepo = Orm.getCustomRepository(UserRepository)
+    }
 });
 
 const userRouter = Router();

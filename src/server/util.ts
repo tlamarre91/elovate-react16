@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import * as Orm from "typeorm";
 import { log } from "~server/log";
 import * as Entity from "~shared/model/entities";
+import { Resource } from "~shared/model/Resource";
 
 export async function clearData() {
     const userGroupRepo = Orm.getRepository(Entity.GroupUser);
@@ -15,7 +16,7 @@ export async function clearData() {
 }
 
 export async function populateTestData() {
-    const TEST_USER_COUNT = 100;
+    const TEST_USER_COUNT = 2;
     const TEST_GROUP_COUNT = 5;
     const TEST_MATCH_COUNT = 1000;
     const TEST_GAME_COUNT = 2;
@@ -33,7 +34,6 @@ export async function populateTestData() {
         const username = `${BASE_USER_STR}${i}`;
         const email = `${BASE_USER_STR}${i}@elovate.com`;
         const displayName = `${BASE_USER_STR}${i} display name`;
-        //const user = await userRepo.createWithProps({ username, email, displayName });
         const user = userRepo.create({ username, email, displayName });
         userRepo.save(user);
         users.push(user);

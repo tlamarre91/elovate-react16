@@ -3,7 +3,6 @@ import * as Orm from "typeorm";
 
 import * as Api from "~shared/api";
 import { log } from "~server/log";
-import * as Entity from "~shared/model/entities";
 import * as Dto from "~shared/model/data-transfer-objects";
 
 const USER_PROFILE_TEMPLATE = "user-profile";
@@ -12,8 +11,8 @@ const router = Router();
 
 router.get("/:query", async (req, res) => {
     // TODO: validate query
-    const repo = Orm.getRepository(Entity.User);
-    const query = req.params["query"];
+//    const repo = Orm.getRepository(Entity.User);
+//    const query = req.params["query"];
 
 });
 

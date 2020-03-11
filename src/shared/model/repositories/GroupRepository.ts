@@ -1,7 +1,7 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
-import { Group } from "../entities";
+import { Group, User } from "../entities";
 import * as Dto from "../data-transfer-objects";
 
 @Orm.EntityRepository(Group)
@@ -19,6 +19,12 @@ export class GroupRepository extends BaseRepository<Group> {
         const group = this.create();
         group.permissionPolicy = dto.permissionPolicy;
         return group;
+    }
+
+    async countGroupsWithOwner(user: User): Promise<number> {
+        return this.find({ where: { ownerUser: user } })
+            .then(res => res.length)
+            .catch(err => { throw err });
     }
 }
 

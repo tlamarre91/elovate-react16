@@ -1,0 +1,24 @@
+extends base.pug
+
+block title
+    title new group - elovate
+
+block content
+    if error
+        p= `error: ${error}`
+
+    .pageTitle create new group
+
+    .newGroupFormContainer.content
+        form.newGroup(action="/api/v1/groups/new?redirect=_dashboard" method="post")
+            input(type="hidden" name="client" value="web")
+            .input
+                label(for="groupNameInput") group name
+                input(type="text" name="groupName" id="groupNameInput" required)
+
+            .input
+                label(for="customUrlInput") custom url
+                input(type="text" name="customUrl" id="customUrlInput")
+
+            .submit
+                input(type="submit" value="create group" id="submitButton")

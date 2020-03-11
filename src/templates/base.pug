@@ -4,22 +4,22 @@ html
         block title
         link(rel="stylesheet", type="text/css" href="/css/style.css")
     body
-        .pageHeader
+        .siteHeader
             .logo
-                a(href="/")
+                a.logo(href="/")
                     img(src="/img/elovate.png" alt="elovate home")
             nav
                 block nav
                     a(href="/") Report a match
                     a(href="/") Other nav link
-            if user
-                .loggedInUser
+            .loggedInUser
+                if user
                     .username= user.username
-                a.button(href="/logout") Log out
-            else
-                a.button(href="/login") Log in
+                    a.button(href="/logout") Log out
+                else
+                    a.button(href="/login") Log in
         .contentContainer
             block content
-        .pageFooter
+        .siteFooter
             page footer
         script(src="/js/client.js")
