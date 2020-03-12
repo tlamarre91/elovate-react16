@@ -12,10 +12,10 @@ if (typeof window !== "undefined") { // i think we're in a browser
         ]
     }
 } else { // i think we're in node
-    const appRoot = import("app-root-path");
+    // TODO: these filenames need to be configurable
     const transports: Array<any> = [
-        new winston.transports.File({ filename: `${appRoot}/logs/error.log`, level: "error" }),
-        new winston.transports.File({ filename: `${appRoot}/logs/combined.log` })
+        new winston.transports.File({ filename: `./logs/error.log`, level: "error" }),
+        new winston.transports.File({ filename: `./logs/combined.log` })
     ];
 
     if (process.env.NODE_ENV !== "production") {
