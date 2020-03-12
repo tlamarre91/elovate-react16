@@ -11,7 +11,6 @@ export class ImageAssetDto extends BaseDto<Entity.ImageAsset> {
 
     constructor(obj: Entity.ImageAsset, origin?: string) {
         super(obj, origin);
-        this.id = obj.id;
         this.uri = obj.uri;
         return this;
     }

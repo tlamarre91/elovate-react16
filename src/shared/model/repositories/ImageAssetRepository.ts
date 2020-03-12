@@ -17,7 +17,7 @@ export class ImageAssetRepository extends BaseRepository<ImageAsset> {
     findOneFromQuery(query: string): Promise<ImageAsset> {
         throw new Error("Method not implemented.");
     }
-    createFromDto(dto: Dto.ImageAssetDto): ImageAsset {
+    createFromDto(dto: Dto.ImageAssetDto): Promise<ImageAsset> {
         throw new Error("Method not implemented.");
     }
     static identiconDir = path.join("img", "identicons");

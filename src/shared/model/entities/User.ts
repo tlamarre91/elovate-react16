@@ -13,18 +13,19 @@ export class User extends Resource {
     @Orm.Column({ nullable: true })
     lastLogin: Date;
 
-    @Orm.ManyToOne(() => ImageAsset)
-    avatarAsset: ImageAsset;
+    @Orm.ManyToOne(() => ImageAsset, { nullable: true })
+    avatarAsset?: ImageAsset;
 
     @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
     username?: string;
 
     // TODO: should probably just make an un-joinable admin group...
+    // would that be less flimsy?
     @Orm.Column({ default: false })
     isAdmin: boolean;
 
-    @Orm.Column({ length: 64 })
+    @Orm.Column({ length: 64, nullable: true })
     displayName: string;
     
     @Orm.Index({ unique: true })
@@ -41,7 +42,7 @@ export class User extends Resource {
     receivesEmail: boolean;
 
     @Orm.Column({ default: false })
-    isPublic: boolean;
+    publicVisible: boolean;
 
     @Orm.Column({ length: 128, nullable: true })
     passwordDigest?: string;
@@ -49,9 +50,7 @@ export class User extends Resource {
     @Orm.OneToMany(() => GroupUser, groupUser => groupUser.user)
     groupMemberships: GroupUser[];
 
-    @Orm.Column({ type: "int", nullable: true })
-    loginExp?: number;
-
+    // invalidateLoginsBefore: seconds in unix epoch
     @Orm.Column({ type: "int", nullable: true })
     invalidateLoginsBefore?: number;
 

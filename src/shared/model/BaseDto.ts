@@ -3,7 +3,7 @@ import { Resource } from "./Resource";
 export class BaseDto<T extends Resource> {
     origin?: string;
     id?: number;
-    permissionPolicy: number;
+    createdById: number;
     ownerUserId?: number;
     ownerGroupId?: number;
     constructor(obj: T, origin?: string) {

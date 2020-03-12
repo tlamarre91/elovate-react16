@@ -1,12 +1,9 @@
-import {
-    Router,
-    Request,
-    Response
-} from "express";
+import { Router, Request, Response, NextFunction } from "express";
 
 import {
     sanitizeBody,
     sanitizeParam,
+    sanitizeQuery,
     validationResult,
     Result
 } from "express-validator";
@@ -15,45 +12,102 @@ import * as Orm from "typeorm";
 
 import { LoremIpsum } from "lorem-ipsum";
 
-import * as Api from "~shared/api";
-import { log } from "~server/log";
+import { log } from "~shared/log";
 
 import * as Entity from "~shared/model/entities";
+import * as Dto from "~shared/model/data-transfer-objects";
+import { UserRepository } from "~shared/model/repositories";
+import { Authorization } from "~server/middleware";
 
-import userRouter from "./user-router";
-import groupRouter from "./group-router";
-import adminRouter from "./admin-router";
+import * as Api from "~shared/api";
+import userRouter from "./users";
+import groupRouter from "./groups";
 
-// import { ImageAssetRepository } from "~shared/model/repositories";
+export const baseRouter = Router();
+export const apiRouter = Router();
+baseRouter.use(Api.API_ROOT, apiRouter);
 
-import { apiRouter } from "./api-router";
+apiRouter.post(`/${Api.Resource.Authentication}`, async (req, res) => {
+    log.info(JSON.stringify(req.body));
+    if (req.body["data"]["auth-method"] === "basic") {
+        const username = req.body["data"]["username"];
+        const password = req.body["data"]["password"];
+        const userRepo = Orm.getCustomRepository(UserRepository);
+        const user = await userRepo.find({ username }).then(res => res[0]);
+        const isWebFallbackClient = req.body["client"] === "web-fallback";
+        if (user) {
+            if (await userRepo.basicAuth(user, password)) {
+                // TODO: don't necessarily assign refresh: true to all JWTs...
+                const newToken = Authorization.generateUserJwt(user.id, req.app.get("secret"), true);
+                res.cookie(Authorization.JWT_COOKIE_NAME, newToken, { signed: true });
+                if (isWebFallbackClient) {
+                    if (req.query["redirect"]) {
+                        res.redirect(req.query["redirect"]);
+                    } else {
+                        res.redirect("/");
+                    }
+                } else {
+                    res.json(new Api.Response(true, null, new Dto.UserDto(user)));
+                }
+            } else {
+                res.status(403);
+                if (isWebFallbackClient) {
+                    res.redirect(`/login?msg=${ encodeURIComponent("username/password combination was invalid") }`);
+                } else {
+                    res.json(new Api.Response(false, `invalid username and/or password`));
+                }
+            }
+        } else {
+            res.status(404);
+            if (isWebFallbackClient) {
+                res.redirect(`/login?msg=${ encodeURIComponent("user/password combination was invalid") }`);
+            } else {
+                log.info(`user not found: ${username}`);
+                res.json(new Api.Response(false, "invalid username and/or password"));
+            }
+        }
+    } else {
+        res.status(401)
+        res.json(new Api.Response(false, `auth method not supported: ${ req.body["auth-method"] }`));
+    }
+});
 
-const router = Router();
+apiRouter.get("/whoami", async (req, res) => {
+    try {
+        if (req.user) {
+            res.json(new Api.Response(true, null, new Dto.UserDto(req.user)));
+        } else {
+            res.status(403);
+            res.json(new Api.Response(false, "not logged in"));
+        }
+    } catch (err) {
+        res.status(500);
+        res.json(new Api.Response(false, err));
+    }
+});
 
-router.use(Api.API_ROOT, apiRouter);
-router.use("/users", userRouter);
-router.use("/groups", groupRouter);
-router.use("/admin", adminRouter);
+apiRouter.get("/deauth", async (req, res) => {
+    if (req.user) {
+        const userRepo = Orm.getCustomRepository(UserRepository)
+        try {
+            log.info(`invalidating logins for ${req.user}`);
+            await userRepo.invalidateLogins(req.user);
+            if (req.query["redirect"]) {
+                res.redirect(req.query["redirect"]);
+            } else {
+                res.json(new Api.Response(true, null, `logged out as ${req.user.id}`));
+            }
+        } catch (err) {
+            res.status(500);
+            res.json(new Api.Response(false, `could not authenticate: ${err}`));
+        }
+    }
+});
 
-router.get("/", async (req, res) => {
+apiRouter.use(`/${Api.Resource.User}`, userRouter);
+apiRouter.use(`/${Api.Resource.Group}`, groupRouter);
+
+baseRouter.get("/*", async (req, res) => {
     res.render("base", { user: req.user });
 });
-
-router.get("/login", async (req, res) => {
-    const user = req.user;
-    res.render("login", { user });
-});
-
-// router.get("/identicon/:token", async (req, res) => {
-//     const repo = Orm.getCustomRepository(ImageAssetRepository);
-//     const identicon: ImageAsset = await repo.getIdenticon(req.params["token"], 50);
-//     res.json({ made: identicon.uri });
-// });
-// 
-// router.get("/identicons", async (req, res) => {
-//     const repo = Orm.getCustomRepository(ImageAssetRepository);
-//     const identicons: ImageAsset[] = await repo.find();
-//     res.render("identicon-test", { assets: identicons });
-// });
-
-export default router;
+export default baseRouter;

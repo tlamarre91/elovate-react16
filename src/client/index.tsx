@@ -1,19 +1,60 @@
-import * as React from "react";
+import React from "react";
 import { render } from "react-dom";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 
 import * as Api from "~shared/api";
-
 import { elmt } from "~client/util";
-import { log } from "~client/log";
+import { log } from "~shared/log";
 
 import { UserCard } from "~client/components/cards";
+import { LoginForm } from "~client/components/LoginForm";
+import { AdminPage, AdminUserList } from "~client/pages/admin";
+import { UserRouter } from "~client/pages/user";
+import { NavHeader, NavHeaderProps } from "~client/components";
+
+const contentRouter = <Router>
+    <Switch>
+        <Route path="/users">
+            <UserRouter />
+        </Route>
+        <Route path="/hey">
+            <div>HEY!</div>
+        </Route>
+        <Route path="/login">
+            <LoginForm values={{
+                username: "",
+                password: "", 
+                "auth-method": "basic"
+            }}/>
+        </Route>
+        <Route path="/logout">
+        </Route>
+        <Route path="/admin">
+            <AdminPage />
+        </Route>
+    </Switch>
+</Router>;
+
+const navProps: NavHeaderProps = {
+    links: [
+        { url: "/", text: "Home" },
+        { url: "/groups", text: "Groups" },
+        { url: "/users", text: "Users" },
+        { url: "/admin", text: "Admin" },
+    ]
+}
+
+const navHeader = NavHeader(navProps);
 
 function main() {
     Api.setLogger(log);
-    //render(UserCard({ 
-    //    username: "tombo",
-    //    email: "tombo@mambo.com"
-    //}), document.getElementById("userSearchContainer"));
+    render(contentRouter, document.getElementById("contentContainer"));
+    render(navHeader, document.getElementById("siteNav"));
 }
 
 document.addEventListener("DOMContentLoaded", main);

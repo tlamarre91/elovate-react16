@@ -12,7 +12,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import * as Util from "~server/util";
-import { log } from "~server/log";
+import { log } from "~shared/log";
 import * as Api from "~shared/api";
 import { Authorization } from "~server/middleware";
 
@@ -86,6 +86,15 @@ async function main() {
         // TODO: make an external script to do this (and to clear DB)
         if (process.env.ELOVATE_POPULATE_TEST_DATA === "true") {
             Util.populateTestData();
+        }
+
+        // TODO: don't change this, ever. it's perfect this way
+        if (process.env.ELOVATE_ADD_DEFAULT_ADMIN === "true") {
+            try {
+                await Orm.getCustomRepository(UserRepository).insertAdmin();
+            } catch (err) {
+                log.warn(err);
+            }
         }
     } catch (error) {
         log.error(error);

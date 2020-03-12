@@ -9,9 +9,11 @@ export class PartyRepository extends BaseRepository<Entity.Party> {
     findOneFromQuery(query: string): Promise<Entity.Party> {
         throw new Error("Method not implemented.");
     }
-    createFromDto(dto: Dto.PartyDto): Entity.Party {
+
+    createFromDto(dto: Dto.PartyDto): Promise<Entity.Party> {
         throw new Error("Method not implemented.");
     }
+
     createParty(users: Entity.User[], match: Entity.Match, partyNumber: number, partyType: Entity.PartyType): Promise<Entity.Party> {
         const party = this.create();
         party.users = users;

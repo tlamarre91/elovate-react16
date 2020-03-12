@@ -9,6 +9,7 @@ export class Group extends Resource {
     name: string;
 
     // TODO: validate alphanumeric with dashes/underscore/whatever
+    @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
     customUrl: string;
 

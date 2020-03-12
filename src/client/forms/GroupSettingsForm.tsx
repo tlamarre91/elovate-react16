@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Api from "~shared/api";
 
 import { elmt } from "~client/util";
-import { log } from "~client/log";
+import { log } from "~shared/log";
 
 interface GroupSettingsFormProps {
     initialValues: {[key: string]: string};

@@ -15,7 +15,7 @@ export class GroupRepository extends BaseRepository<Group> {
         }
     }
 
-    createFromDto(dto: Dto.GroupDto): Group {
+    async createFromDto(dto: Dto.GroupDto): Promise<Group> {
         const group = this.create();
         return group;
     }

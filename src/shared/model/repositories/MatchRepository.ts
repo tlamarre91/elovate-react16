@@ -9,7 +9,7 @@ export class MatchRepository extends BaseRepository<Entity.Match> {
     findOneFromQuery(query: string): Promise<Entity.Match> {
         throw new Error("Method not implemented.");
     }
-    createFromDto(dto: Dto.MatchDto): Entity.Match {
+    createFromDto(dto: Dto.MatchDto): Promise<Entity.Match> {
         throw new Error("Method not implemented.");
     }
     reportMatch(parties: Entity.Party[], result: Entity.MatchResult, datePlayed?: Date): Promise<Entity.Match> {

@@ -2,13 +2,58 @@ import * as Orm from "typeorm";
 import * as argon from "argon2";
 
 import { BaseRepository } from "./BaseRepository";
-import { User } from "../entities";
+import { User, Group } from "../entities";
 import * as Dto from "../data-transfer-objects";
 
 @Orm.EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
-    createFromDto(dto: Dto.UserDto): User {
-        throw new Error("Method not implemented.");
+    async createFromDto(dto: Dto.UserDto): Promise<User> {
+        try {
+            const user = this.create();
+            user.createdBy = await this.findOne(dto.createdById);
+            user.ownerUser = await this.findOne(dto.ownerUserId);
+            const groupRepo = Orm.getRepository(Group);
+            user.ownerGroup = await groupRepo.findOne(dto.ownerGroupId);
+            user.username = dto.username ?? null;
+            user.isAdmin = false;
+            user.displayName = dto.displayName ?? null;
+            user.email = dto.email ?? null;
+            user.emailVerified = dto.emailVerified ?? false;
+            user.hasAccount = dto.hasAccount ?? false;
+            user.receivesEmail = dto.receivesEmail ?? false;
+
+            dto.groupMemberships.forEach(guDto => {
+                console.log(`${guDto.userId} wants to be in ${guDto.groupId}`);
+            });
+
+            return user;
+        } catch (err) {
+            console.log(err); // TODO: LOGGING!!!
+            return null;
+        }
+    }
+
+    async updateFromDto(user: User, dto: Dto.UserDto): Promise<User> {
+        try {
+            user.ownerUser = await this.findOne(dto.ownerUserId);
+            const groupRepo = Orm.getRepository(Group);
+            user.ownerGroup = await groupRepo.findOne(dto.ownerGroupId);
+            user.username = dto.username;
+            user.displayName = dto.displayName ?? null;
+            user.email = dto.email ?? null;
+            user.emailVerified = dto.emailVerified ?? false;
+            user.hasAccount = dto.hasAccount ?? false;
+            user.receivesEmail = dto.receivesEmail ?? false;
+
+            dto.groupMemberships.forEach(guDto => {
+                console.log(`${guDto.userId} wants to be in ${guDto.groupId}`);
+            });
+
+            return this.save(user);
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
     }
 //    search(params: Api.UserSearchParams): Promise<User[]> {
 //        if (params.searchType === Api.SearchType.ContainsAll) {
@@ -48,7 +93,7 @@ export class UserRepository extends BaseRepository<User> {
 
     async invalidateLogins(user: User): Promise<User> {
         try {
-            user.invalidateLoginsBefore = Date.now();
+            user.invalidateLoginsBefore = Math.floor(Date.now() / 1000);
             return this.save(user);
         } catch (err) {
             throw err;
@@ -70,6 +115,10 @@ export class UserRepository extends BaseRepository<User> {
         } else {
             throw "UserRepository.findOneFromQuery: query not yet implemented";
         }
+    }
+
+    async findVisibleToUser(user: User): Promise<User[]> {
+        throw "not yet implemented";
     }
 }
 

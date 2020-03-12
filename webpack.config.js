@@ -11,13 +11,13 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.ts(x?)$/,
                 use: "ts-loader",
             }
         ]
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js"],
+        extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
             "~shared": path.resolve("src/shared"),
             "~server": path.resolve("src/server"),

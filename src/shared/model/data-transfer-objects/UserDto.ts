@@ -10,13 +10,30 @@ export class UserDto extends BaseDto<Entity.User> {
     username?: string;
     displayName?: string;
     email?: string;
+    emailVerified?: boolean;
+    hasAccount?: boolean;
+    receivesEmail?: boolean;
+    publicVisible?: boolean;
     groupMemberships?: Dto.GroupUserDto[];
-    matchParties?: Dto.PartyDto[];
+    parties?: Dto.PartyDto[];
 
     constructor(obj: Entity.User, origin?: string) {
         super(obj, origin);
         this.dateCreated = obj.dateCreated;
+        this.username = obj.username;
+        this.email = obj.email;
         this.lastLogin = obj.lastLogin;
-        //this.avatarAsset = new Dto.ImageAssetDto(base.avatarAsset);
+
+        if (obj.groupMemberships) {
+            this.groupMemberships = obj.groupMemberships.map(gu => new Dto.GroupUserDto(gu));
+        }
+
+        if (obj.parties) {
+            this.parties = obj.parties.map(p => new Dto.PartyDto(p));
+        }
+
+        if (obj.avatarAsset) {
+            this.avatarAsset = new Dto.ImageAssetDto(obj.avatarAsset);
+        }
     }
 }

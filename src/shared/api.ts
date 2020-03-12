@@ -1,14 +1,15 @@
 import winston from "winston";
 
+import { log } from "~shared/log";
 import * as Entity from "~shared/model/entities";
-let log: winston.Logger;
-export function setLogger(logger: winston.Logger) {
-    log = logger;
-}
+import { BaseDto } from "~shared/model/BaseDto";
+
 
 export const API_ROOT = "/api/v1"
 
 export enum Resource {
+    WhoAmI = "whoami",
+    Authentication = "authenticate",
     User = "users",
     Group = "groups",
     Match = "matches"
@@ -24,7 +25,6 @@ export class Get<Receive> {
     }
 
     async execute(): Promise<Response<Receive>> {
-        log?.info("running a get (TODO: remove. just testing)");
         let fetchParams: any = {
             method: "GET",
             credentials: "same-origin",
@@ -57,6 +57,39 @@ export class Post<Send, Receive> {
     async execute(): Promise<Response<Receive>> {
         let fetchParams: any = {
             method: "POST",
+            credentials: "same-origin",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: this.body
+        };
+
+        return fetch(this.url, fetchParams)
+            .then(response => response.json())
+            .then(obj => obj as Response<Receive>);
+    }
+}
+
+// TODO: factor out common properties between request types
+export class Put<Send, Receive> {
+    url: string;
+    origin: string;
+    body: string;
+
+    constructor(origin: string, resource: Resource, obj: Send) {
+        this.url = `${API_ROOT}/${resource}`;
+        this.origin = origin;
+        this.body = JSON.stringify({
+            origin,
+            targetResource: resource,
+            data: obj
+        });
+    }
+
+    async execute(): Promise<Response<Receive>> {
+        let fetchParams: any = {
+            method: "PUT",
             credentials: "same-origin",
             headers: {
                 Accept: "application/json",

@@ -24,7 +24,7 @@ div {
     display: flex;
 }
 
-.siteHeader {
+#siteHeader {
     grid-template-columns: subgrid;
     grid-row: @headerRowGrid;
     grid-column: @fullWidthGrid;
@@ -32,15 +32,14 @@ div {
     background-color: @color1Dark2;
     align-items: center;
     justify-content: center;
-    padding: 5px;
 
-    .logo {
+    #logo {
         grid-column: ~"1 / 2";
         padding: 2px;
         margin: auto;
     }
 
-    nav {
+    nav#siteNav {
         display: flex;
         flex-direction: row;
         grid-column: ~"2 / 12";
@@ -55,16 +54,12 @@ div {
         margin-right: 10px;
     }
 
-    //a.logo {
-    //    max-width: min-content;
-    //}
-
     a.button {
         grid-column: ~"12 / 13";
         background-color: @color1Dark1;
         border-radius: 3px;
         transition: all 0.2s ease;
-        margin: auto;
+        width: max-content;
     }
 
     a.button:hover {
@@ -72,7 +67,7 @@ div {
     }
 }
 
-.siteFooter {
+#siteFooter {
     grid-template-columns: subgrid;
     grid-row: @footerRowGrid;
     grid-column: @fullWidthGrid;
@@ -80,19 +75,8 @@ div {
     background-color: @color1Dark2;
 }
 
-.contentContainer {
+#contentContainer {
     grid-template-columns: subgrid;
-    grid-template-rows: 30px auto;
     grid-row: @contentRowGrid;
     grid-column: @fullWidthGrid;
-
-    .pageTitle {
-        grid-column: @middleContentGrid;
-        grid-row: ~"1 / 2";
-    }
-
-    .content {
-        grid-column: @middleContentGrid;
-        grid-row: ~"2 / 3";
-    }
 }

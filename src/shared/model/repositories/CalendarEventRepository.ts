@@ -7,7 +7,7 @@ import { BaseDto } from "../BaseDto";
 
 @Orm.EntityRepository(Entity.CalendarEvent)
 export class CalendarEventRepository extends BaseRepository<Entity.CalendarEvent> {
-    createFromDto(dto: Dto.CalendarEventDto): Entity.CalendarEvent {
+    createFromDto(dto: Dto.CalendarEventDto): Promise<Entity.CalendarEvent> {
         throw "not yet implemented";
     }
     

@@ -5,6 +5,7 @@ const del = require("del");
 const ts = require("gulp-typescript");
 const source = require("vinyl-source-stream");
 const sourcemaps = require("gulp-sourcemaps");
+const webpackCompiler = require("webpack");
 const webpack = require("webpack-stream");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -46,7 +47,7 @@ function cleanClient() {
 
 function buildClient() {
     return gulp.src("src/client/index.tsx")
-        .pipe(webpack(require("./webpack.config")))
+        .pipe(webpack(require("./webpack.config"), webpackCompiler))
         .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR, "js")));
 }
 
@@ -97,7 +98,7 @@ exports.less = gulp.series(cleanLess, buildLess);
 exports.watch = cb => {
     const opts = { ignoreInitial: false };
     gulp.watch(["src/server/**/*", "src/shared/**/*"], opts, exports.server);
-    gulp.watch(["src/client/**/*", "src/shared/**/*"], opts, exports.client);
+    gulp.watch(["src/client/**/*", "src/shared/**/*"], opts, buildClient);
     gulp.watch(["src/templates/**/*"], opts, exports.templates);
     gulp.watch(["src/less/**/*"], opts, exports.less);
     gulp.watch(["assets/**/*"], opts, exports.assets);
