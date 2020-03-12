@@ -20,6 +20,34 @@ div {
     color: @textColor;
 }
 
+div.tabbedPage {
+    display: grid;
+    grid-template-rows: 50px auto;
+    div.tabLinks {
+        grid-row: ~"1 / 2";
+        display: flex;
+        background-color: @color2Dark2;
+        width: 100%;
+
+        a {
+            font: 100% @fontStack;
+            font-weight: bold;
+            color: @textColorLight2;
+            text-decoration: none;
+            padding: 6px;
+            margin-right: 10px;
+        }
+
+        a.selected {
+            background-color: @color2;
+        }
+    }
+
+    div.tabbedContent {
+        grid-row: ~"2 / 3";
+    }
+}
+
 .appContainer {
     display: flex;
 }
@@ -67,6 +95,24 @@ div {
     }
 }
 
+div.userTableContainer {
+    .controls {
+        display: flex;
+
+        .prev {
+            justify-content: flex-start;
+        }
+
+        .pageNumber {
+            justify-content: center;
+        }
+
+        .next {
+            justify-content: flex-start;
+        }
+    }
+}
+
 #siteFooter {
     grid-template-columns: subgrid;
     grid-row: @footerRowGrid;
@@ -79,4 +125,8 @@ div {
     grid-template-columns: subgrid;
     grid-row: @contentRowGrid;
     grid-column: @fullWidthGrid;
+}
+
+.content {
+    grid-column: @middleContentGrid;
 }

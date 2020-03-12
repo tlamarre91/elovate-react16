@@ -2,8 +2,7 @@ import winston from "winston";
 
 let loggerOpts: winston.LoggerOptions;
 
-if (typeof window !== "undefined") {
-    // i think we're in a browser
+if (typeof window !== "undefined") { // i think we're in a browser
     loggerOpts = {
         level: "info",
         transports: [
@@ -12,8 +11,7 @@ if (typeof window !== "undefined") {
             })
         ]
     }
-} else {
-    // i think we're in node
+} else { // i think we're in node
     const appRoot = import("app-root-path");
     const transports: Array<any> = [
         new winston.transports.File({ filename: `${appRoot}/logs/error.log`, level: "error" }),

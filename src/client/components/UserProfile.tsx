@@ -1,5 +1,4 @@
 import React from "react";
-import { render } from "react-dom";
 import {
     BrowserRouter as Router,
     Switch,
@@ -22,7 +21,6 @@ export const UserProfile: React.FC<UserProfileProps> = (props) => {
     const [userDto, setUserDto] = React.useState<Dto.UserDto>(null);
     const [status, setStatus] = React.useState<string>("loading...");
     React.useEffect(() => {
-        log.info(`using effect... ${Date.now()}`);
         const call = new Api.Get<Dto.UserDto>(window.location.href, Api.Resource.User, query);
         call.execute().then(res => {
             if (res.success) {
@@ -40,16 +38,3 @@ export const UserProfile: React.FC<UserProfileProps> = (props) => {
     </div>
 }
 
-export const UserRouter: React.FC = () => {
-    const { path, url } = useRouteMatch();
-    return <Router>
-        <Switch>
-            <Route exact path={ path }>
-                <div>wanna list all users...</div>
-            </Route>
-            <Route path={ `${path}/:query` }>
-                <UserProfile />
-            </Route>
-        </Switch>
-    </Router>
-}

@@ -13,32 +13,31 @@ import { log } from "~shared/log";
 
 import { UserCard } from "~client/components/cards";
 import { LoginForm } from "~client/components/LoginForm";
-import { AdminPage, AdminUserList } from "~client/pages/admin";
-import { UserRouter } from "~client/pages/user";
+import { AdminRouter, UserRouter } from "~client/routes";
 import { NavHeader, NavHeaderProps } from "~client/components";
 
-const contentRouter = <Router>
-    <Switch>
-        <Route path="/users">
-            <UserRouter />
-        </Route>
-        <Route path="/hey">
-            <div>HEY!</div>
-        </Route>
-        <Route path="/login">
-            <LoginForm values={{
-                username: "",
-                password: "", 
-                "auth-method": "basic"
-            }}/>
-        </Route>
-        <Route path="/logout">
-        </Route>
-        <Route path="/admin">
-            <AdminPage />
-        </Route>
-    </Switch>
-</Router>;
+const contentRouter = <div className="content">
+    <Router>
+        <Switch>
+            <Route path="/users">
+                <UserRouter />
+            </Route>
+            <Route path="/hey">
+                <div>HEY!</div>
+            </Route>
+            <Route path="/login">
+                <LoginForm values={{
+                    username: "",
+                        password: "", 
+                        "auth-method": "basic"
+                }}/>
+            </Route>
+            <Route path="/admin">
+                <AdminRouter />
+            </Route>
+        </Switch>
+    </Router>
+</div>
 
 const navProps: NavHeaderProps = {
     links: [
@@ -52,7 +51,6 @@ const navProps: NavHeaderProps = {
 const navHeader = NavHeader(navProps);
 
 function main() {
-    Api.setLogger(log);
     render(contentRouter, document.getElementById("contentContainer"));
     render(navHeader, document.getElementById("siteNav"));
 }
