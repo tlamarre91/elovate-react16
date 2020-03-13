@@ -19,8 +19,8 @@ export class Get<Receive> {
     url: string;
     origin: string;
 
-    constructor(origin: string, resource: Resource, query: string) {
-        this.url = `${API_ROOT}/${resource}/${query}`;
+    constructor(origin: string, resource: Resource, query?: string) {
+        this.url = `${API_ROOT}/${resource}` + (query ? `/${query}` : "");
         this.origin = origin;
     }
 

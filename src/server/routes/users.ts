@@ -37,8 +37,8 @@ router.get("/all", async (req, res) => {
         const users = await Orm.getRepository(Entity.User).find();
         res.json(new Api.Response(true, null, users.map(u => new Dto.UserDto(u))));
     } else {
-        res.status(403);
-        res.json(new Api.Response(false));
+        const users = await Orm.getRepository(Entity.User).find({ where: { publicVisible: true } });
+        res.json(new Api.Response(true, null, users.map(u => new Dto.UserDto(u))));
     }
 });
 

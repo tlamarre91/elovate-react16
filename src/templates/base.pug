@@ -3,20 +3,14 @@ html
     head
         block title
         link(rel="stylesheet", type="text/css" href="/css/style.css")
+        script(src="/js/client.js")
     body
         #siteHeader
             #logo
                 a.logo(href="/")
                     img(src="/img/elovate.png" alt="elovate home")
-            nav#siteNav
-            #loggedInUserWidget
-                if user
-                    .username= user.username
-                    a.button(href="/api/v1/deauth?redirect=/") Log out
-                else
-                    a.button(href="/login") Log in
+            #headerNavContainer
+            #loggedInUserWidgetContainer
         #contentContainer
             block content
-        #siteFooter
-            page footer
-        script(src="/js/client.js")
+        #siteFooter page footer

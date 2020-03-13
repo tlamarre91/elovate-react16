@@ -7,17 +7,16 @@
 
 
 body {
+    display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: 50px auto 100px;
     background-color: @bgColorOuter;
     font: 90% @fontStack;
     color: @textColor;
-    display: grid;
 }
 
 div {
     display: grid;
-    color: @textColor;
 }
 
 div.tabbedPage {
@@ -73,6 +72,10 @@ div.tabbedPage {
         grid-column: ~"2 / 12";
     }
 
+    #loggedInUserWidgetContainer {
+        grid-column: ~"12 / 13";
+    }
+
     a {
         font: 100% @fontStack;
         font-weight: bold;
@@ -125,8 +128,4 @@ div.userTableContainer {
     grid-template-columns: subgrid;
     grid-row: @contentRowGrid;
     grid-column: @fullWidthGrid;
-}
-
-.content {
-    grid-column: @middleContentGrid;
 }

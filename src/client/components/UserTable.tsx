@@ -37,7 +37,14 @@ export const UserTable: React.FC<UserTableProps> = (props) => {
     const [status, setStatus] = React.useState<string>("");
     const [page, setPage] = React.useState<number>(0);
 
-    const nPages = () => Math.ceil(loadedUsers.length / props.pageLength);
+    const nPages = () => {
+        if (props.pageLength > 0) {
+            return Math.ceil((loadedUsers?.length ?? 0) / props.pageLength);
+        } else {
+            throw new Error(`invalid prop: pageLength (${props.pageLength})`);
+        }
+    }
+
     const incPage = (delta: number) => () => {
         const p1 = page + delta;
         const newPage = p1 <= 0 ? 0
@@ -48,8 +55,12 @@ export const UserTable: React.FC<UserTableProps> = (props) => {
     };
 
     const refreshVisibleUsers = () => {
-        const startIdx = page * props.pageLength;
-        setVisibleUsers(loadedUsers.slice(startIdx, startIdx + props.pageLength));
+        if (loadedUsers) {
+            const startIdx = page * props.pageLength;
+            setVisibleUsers(loadedUsers.slice(startIdx, startIdx + props.pageLength));
+        } else {
+            log.warn(`UserList: users not loaded`);
+        }
     }
 
     React.useEffect(() => {

@@ -10,20 +10,22 @@ import {
 } from "react-router-dom";
 
 import { UserProfile } from "~client/components/UserProfile";
+import { UserCreateForm } from "~client/components/UserCreateForm";
 
 export const UserRouter: React.FC = () => {
     const { path, url } = useRouteMatch();
 
-    return <Router>
-        <Switch>
-            <Route exact path={ path }>
-                <div>wanna list all users...</div>
-            </Route>
-            <Route path={ `${path}/:query` }>
-                <UserProfile />
-            </Route>
-        </Switch>
-    </Router>
+    return <Switch>
+        <Route exact path={ path }>
+            <div>wanna list all users...</div>
+        </Route>
+        <Route path={ `${path}/new` }>
+            <UserCreateForm />
+        </Route>
+        <Route path={ `${path}/:query` }>
+            <UserProfile />
+        </Route>
+    </Switch>
 }
 
 export default UserRouter;

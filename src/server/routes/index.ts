@@ -72,7 +72,7 @@ apiRouter.post(`/${Api.Resource.Authentication}`, async (req, res) => {
     }
 });
 
-apiRouter.get("/whoami", async (req, res) => {
+apiRouter.get(`/${Api.Resource.WhoAmI}`, async (req, res) => {
     try {
         if (req.user) {
             res.json(new Api.Response(true, null, new Dto.UserDto(req.user)));
@@ -107,6 +107,9 @@ apiRouter.get("/deauth", async (req, res) => {
 apiRouter.use(`/${Api.Resource.User}`, userRouter);
 apiRouter.use(`/${Api.Resource.Group}`, groupRouter);
 
+// TODO: exclude paths for static directories
+// i'll eventually have a static site generator, deploying to directories like "blog"
+// and "landing-site" and whatnot
 baseRouter.get("/*", async (req, res) => {
     res.render("base", { user: req.user });
 });

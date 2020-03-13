@@ -19,19 +19,17 @@ export const AdminRouter: React.FC = () => {
     const { path, url } = useRouteMatch();
 
     return <div className="tabbedPage">
-        <Router>
-            <div className="tabLinks">
-                <NavLink activeClassName="selected" to={ `${path}/log` }>log</NavLink>
-                <NavLink activeClassName="selected" to={ `${path}/users` }>users</NavLink>
-            </div>
-            <Switch>
-                <Route path={ `${path}/log` }>
-                    <div className="log">log placeholder</div>
-                </Route>
-                <Route path={ `${path}/users` }>
-                    <UserAdmin />
-                </Route>
-            </Switch>
-        </Router>
+        <div className="tabLinks">
+            <NavLink activeClassName="selected" to={ `${path}/log` }>log</NavLink>
+            <NavLink activeClassName="selected" to={ `${path}/users` }>users</NavLink>
+        </div>
+        <Switch>
+            <Route path={ `${path}/log` }>
+                <div className="log">log placeholder</div>
+            </Route>
+            <Route path={ `${path}/users` }>
+                <UserAdmin />
+            </Route>
+        </Switch>
     </div>
 };
