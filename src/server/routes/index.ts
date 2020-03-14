@@ -40,7 +40,7 @@ apiRouter.post(`/${Api.Resource.Authentication}`, async (req, res) => {
                 // TODO: don't necessarily assign refresh: true to all JWTs...
                 const newToken = Authorization.generateUserJwt(user.id, req.app.get("secret"), true);
                 res.cookie(Authorization.JWT_COOKIE_NAME, newToken, { signed: true });
-                if (isWebFallbackClient) {
+                if (isWebFallbackClient) { // TODO: purge all memories of the alleged "WebFallbackClient"
                     if (req.query["redirect"]) {
                         res.redirect(req.query["redirect"]);
                     } else {
@@ -86,17 +86,13 @@ apiRouter.get(`/${Api.Resource.WhoAmI}`, async (req, res) => {
     }
 });
 
-apiRouter.get("/deauth", async (req, res) => {
+apiRouter.get(`/${Api.Resource.Deauthentication}`, async (req, res) => {
     if (req.user) {
         const userRepo = Orm.getCustomRepository(UserRepository)
         try {
             log.info(`invalidating logins for ${req.user}`);
             await userRepo.invalidateLogins(req.user);
-            if (req.query["redirect"]) {
-                res.redirect(req.query["redirect"]);
-            } else {
-                res.json(new Api.Response(true, null, `logged out as ${req.user.id}`));
-            }
+            res.json(new Api.Response(true, null, `logged out as ${req.user.id}`));
         } catch (err) {
             res.status(500);
             res.json(new Api.Response(false, `could not authenticate: ${err}`));

@@ -9,7 +9,8 @@ export const API_ROOT = "/api/v1"
 
 export enum Resource {
     WhoAmI = "whoami",
-    Authentication = "authenticate",
+    Authentication = "auth",
+    Deauthentication = "deauth",
     User = "users",
     Group = "groups",
     Match = "matches"
