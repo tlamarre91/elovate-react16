@@ -12,8 +12,9 @@
     "pretest-server": "gulp server"
   },
   "dependencies": {
-    "@material-ui/core": "^4.7.1",
-    "@material-ui/icons": "^4.5.1",
+    "@blueprintjs/core": "^3.24.0",
+    "@blueprintjs/icons": "^3.14.0",
+    "@popperjs/core": "^2.1.0",
     "@types/cookie-parser": "^1.4.2",
     "app-root-path": "^3.0.0",
     "argon2": "^0.25.1",

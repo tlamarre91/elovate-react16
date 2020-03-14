@@ -58,7 +58,6 @@ export const SiteRouter: React.FC<SiteRouterProps> = (props) => {
             <Route path="/login">
                 <div className="loginForm">
                     <LoginDialog 
-                        user={ loggedInUser }
                         values={{ username: "", password: "", "auth-method": "basic" }}
                         onChange={ handleLoggedInUserChange }
                         redirect="/"

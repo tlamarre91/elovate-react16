@@ -1,4 +1,5 @@
 import React from "react";
+import * as BP from "@blueprintjs/core";
 import {
     Route,
     Switch,
@@ -67,9 +68,25 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
         log.info(`hey ${path}`);
         return <Link to={ `/login` } className="button">Log in</Link>
     } else {
-        return <div className="loggedInUserWidget">
-            <div className="username">{ props.user.username }</div>
-            <a className="button" onClick={ logout } href="#">Log out</a>
+        const containerStyle: React.CSSProperties = {
+            position: "absolute",
+            zIndex: 999,
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            background: "rgba(0, 0, 0, 0)"
+        };
+
+        const expandedView = <div onClick={ () => setExpanded(false) } style={ containerStyle }>
+            <div id="loggedInUserWidgetExpanded">
+                <BP.Button onClick={ logout }>Log out</BP.Button>
+            </div>
+        </div>
+
+        return <div className="loggedInUserWidget" style={{ zIndex: 1000 }}>
+            { expanded && expandedView }
+            <a className="button username" onClick={ () => setExpanded(! expanded) } href="#">{ props.user.displayName }</a>
         </div>
     }
 }

@@ -21,6 +21,7 @@ export class UserDto extends BaseDto<Entity.User> {
         super(obj, origin);
         this.dateCreated = obj.dateCreated;
         this.username = obj.username;
+        this.displayName = obj.displayName;
         this.email = obj.email;
         this.lastLogin = obj.lastLogin;
 

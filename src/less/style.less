@@ -1,3 +1,5 @@
+@import (inline) "@blueprintjs/core/lib/css/blueprint.css";
+@import (inline) "@blueprintjs/icons/lib/css/blueprint-icons.css";
 @import "/css/normalize.css";
 
 @import "./variables";
@@ -74,6 +76,13 @@ div.tabbedPage {
 
     #loggedInUserWidgetContainer {
         grid-column: ~"12 / 13";
+    }
+
+    #loggedInUserWidgetExpanded {
+        position: absolute;
+        background-color: @color1Dark1;
+        top: 50px;
+        right: 2px;
     }
 
     a {
