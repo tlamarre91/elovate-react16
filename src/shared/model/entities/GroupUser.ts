@@ -19,7 +19,16 @@ export class GroupUser extends Resource {
     user: User;
 
     @Orm.Column()
-    approved: boolean;
+    approvedByGroup: boolean;
+
+    @Orm.Column()
+    declinedByGroup: boolean;
+
+    @Orm.Column()
+    approvedByUser: boolean;
+
+    @Orm.Column()
+    declinedByUser: boolean;
 
     @Orm.Column({
         type: "enum",
