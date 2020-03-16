@@ -4,13 +4,15 @@ import {
     Route,
     Switch,
     Link,
-    useRouteMatch
+    useRouteMatch,
+    useHistory
 } from "react-router-dom";
 
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { UserDto } from "~shared/model/data-transfer-objects";
 import { LoginDialog } from "~client/components/LoginDialog";
+import { UserCreateForm } from "~client/components/UserCreateForm";
 
 export interface LoggedInUserWidgetProps {
     user: UserDto;
@@ -26,7 +28,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
     const [loaded, setLoaded] = React.useState<boolean>(false);
 
     const logout = () => {
-        const call = new Api.Get<string>(window.location.href, Api.Resource.Deauthentication);
+        const call = new Api.Get<string>(Api.Resource.Deauthentication);
         call.execute().then(res => {
             if (res.success) {
                 props.onChange(null);
@@ -42,7 +44,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
     React.useEffect(() => {
         log.info(`run @ ${Date.now()}`);
         try {
-            const call = new Api.Get<UserDto>(window.location.href, Api.Resource.WhoAmI);
+            const call = new Api.Get<UserDto>(Api.Resource.WhoAmI);
             call.execute().then(res => {
                 if (res.success) {
                     setStatus("");
@@ -62,31 +64,54 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
         }
     }, []);
 
+    const history = useHistory();
+
     if (! loaded) {
         return null;
     } else if (! props.user) {
-        log.info(`hey ${path}`);
-        return <Link to={ `/login` } className="button">Log in</Link>
+        const promptStyle: React.CSSProperties = {
+            color: "rgb(240, 240, 240)",
+            fontWeight: "bold"
+        }
+
+        const loginPopover =  <BP.Popover
+            position="bottom-right"
+            usePortal={ false }
+            content={ <LoginDialog onChange={ props.onChange } /> }
+            target={ <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Log in" /> } />
+
+        const registerLink = <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Register"
+            onClick={ () => history.push("/register") } />
+
+        return <>
+            { loginPopover }
+            { registerLink }
+        </>
     } else {
-        const containerStyle: React.CSSProperties = {
-            position: "absolute",
-            zIndex: 999,
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            background: "rgba(0, 0, 0, 0)"
-        };
-
-        const expandedView = <div onClick={ () => setExpanded(false) } style={ containerStyle }>
-            <div id="loggedInUserWidgetExpanded">
-                <BP.Button onClick={ logout }>Log out</BP.Button>
-            </div>
+        const popoverContent = <div className="loggedInUserWidgetPopover">
+            <BP.Menu>
+                <BP.MenuItem onClick={ () => history.push("/user/profile") } text="Profile" />
+                <BP.MenuItem onClick={ () => history.push("/messages") } text="Messages" />
+                <BP.MenuItem onClick={ () => history.push("/settings") } icon="settings" text="Settings" />
+                <BP.MenuItem onClick={ () => history.push("/help") } icon="help" text="Help"/>
+                <BP.Menu.Divider />
+                <BP.MenuItem onClick={ logout } tabIndex={ 0 } icon="log-out" text="Log out" />
+            </BP.Menu>
         </div>
 
-        return <div className="loggedInUserWidget" style={{ zIndex: 1000 }}>
-            { expanded && expandedView }
-            <a className="button username" onClick={ () => setExpanded(! expanded) } href="#">{ props.user.displayName }</a>
-        </div>
+        const target = (
+            <a className="target" tabIndex={ 0 } role="button">
+                <div className="displayTag">
+                    <span className="displayName">{ props.user.displayName }</span>
+                    <BP.Icon icon="user" iconSize={ 30 } color={ "rgb(240, 240, 240)" } />
+                </div>
+            </a>
+        )
+
+        return <BP.Popover
+            position="bottom-right"
+            usePortal={ false }
+            content={ popoverContent }
+            target={ target } />
     }
 }

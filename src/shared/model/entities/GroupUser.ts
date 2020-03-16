@@ -18,6 +18,9 @@ export class GroupUser extends Resource {
     @Orm.ManyToOne(() => User, user => user.groupMemberships)
     user: User;
 
+    @Orm.Column()
+    approved: boolean;
+
     @Orm.Column({
         type: "enum",
         enum: GroupUserPrivilege,

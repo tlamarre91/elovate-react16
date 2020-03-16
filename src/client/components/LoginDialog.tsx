@@ -1,6 +1,7 @@
+// TODO: rename back to LoginForm... :\
 import * as React from "react";
-import ReactModal from "react-modal";
 import { Formik } from "formik";
+import * as BP from "@blueprintjs/core";
 import {
     useHistory,
     useLocation
@@ -9,77 +10,90 @@ import {
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { UserDto } from "~shared/model/data-transfer-objects";
+import { postBasicAuth } from "~client/auth";
 
 export interface LoginDialogProps {
     onChange: (user: UserDto) => void;
     modal?: boolean;
     redirect?: string;
     errors?: string[];
-    values: LoginDialogValues;
 }
 
 export class LoginDialogValues {
-    username?: string;
-    password?: string;
-    ["auth-method"]?: string;
+    username: string;
+    password: string;
+    ["auth-method"]: string;
 }
 
 export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
-    const [status, setStatus] = React.useState<string>("");
+    const [states, setStatus] = React.useState<string>();
     const history = useHistory();
-    const onSubmit = (values: LoginDialogValues) => {
-        log.info(JSON.stringify(values, null, 2));
-        const call = new Api.Post<LoginDialogValues, UserDto>(window.location.href, Api.Resource.Authentication, values);
-        call.execute().then(res => {
-            if (res.success) {
-                props.onChange(res.data);
-                history.push(props.redirect ?? "/");
-            } else {
-                setStatus(res.error);
-            }
-        });
+    const submit = async (values: LoginDialogValues) => {
+        try {
+            const user: UserDto = await postBasicAuth(values.username, values.password);
+            props.onChange(user);
+            history.push(props.redirect ?? "/");
+        } catch (err) {
+            setStatus(err);
+        }
     }
 
-    const form = (
-        <Formik initialValues={ props.values } onSubmit={ onSubmit } >
-            { props => <form onSubmit={ props.handleSubmit }>
-                <input
-                    type="hidden"
-                    name="auth-method"
-                    value={ props.values["auth-method"] }
-                />
-                <label htmlFor="username">Username</label>
-                <input
-                    type="text"
-                    onChange= { props.handleChange }
-                    name="username"
-                    value={ props.values.username }
-                />
-                <label htmlFor="password">Password</label>
-                <input
-                    type="password"
-                    onChange= { props.handleChange }
-                    name="password"
-                    value={ props.values.password }
-                />
-                <button type="submit">log in</button>
-                { status ? <div className="status">{ status }</div> : null }
-            </form> }
-        </Formik>
+    const content = (
+        <div className="loginDialog">
+            <Formik
+                initialValues={{
+                    username: "",
+                    password: "",
+                    "auth-method": "basic"
+                }}
+                validate={ (values: LoginDialogValues) => {
+                    const errors: Partial<LoginDialogValues> = {};
+                    if (values.username.trim().length === 0) {
+                        errors.username = "Enter a username";
+                    }
+
+                    if (values.password.length === 0) {
+                        errors.password = "Enter a password";
+                    }
+
+                    return errors;
+                }}
+                onSubmit={ submit }>
+                { props => (
+                    <form onSubmit={ props.handleSubmit }>
+                        <BP.FormGroup 
+                            label="Username"
+                            helperText={ props.touched.username && props.errors?.username }
+                            labelFor="usernameInput">
+                            <BP.InputGroup
+                                id="usernameInput"
+                                name="username"
+                                leftIcon="user"
+                                onBlur={ props.handleBlur }
+                                onChange={ props.handleChange }
+                                value={ props.values.username }
+                            />
+                        </BP.FormGroup>
+                        <BP.FormGroup
+                            label="Password"
+                            helperText={ props.touched.password && props.errors?.password }
+                            labelFor="passwordInput">
+                            <BP.InputGroup
+                                id="passwordInput"
+                                name="password"
+                                leftIcon="lock"
+                                type="password"
+                                onBlur={ props.handleBlur }
+                                onChange={ props.handleChange }
+                                value={ props.values.password }
+                            />
+                        </BP.FormGroup>
+                        <BP.Button type="submit">Log in</BP.Button>
+                    </form> 
+                )}
+            </Formik>
+        </div>
     )
 
-    return form;
-
-    //if (props.modal) {
-
-    //    return (
-    //        <div onClick={ props?.onClose } style={ containerStyle }>
-    //            <div className="loginDialog" style={ popoverStyle }>
-    //                { form }
-    //            </div>
-    //        </div>
-    //    );
-    //} else {
-    //    return form;
-    //}
+    return content;
 }

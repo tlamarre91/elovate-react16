@@ -12,11 +12,11 @@ export class Resource {
     edited: Date;
 
     @Orm.ManyToOne(() => User, { nullable: true })
-    createdBy: User;
+    createdBy?: User;
 
     @Orm.ManyToOne(() => User, { nullable: true })
-    ownerUser: User;
+    ownerUser?: User;
 
     @Orm.ManyToOne(() => Group, { nullable: true })
-    ownerGroup: Group;
+    ownerGroup?: Group;
 }

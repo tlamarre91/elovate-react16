@@ -1,6 +1,7 @@
 import * as Orm from "typeorm";
 import * as argon from "argon2";
 
+import { log } from "~shared/log";
 import { BaseRepository } from "./BaseRepository";
 import { User, Group } from "../entities";
 import * as Dto from "../data-transfer-objects";
@@ -10,17 +11,26 @@ export class UserRepository extends BaseRepository<User> {
     async createFromDto(dto: Dto.UserDto): Promise<User> {
         try {
             const user = this.create();
-            user.createdBy = await this.findOne(dto.createdById);
-            user.ownerUser = await this.findOne(dto.ownerUserId);
-            const groupRepo = Orm.getRepository(Group);
-            user.ownerGroup = await groupRepo.findOne(dto.ownerGroupId);
-            user.username = dto.username ?? null;
-            user.isAdmin = false;
             user.displayName = dto.displayName ?? null;
             user.email = dto.email ?? null;
             user.emailVerified = dto.emailVerified ?? false;
             user.hasAccount = dto.hasAccount ?? false;
+            user.isAdmin = false;
             user.receivesEmail = dto.receivesEmail ?? false;
+            user.username = dto.username ?? null;
+
+            if (dto.createdById) {
+                user.createdBy = await this.findOne(dto.createdById);
+            }
+
+            if (dto.ownerUserId) {
+                user.ownerUser = await this.findOne(dto.ownerUserId);
+            }
+
+            if (dto.ownerUserId) {
+                const groupRepo = Orm.getRepository(Group);
+                user.ownerGroup = await groupRepo.findOne(dto.ownerGroupId);
+            }
 
             dto.groupMemberships.forEach(guDto => {
                 console.log(`${guDto.userId} wants to be in ${guDto.groupId}`);
@@ -28,7 +38,6 @@ export class UserRepository extends BaseRepository<User> {
 
             return user;
         } catch (err) {
-            console.log(err); // TODO: LOGGING!!!
             return null;
         }
     }
@@ -55,17 +64,6 @@ export class UserRepository extends BaseRepository<User> {
             return null;
         }
     }
-//    search(params: Api.UserSearchParams): Promise<User[]> {
-//        if (params.searchType === Api.SearchType.ContainsAll) {
-//            return this.find({
-//                username: Like(`%${ params.searchProps.username }%`) // TODO: Factor out, check each field in Partial<UserProps>
-//            });
-//        } else {
-//            const err = `search type not yet implemented: ${ params.searchType }`;
-//            log.error(err);
-//            throw Error(err);
-//        }
-//    }
 
     // TODO: don't change this, ever. it's perfect this way
     async insertAdmin(): Promise<User> {

@@ -11,7 +11,7 @@ export class User extends Resource {
     dateCreated: Date;
 
     @Orm.Column({ nullable: true })
-    lastLogin: Date;
+    lastLogin?: Date;
 
     @Orm.ManyToOne(() => ImageAsset, { nullable: true })
     avatarAsset?: ImageAsset;

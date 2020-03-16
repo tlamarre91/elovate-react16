@@ -21,7 +21,7 @@ export const UserProfile: React.FC<UserProfileProps> = (props) => {
     const [userDto, setUserDto] = React.useState<Dto.UserDto>(null);
     const [status, setStatus] = React.useState<string>("loading...");
     React.useEffect(() => {
-        const call = new Api.Get<Dto.UserDto>(window.location.href, Api.Resource.User, query);
+        const call = new Api.Get<Dto.UserDto>(Api.Resource.User, query);
         call.execute().then(res => {
             if (res.success) {
                 setStatus("");

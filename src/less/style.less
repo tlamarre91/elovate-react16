@@ -1,140 +1,57 @@
-@import (inline) "@blueprintjs/core/lib/css/blueprint.css";
-@import (inline) "@blueprintjs/icons/lib/css/blueprint-icons.css";
 @import "/css/normalize.css";
+@import  "/css/blueprint.css";
+@import  "/css/blueprint-icons.css";
 
 @import "./variables";
-@import "./userCard";
-@import "./user-profile";
-@import "./new-group";
-
+@import "./UserCard";
+@import "./UserProfile";
+@import "./AppBar";
+@import "./LoginDialog";;
+@import "./LoggedInUserWidget";
+@import "./UserCreateForm";
 
 body {
     display: grid;
+    margin: 0px;
     grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: 50px auto 100px;
     background-color: @bgColorOuter;
     font: 90% @fontStack;
     color: @textColor;
 }
 
-div {
-    display: grid;
-}
-
-div.tabbedPage {
-    display: grid;
-    grid-template-rows: 50px auto;
-    div.tabLinks {
-        grid-row: ~"1 / 2";
-        display: flex;
-        background-color: @color2Dark2;
-        width: 100%;
-
-        a {
-            font: 100% @fontStack;
-            font-weight: bold;
-            color: @textColorLight2;
-            text-decoration: none;
-            padding: 6px;
-            margin-right: 10px;
-        }
-
-        a.selected {
-            background-color: @color2;
-        }
-    }
-
-    div.tabbedContent {
-        grid-row: ~"2 / 3";
-    }
-}
-
-.appContainer {
-    display: flex;
-}
-
-#siteHeader {
+#contentContainer {
+    min-height: 200px;
     grid-template-columns: subgrid;
-    grid-row: @headerRowGrid;
     grid-column: @fullWidthGrid;
-    
-    background-color: @color1Dark2;
-    align-items: center;
-    justify-content: center;
-
-    #logo {
-        grid-column: ~"1 / 2";
-        padding: 2px;
-        margin: auto;
-    }
-
-    nav#siteNav {
-        display: flex;
-        flex-direction: row;
-        grid-column: ~"2 / 12";
-    }
-
-    #loggedInUserWidgetContainer {
-        grid-column: ~"12 / 13";
-    }
-
-    #loggedInUserWidgetExpanded {
-        position: absolute;
-        background-color: @color1Dark1;
-        top: 50px;
-        right: 2px;
-    }
-
-    a {
-        font: 100% @fontStack;
-        font-weight: bold;
-        color: @textColorLight2;
-        text-decoration: none;
-        padding: 6px;
-        margin-right: 10px;
-    }
-
-    a.button {
-        grid-column: ~"12 / 13";
-        background-color: @color1Dark1;
-        border-radius: 3px;
-        transition: all 0.2s ease;
-        width: max-content;
-    }
-
-    a.button:hover {
-        background-color: @color1;
-    }
 }
 
 div.userTableContainer {
     .controls {
         display: flex;
 
+        button {
+            width: 50px;
+        }
+
         .prev {
             justify-content: flex-start;
         }
 
         .pageNumber {
+            white-space: nowrap;
             justify-content: center;
         }
 
         .next {
-            justify-content: flex-start;
+            justify-content: flex-end;
         }
     }
 }
 
 #siteFooter {
     grid-template-columns: subgrid;
-    grid-row: @footerRowGrid;
     grid-column: @fullWidthGrid;
-
-    background-color: @color1Dark2;
+    padding: 50px;
+    background-color: @color1;
 }
 
-#contentContainer {
-    grid-template-columns: subgrid;
-    grid-row: @contentRowGrid;
-    grid-column: @fullWidthGrid;
-}

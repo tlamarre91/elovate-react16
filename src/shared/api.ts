@@ -20,7 +20,8 @@ export class Get<Receive> {
     url: string;
     origin: string;
 
-    constructor(origin: string, resource: Resource, query?: string) {
+    constructor(resource: Resource, query?: string) {
+        this.origin = window?.location?.href;
         this.url = `${API_ROOT}/${resource}` + (query ? `/${query}` : "");
         this.origin = origin;
     }
@@ -45,9 +46,9 @@ export class Post<Send, Receive> {
     origin: string;
     body: string;
 
-    constructor(origin: string, resource: Resource, obj: Send) {
-        this.url = `${API_ROOT}/${resource}`; // TODO: client-side sanitize?
-        this.origin = origin;
+    constructor(resource: Resource, obj: Send, query?: string) {
+        this.url = `${API_ROOT}/${resource}` + (query ? `/${query}` : ""); // TODO: client-side sanitize?
+        this.origin = window?.location?.href;
         this.body = JSON.stringify({
             origin,
             targetResource: resource,

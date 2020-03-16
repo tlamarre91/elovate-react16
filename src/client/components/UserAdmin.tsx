@@ -17,7 +17,7 @@ import { UserTable } from "~client/components/UserTable";
 export const UserAdmin: React.FC = () => {
     return <div className="userAdminContainer">
         <UserTable pageLength={ 2 } load={ async () => {
-            const call = new Api.Get<UserDto[]>(window.location.href, Api.Resource.User, "all");
+            const call = new Api.Get<UserDto[]>(Api.Resource.User, "all");
             return call.execute().then(res => res.data);
         } } />
     </div>

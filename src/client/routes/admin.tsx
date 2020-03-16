@@ -18,18 +18,22 @@ import { UserAdmin } from "~client/components/UserAdmin";
 export const AdminRouter: React.FC = () => {
     const { path, url } = useRouteMatch();
 
-    return <div className="tabbedPage">
-        <div className="tabLinks">
-            <NavLink activeClassName="selected" to={ `${path}/log` }>log</NavLink>
-            <NavLink activeClassName="selected" to={ `${path}/users` }>users</NavLink>
-        </div>
-        <Switch>
-            <Route path={ `${path}/log` }>
-                <div className="log">log placeholder</div>
-            </Route>
-            <Route path={ `${path}/users` }>
-                <UserAdmin />
-            </Route>
-        </Switch>
-    </div>
+    return <Switch>
+        <div>PLACEHOLDER</div>
+    </Switch>
+
+    //    return <div className="tabbedPage">
+    //        <div className="tabLinks">
+    //            <NavLink activeClassName="selected" to={ `${path}/log` }>log</NavLink>
+    //            <NavLink activeClassName="selected" to={ `${path}/users` }>users</NavLink>
+    //        </div>
+    //        <Switch>
+    //            <Route path={ `${path}/log` }>
+    //                <div className="log">log placeholder</div>
+    //            </Route>
+    //            <Route path={ `${path}/users` }>
+    //                <UserAdmin />
+    //            </Route>
+    //        </Switch>
+    //    </div>
 };

@@ -8,6 +8,7 @@ const sourcemaps = require("gulp-sourcemaps");
 const webpackCompiler = require("webpack");
 const webpack = require("webpack-stream");
 const dotenv = require("dotenv");
+const cleanCss = require("gulp-clean-css");
 dotenv.config();
 
 const ELOVATE_TARGET_DIR = process.env.ELOVATE_TARGET_DIR;
@@ -51,19 +52,32 @@ function buildClient() {
         .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR, "js")));
 }
 
-function cleanLess() {
-    return del([path.join(ELOVATE_STATIC_DIR, "css/style.css")]);
+function cleanDistCss() {
+    return del([path.join(ELOVATE_STATIC_DIR, "css/*")]);
 }
 
-function buildLess() {
+function buildLess () {
     return gulp.src("src/less/**/style.less")
         .pipe(gulpLess({
             paths: [
                 path.join(__dirname, "node_modules"),
             ]
         }))
-        .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR, "css")));
+        .pipe(gulp.dest(path.join(ELOVATE_STATIC_DIR, "css")))
 }
+
+function trimAndCopyLibCss () {
+    return gulp.src([
+        "node_modules/@blueprintjs/core/lib/css/blueprint.css",
+        "node_modules/@blueprintjs/core/lib/css/blueprint-hi-contrast.css",
+        "node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css",
+        "node_modules/normalize.css/normalize.css",
+    ])
+        .pipe(cleanCss())
+        .pipe(gulp.dest(path.join(ELOVATE_TARGET_DIR, "public", "css")))
+}
+
+const buildCss = gulp.parallel(buildLess, trimAndCopyLibCss);
 
 function cleanTemplates() {
     return del([path.join(ELOVATE_TARGET_DIR, "templates")]);
@@ -71,7 +85,7 @@ function cleanTemplates() {
 
 function copyTemplates() {
     return gulp.src("src/templates/*")
-        .pipe(gulp.dest(path.join(ELOVATE_TARGET_DIR, "/templates")));
+        .pipe(gulp.dest(path.join(ELOVATE_TARGET_DIR, "templates")));
 }
 
 function cleanAssets() {
@@ -93,14 +107,14 @@ exports.server = gulp.series(cleanApi, cleanServer, buildServer, copyTemplates);
 exports.templates = gulp.series(cleanTemplates, copyTemplates);
 exports.client = gulp.series(cleanClient, buildClient);
 exports.assets = gulp.series(cleanAssets, copyAssets);
-exports.less = gulp.series(cleanLess, buildLess);
+exports.css = gulp.series(cleanDistCss, buildCss);
 
 exports.watch = cb => {
     const opts = { ignoreInitial: false };
     gulp.watch(["src/server/**/*", "src/shared/**/*"], opts, exports.server);
     gulp.watch(["src/client/**/*", "src/shared/**/*"], opts, buildClient);
     gulp.watch(["src/templates/**/*"], opts, exports.templates);
-    gulp.watch(["src/less/**/*"], opts, exports.less);
+    gulp.watch(["src/less/**/*"], opts, exports.css);
     gulp.watch(["assets/**/*"], opts, exports.assets);
     cb();
 };
@@ -110,6 +124,6 @@ exports.default = gulp.series(
     gulp.parallel(
         gulp.series(buildServer, copyTemplates),
         gulp.series(copyAssets, buildClient),
-        buildLess
+        buildCss
     )
 );

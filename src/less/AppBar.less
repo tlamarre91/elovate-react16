@@ -1,0 +1,35 @@
+#appBar {
+    display: flex;
+    height: 55px;
+    grid-column: @fullWidthGrid;
+    
+    align-items: center;
+    justify-content: center;
+
+    background-color: @color1Dark2;
+
+    div {
+        display: flex;
+    }
+    
+    #logo {
+        padding: 2px;
+        max-width: min-content;
+    }
+
+    #appBarNavContainer {
+        margin-right: auto;
+        a {
+            margin-right: 15px;
+            padding: 5px;
+            color: @textColorLight;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    }
+}

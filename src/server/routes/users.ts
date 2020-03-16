@@ -48,6 +48,55 @@ router.get("/:query", userQueryMiddleware, async (req, res) => {
     }
 });
 
+router.get("/availability/email/:query", async (req, res) => {
+    Orm.getRepository(Entity.User).find({ where: { email: req.params["query"] } }).then(result => {
+        if (result.length > 0) {
+            res.json(new Api.Response(true, null, true));
+        } else {
+            res.json(new Api.Response(true, null, false));
+        }
+    });
+});
+
+router.get("/availability/username/:query", async (req, res) => {
+    try {
+        Orm.getRepository(Entity.User).find({ where: { username: req.params["query"] } }).then(result => {
+            if (result.length === 0) {
+                res.json(new Api.Response(true, null, true));
+            } else {
+                res.json(new Api.Response(true, null, false));
+            }
+        });
+    } catch (err) {
+        res.status(500);
+        res.json(new Api.Response(false, err));
+    }
+});
+
+router.post("/register", userQueryMiddleware, async (req, res) => {
+    if (req.user) {
+        res.status(403);
+        // TODO: fix error string :)
+        res.json(new Api.Response(false, "You are already logged in. To manage group users, go to ______",));
+    } else {
+        const dto = req.body as Dto.UserDto;
+        const userRepo = Orm.getCustomRepository(Repository.UserRepository);
+        let collision: boolean = await userRepo.find({
+            where: [
+                { username: dto.username },
+                { email: dto.email }
+            ]
+        }).then(result => result.length < 0);
+
+        if (collision) {
+            res.status(409);
+            res.json(new Api.Response(false, "username or email already in use"));
+        } else {
+            const user = await userRepo.createFromDto(dto);
+        }
+    }
+});
+
 router.post("/", async (req, res) => {
     if (req?.user?.isAdmin) {
         try {

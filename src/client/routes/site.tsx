@@ -15,6 +15,7 @@ import * as Api from "~shared/api";
 import * as Dto from "~shared/model/data-transfer-objects";
 import { elmt } from "~client/util";
 import { log } from "~shared/log";
+import { UserDto } from "~shared/model/data-transfer-objects";
 
 import {
     AdminRouter,
@@ -26,6 +27,7 @@ import {
 import { UserCard } from "~client/components/cards";
 import { LoginDialog } from "~client/components/LoginDialog";
 import { LoggedInUserWidget } from "~client/components/LoggedInUserWidget";
+import { UserCreateForm } from "~client/components/UserCreateForm";
 
 export interface SiteRouterProps {
     navElement: HTMLElement;
@@ -41,9 +43,9 @@ export const SiteRouter: React.FC<SiteRouterProps> = (props) => {
     return <Router>
         <>
             {
-                createPortal(<nav id="siteNav">
+                createPortal(<nav id="appBarNav">
                     <NavLink to="/dashboard">Dashboard</NavLink>
-                    <NavLink to="/users" >Users</NavLink>
+                    <NavLink to="/user" >Users</NavLink>
                     <NavLink to="/admin" >Admin</NavLink>
                 </nav>, props.navElement)
             }
@@ -56,18 +58,18 @@ export const SiteRouter: React.FC<SiteRouterProps> = (props) => {
         </>
         <Switch>
             <Route path="/login">
-                <div className="loginForm">
-                    <LoginDialog 
-                        values={{ username: "", password: "", "auth-method": "basic" }}
-                        onChange={ handleLoggedInUserChange }
-                        redirect="/"
-                    />
-                </div>
+                <LoginDialog 
+                    onChange={ handleLoggedInUserChange }
+                    redirect="/"
+                />
+            </Route>
+            <Route path="/register">
+                <UserCreateForm registration />
             </Route>
             <Route path="/dashboard">
                 <DashboardRouter />
             </Route>
-            <Route path="/users">
+            <Route path="/user">
                 <UserRouter />
             </Route>
             <Route path="/admin">

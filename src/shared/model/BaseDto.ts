@@ -6,9 +6,13 @@ export class BaseDto<T extends Resource> {
     createdById: number;
     ownerUserId?: number;
     ownerGroupId?: number;
-    constructor(obj: T, origin?: string) {
+    constructor(obj?: T, origin?: string) {
         this.origin = origin;
         this.id = obj.id;
+    }
+
+    copyFrom(dto: BaseDto<T>) {
+        Object.assign(this, dto);
     }
 }
 
