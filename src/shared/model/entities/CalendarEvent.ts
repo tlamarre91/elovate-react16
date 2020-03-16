@@ -1,5 +1,5 @@
 import * as Orm from "typeorm";
-import { Resource } from "../Resource";
+import { Resource } from "./Resource";
 
 @Orm.Entity()
 export class CalendarEvent extends Resource {

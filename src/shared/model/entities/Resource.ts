@@ -1,5 +1,5 @@
 import * as Orm from "typeorm";
-import { User, Group } from "./entities";
+import { User, Group } from ".";
 
 export class Resource {
     @Orm.PrimaryGeneratedColumn()

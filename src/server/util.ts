@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import * as Orm from "typeorm";
 import { log } from "~shared/log";
 import * as Entity from "~shared/model/entities";
-import { Resource } from "~shared/model/Resource";
 
 export async function clearData() {
     const userGroupRepo = Orm.getRepository(Entity.GroupUser);

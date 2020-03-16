@@ -1,5 +1,5 @@
 import * as Orm from "typeorm";
-import { Resource } from "../Resource";
+import { Resource } from "./Resource";
 import { GroupUser } from "./GroupUser";
 import { Party } from "./Party";
 

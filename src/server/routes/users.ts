@@ -7,31 +7,8 @@ import * as Entity from "~shared/model/entities";
 import * as Repository from "~shared/model/repositories";
 import * as Dto from "~shared/model/data-transfer-objects";
 
-async function userQueryMiddleware(req: Request, res: Response, next: NextFunction) {
-    try {
-        const query = req.params["query"];
-        const user = await Orm.getCustomRepository(Repository.UserRepository).findOneFromQuery(query);
-
-        if (! user) {
-            res.status(404);
-            return res.json(new Api.Response(false, `user not found: ${query}`));
-        }
-
-        if (!(req.user.id === user.id || user.publicVisible || req.user.isAdmin)) {
-            res.status(403);
-            res.json(new Api.Response(false, "not authorized"));
-        } else {
-            req.resource = user;
-            return next();
-        }
-    } catch (err) {
-        log.error(`userQueryMiddleware: ${err}`);
-        res.status(500);
-        res.json(new Api.Response(false, err));
-    }
-}
-
 const router = Router();
+
 router.get("/all", async (req, res) => {
     if (req?.user?.isAdmin) {
         const users = await Orm.getRepository(Entity.User).find();
@@ -42,10 +19,8 @@ router.get("/all", async (req, res) => {
     }
 });
 
-router.get("/:query", userQueryMiddleware, async (req, res) => {
-    if (req.resource) {
-        res.json(new Api.Response(true, null, new Dto.UserDto(req.resource as Entity.User)));
-    }
+router.get("/:query", async (req, res) => {
+    throw new Error("not implemented");
 });
 
 router.get("/availability/email/:query", async (req, res) => {
@@ -73,7 +48,7 @@ router.get("/availability/username/:query", async (req, res) => {
     }
 });
 
-router.post("/register", userQueryMiddleware, async (req, res) => {
+router.post("/register", async (req, res) => {
     if (req.user) {
         res.status(403);
         // TODO: fix error string :)
@@ -121,7 +96,9 @@ router.post("/", async (req, res) => {
     }
 });
 
+
 router.put("/:id", async (req, res) => {
+    throw new Error("nope");
 });
 
 //router.post(`/:query/setPassword`, async (req, res) => {

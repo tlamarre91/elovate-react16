@@ -1,7 +1,7 @@
 import * as Orm from "typeorm";
 import { User } from "./User";
 import { Group } from "./Group";
-import { Resource } from "../Resource";
+import { Resource } from "./Resource";
 
 // need granularity... maybe bitmask for each permission type?
 // or maybe i don't need granularity. how bout we just build something that works

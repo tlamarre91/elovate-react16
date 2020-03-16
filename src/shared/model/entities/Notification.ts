@@ -1,6 +1,6 @@
 import * as Orm from "typeorm";
 import { User } from "./User";
-import { Resource } from "../Resource";
+import { Resource } from "./Resource";
 
 // TODO: notification "thumbnails" or whatever should be computed from context.
 @Orm.Entity()

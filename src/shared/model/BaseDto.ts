@@ -1,6 +1,5 @@
-import { Resource } from "./Resource";
 // TODO: put this down in the dto module
-export class BaseDto<T extends Resource> {
+export class BaseDto<T extends { id?: number, origin?: string }> {
     origin?: string;
     id?: number;
     createdById: number;

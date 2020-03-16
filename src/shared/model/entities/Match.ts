@@ -1,6 +1,6 @@
 import * as Orm from "typeorm";
 import { Party } from "./Party";
-import { Resource } from "../Resource";
+import { Resource } from "./Resource";
 
 export enum MatchResultType {
     singleWinner = "s"

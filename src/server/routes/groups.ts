@@ -9,7 +9,7 @@ import * as Dto from "~shared/model/data-transfer-objects";
 
 const router = Router();
 router.get("/:query", async (req, res) => {
-    res.json(new Api.Response(true, null, new Dto.GroupDto(req.resource as Entity.Group)));
+    throw new Error("not implemented");
 });
 
 router.put("/:query/users-csv", async (req, res) => {

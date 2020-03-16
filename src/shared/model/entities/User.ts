@@ -3,7 +3,7 @@ import { ImageAsset } from "./Asset";
 import { GroupUser } from "./GroupUser";
 import { Party } from "./Party";
 import { Notification } from "./Notification";
-import { Resource } from "../Resource";
+import { Resource } from "./Resource";
 
 @Orm.Entity()
 export class User extends Resource {

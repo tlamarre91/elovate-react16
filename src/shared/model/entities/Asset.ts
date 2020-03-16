@@ -1,5 +1,5 @@
 import * as Orm from "typeorm";
-import { Resource } from "../Resource";
+import { Resource } from "./Resource";
 
 abstract class FileAsset extends Resource {
     @Orm.Column()
