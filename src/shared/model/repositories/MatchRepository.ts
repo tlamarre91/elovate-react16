@@ -1,18 +1,19 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
-import * as Entity from "../entities";
+import { Match, MatchResult } from "~shared/model/entities/Match";
+import { Party } from "~shared/model/entities/Party";
 import * as Dto from "../data-transfer-objects";
 
-@Orm.EntityRepository(Entity.Match)
-export class MatchRepository extends BaseRepository<Entity.Match> {
-    findOneFromQuery(query: string): Promise<Entity.Match> {
+@Orm.EntityRepository(Match)
+export class MatchRepository extends BaseRepository<Match> {
+    findOneFromQuery(query: string): Promise<Match> {
         throw new Error("Method not implemented.");
     }
-    createFromDto(dto: Dto.MatchDto): Promise<Entity.Match> {
+    createFromDto(dto: Dto.MatchDto): Promise<Match> {
         throw new Error("Method not implemented.");
     }
-    reportMatch(parties: Entity.Party[], result: Entity.MatchResult, datePlayed?: Date): Promise<Entity.Match> {
+    reportMatch(parties: Party[], result: MatchResult, datePlayed?: Date): Promise<Match> {
         const match = this.create();
         //match.parties = parties;
         match.result = result;

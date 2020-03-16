@@ -1,7 +1,8 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
-import { Group, User } from "../entities";
+import { Group } from "../entities/Group";
+import { User } from "../entities/User";
 import * as Dto from "../data-transfer-objects";
 
 @Orm.EntityRepository(Group)

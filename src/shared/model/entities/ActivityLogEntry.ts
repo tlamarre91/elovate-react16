@@ -3,6 +3,8 @@ import { User } from "./User";
 
 @Orm.Entity()
 export class ActivityLogEntry {
+    @Orm.PrimaryGeneratedColumn()
+    id: number;
     @Orm.Column()
     datetime: Date;
 

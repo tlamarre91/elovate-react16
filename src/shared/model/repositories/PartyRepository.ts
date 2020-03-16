@@ -1,20 +1,22 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
-import * as Entity from "../entities";
+import { Party, PartyType } from "~shared/model/entities/Party";
+import { Match } from "~shared/model/entities/Match";
+import { User } from "~shared/model/entities/User";
 import * as Dto from "../data-transfer-objects";
 
-@Orm.EntityRepository(Entity.Party)
-export class PartyRepository extends BaseRepository<Entity.Party> {
-    findOneFromQuery(query: string): Promise<Entity.Party> {
+@Orm.EntityRepository(Party)
+export class PartyRepository extends BaseRepository<Party> {
+    findOneFromQuery(query: string): Promise<Party> {
         throw new Error("Method not implemented.");
     }
 
-    createFromDto(dto: Dto.PartyDto): Promise<Entity.Party> {
+    createFromDto(dto: Dto.PartyDto): Promise<Party> {
         throw new Error("Method not implemented.");
     }
 
-    createParty(users: Entity.User[], match: Entity.Match, partyNumber: number, partyType: Entity.PartyType): Promise<Entity.Party> {
+    createParty(users: User[], match: Match, partyNumber: number, partyType: PartyType): Promise<Party> {
         const party = this.create();
         party.users = users;
         //party.match = match;
@@ -23,7 +25,7 @@ export class PartyRepository extends BaseRepository<Entity.Party> {
         return this.save(party);
     }
 
-    addUserToParty(user: Entity.User, party: Entity.Party) {
+    addUserToParty(user: User, party: Party) {
         if (party.users.includes(user)) {
             throw Error(`user ${user.id} is already in party ${party.id}`);
         }
@@ -34,7 +36,7 @@ export class PartyRepository extends BaseRepository<Entity.Party> {
         this.save(party);
     }
 
-    removeUserFromParty(user: Entity.User, party: Entity.Party): Promise<Entity.Party> {
+    removeUserFromParty(user: User, party: Party): Promise<Party> {
         if (! party.users.includes(user)) {
             return null;
         }

@@ -1,12 +1,29 @@
 import * as Orm from "typeorm";
-import { ImageAsset } from "./Asset";
+import { Group } from "./Group";
 import { GroupUser } from "./GroupUser";
-import { Party } from "./Party";
+import { ImageAsset } from "./Asset";
 import { Notification } from "./Notification";
-import { Resource } from "./Resource";
+import { Party } from "./Party";
 
 @Orm.Entity()
-export class User extends Resource {
+export class User {
+    @Orm.PrimaryGeneratedColumn()
+    id: number;
+
+    @Orm.Column({ default: () => "NOW()" })
+    created: Date;
+
+    @Orm.Column({ default: () => "NOW()" })
+    edited: Date;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    createdBy?: User;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    ownerUser?: User;
+
+    @Orm.ManyToOne(() => Group, { nullable: true })
+    ownerGroup?: Group;
     @Orm.Column({ default: () => "NOW()" })
     dateCreated: Date;
 

@@ -14,7 +14,6 @@ import { LoremIpsum } from "lorem-ipsum";
 
 import { log } from "~shared/log";
 
-import * as Entity from "~shared/model/entities";
 import * as Dto from "~shared/model/data-transfer-objects";
 import { UserRepository } from "~shared/model/repositories";
 import { Authorization } from "~server/middleware";

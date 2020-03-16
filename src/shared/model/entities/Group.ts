@@ -1,10 +1,27 @@
 import * as Orm from "typeorm";
-import { Resource } from "./Resource";
 import { GroupUser } from "./GroupUser";
 import { Party } from "./Party";
+import { User } from "./User";
 
 @Orm.Entity()
-export class Group extends Resource {
+export class Group {
+    @Orm.PrimaryGeneratedColumn()
+    id: number;
+
+    @Orm.Column({ default: () => "NOW()" })
+    created: Date;
+
+    @Orm.Column({ default: () => "NOW()" })
+    edited: Date;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    createdBy?: User;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    ownerUser?: User;
+
+    @Orm.ManyToOne(() => Group, { nullable: true })
+    ownerGroup?: Group;
     @Orm.Column()
     name: string;
 

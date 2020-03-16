@@ -4,7 +4,6 @@ import * as Orm from "typeorm";
 import { log } from "~shared/log";
 import * as Api from "~shared/api";
 import * as Repository from "~shared/model/repositories";
-import * as Entity from "~shared/model/entities";
 import * as Dto from "~shared/model/data-transfer-objects";
 
 const router = Router();

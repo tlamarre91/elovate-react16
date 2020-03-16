@@ -1,16 +1,16 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
-import * as Entity from "../entities";
+import { Notification } from "~shared/model/entities/Notification";
 import * as Dto from "../data-transfer-objects";
 
-@Orm.EntityRepository(Entity.Notification)
-export class NotificationRepository extends BaseRepository<Entity.Notification> {
-    findOneFromQuery(query: string): Promise<Entity.Notification> {
+@Orm.EntityRepository(Notification)
+export class NotificationRepository extends BaseRepository<Notification> {
+    findOneFromQuery(query: string): Promise<Notification> {
         throw new Error("Method not implemented.");
     }
 
-    createFromDto(dto: Dto.NotificationDto): Promise<Entity.Notification> {
+    createFromDto(dto: Dto.NotificationDto): Promise<Notification> {
         throw new Error("Method not implemented.");
     }
 

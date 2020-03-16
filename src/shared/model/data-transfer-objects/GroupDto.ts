@@ -1,8 +1,8 @@
 import * as Dto from ".";
 import { BaseDto } from "../BaseDto";
-import * as Entity from "../entities";
+import { Group } from "../entities/Group";
 
-export class GroupDto extends BaseDto<Entity.Group> {
+export class GroupDto extends BaseDto<Group> {
     name?: string;
     customUrl?: string;
     dateCreated?: Date;
@@ -11,7 +11,7 @@ export class GroupDto extends BaseDto<Entity.Group> {
     memberships?: Dto.GroupUserDto[];
     parties?: Dto.PartyDto[];
 
-    constructor(obj: Entity.Group, origin?: string) {
+    constructor(obj: Group, origin?: string) {
         super(obj, origin);
     }
 }

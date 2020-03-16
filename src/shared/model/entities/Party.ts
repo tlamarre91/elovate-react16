@@ -1,8 +1,7 @@
 import * as Orm from "typeorm";
-import { User } from "./User";
 import { Group } from "./Group";
 import { Match } from "./Match";
-import { Resource } from "./Resource";
+import { User } from "./User";
 
 export enum PartyType {
     adhoc = "a",
@@ -10,7 +9,24 @@ export enum PartyType {
 }
 
 @Orm.Entity()
-export class Party extends Resource {
+export class Party {
+    @Orm.PrimaryGeneratedColumn()
+    id: number;
+
+    @Orm.Column({ default: () => "NOW()" })
+    created: Date;
+
+    @Orm.Column({ default: () => "NOW()" })
+    edited: Date;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    createdBy?: User;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    ownerUser?: User;
+
+    @Orm.ManyToOne(() => Group, { nullable: true })
+    ownerGroup?: Group;
     @Orm.ManyToMany(() => User, user => user.parties)
     users: User[];
 

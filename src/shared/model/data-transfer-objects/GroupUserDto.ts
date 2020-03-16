@@ -1,13 +1,13 @@
 import * as Dto from ".";
 import { BaseDto } from "../BaseDto";
-import * as Entity from "../entities";
+import { GroupUser, GroupUserPrivilege } from "../entities/GroupUser";
 
-export class GroupUserDto extends BaseDto<Entity.GroupUser> {
+export class GroupUserDto extends BaseDto<GroupUser> {
     userId: number;
     groupId: number;
-    privilege: Entity.GroupUserPrivilege;
+    privilege: GroupUserPrivilege;
 
-    constructor(obj: Entity.GroupUser, origin?: string) {
+    constructor(obj: GroupUser, origin?: string) {
         super(obj, origin);
         this.userId = obj.user.id;
         this.groupId = obj.group.id;

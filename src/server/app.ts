@@ -18,8 +18,6 @@ import { Authorization } from "~server/middleware";
 
 import { connectDb } from "~server/db";
 import routes from "~server/routes";
-// import { SessionStore, SessionRepository } from "~shared/model/repositories";
-import * as Entity from "~shared/model/entities";
 import { UserRepository } from "~shared/model/repositories";
 
 const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() === "false" ? false : true;

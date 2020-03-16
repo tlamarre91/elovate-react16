@@ -1,8 +1,8 @@
 import * as Dto from ".";
 import { BaseDto } from "../BaseDto";
-import * as Entity from "../entities";
+import { User } from "../entities/User";
 
-export class UserDto extends BaseDto<Entity.User> {
+export class UserDto extends BaseDto<User> {
     id?: number;
     dateCreated?: Date;
     lastLogin?: Date;
@@ -17,7 +17,7 @@ export class UserDto extends BaseDto<Entity.User> {
     groupMemberships?: Dto.GroupUserDto[];
     parties?: Dto.PartyDto[];
 
-    constructor(obj: Entity.User, origin?: string) {
+    constructor(obj: User, origin?: string) {
         super(obj, origin);
         this.dateCreated = obj.dateCreated;
         this.username = obj.username;

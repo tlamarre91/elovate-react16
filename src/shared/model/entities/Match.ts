@@ -1,6 +1,7 @@
 import * as Orm from "typeorm";
+import { Group } from "./Group";
 import { Party } from "./Party";
-import { Resource } from "./Resource";
+import { User } from "./User";
 
 export enum MatchResultType {
     singleWinner = "s"
@@ -34,9 +35,26 @@ export enum MatchVisibility {
 }
 
 @Orm.Entity()
-export class Match extends Resource {
-//    @Orm.ManyToOne(() => Entity.Game, game => game.matches)
-//    game: Entity.Game;
+export class Match {
+    @Orm.PrimaryGeneratedColumn()
+    id: number;
+
+    @Orm.Column({ default: () => "NOW()" })
+    created: Date;
+
+    @Orm.Column({ default: () => "NOW()" })
+    edited: Date;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    createdBy?: User;
+
+    @Orm.ManyToOne(() => User, { nullable: true })
+    ownerUser?: User;
+
+    @Orm.ManyToOne(() => Group, { nullable: true })
+    ownerGroup?: Group;
+//    @Orm.ManyToOne(() => Game, game => game.matches)
+//    game: Game;
 
     @Orm.Column({ default: () => "NOW()" })
     changedOn: Date;

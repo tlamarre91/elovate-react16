@@ -1,7 +1,6 @@
 import winston from "winston";
 
 import { log } from "~shared/log";
-import * as Entity from "~shared/model/entities";
 import { BaseDto } from "~shared/model/BaseDto";
 
 
@@ -117,49 +116,3 @@ export class Response<T> {
         this.data = data;
     }
 }
-
-//function queryString(keyVals: [string, string][]): string {
-//    // TODO: ensure reserved symbols are escaped
-//    const str: string = '?' + keyVals.map(pair => `${ pair[0] }=${ pair[1] }`).join("&");
-//    return str;
-//}
-//
-//interface UrlQuery {
-//    toQueryStr(): string;
-//}
-//
-//export enum SearchType {
-//    Exact = "exact",
-//    ContainsAll = "containsAll",
-//    ContainsAny = "containsAny",
-//}
-//
-//export class UserSearchParams implements UrlQuery {
-//    // TODO: implement isSubset() for client-side checking.
-//    // eg: if newParams.isSubset(lastParams) then don't hit API - filter results in client
-//    searchProps: Partial<Entity.User>;
-//    searchType: SearchType;
-//
-//    constructor(searchProps: Partial<Entity.User>, searchType: SearchType) {
-//        this.searchProps = searchProps;
-//        this.searchType = searchType;
-//    }
-//
-//    static fromQuery(query: any): UserSearchParams {
-//        // TODO: Is it ok that this totally shits with a malformed query? validate elsewhere, i guess
-//        let props: Partial<Entity.User> = { ... query }; // TODO: should query.searchType get stuck into props too?
-//        let searchType: SearchType = query["searchType"];
-//        return new UserSearchParams(props, searchType);
-//    }
-//
-//    toQueryStr(): string {
-//        let pairs: [string, string][] = [];
-//
-//        for (let k in this.searchProps) {
-//            pairs.push([k, this.searchProps[k as keyof Entity.User].toString()]);
-//        }
-//
-//        pairs.push(["searchType", this.searchType]);
-//        return queryString(pairs);
-//    }
-//}

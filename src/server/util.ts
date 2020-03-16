@@ -1,16 +1,18 @@
 import jwt from "jsonwebtoken";
 import * as Orm from "typeorm";
 import { log } from "~shared/log";
-import * as Entity from "~shared/model/entities";
+import { Group } from "~shared/model/entities/Group";
+import { User } from "~shared/model/entities/User";
+import { GroupUser } from "~shared/model/entities/GroupUser";
 
 export async function clearData() {
-    const userGroupRepo = Orm.getRepository(Entity.GroupUser);
+    const userGroupRepo = Orm.getRepository(GroupUser);
     userGroupRepo.remove(await userGroupRepo.find());
 
-    const userRepo = Orm.getRepository(Entity.User);
+    const userRepo = Orm.getRepository(User);
     userRepo.remove(await userRepo.find());
 
-    const groupRepo = Orm.getRepository(Entity.Group);
+    const groupRepo = Orm.getRepository(Group);
     groupRepo.remove(await groupRepo.find());
 }
 
@@ -26,9 +28,8 @@ export async function populateTestData() {
 
     log.info("populating test data");
 
-    //const userRepo = Orm.getCustomRepository(Entity.UserRepository);
-    const userRepo = Orm.getRepository(Entity.User);
-    const users: Array<Entity.User> = [];
+    const userRepo = Orm.getRepository(User);
+    const users: Array<User> = [];
     for (let i = 0; i < TEST_USER_COUNT; i += 1) {
         const username = `${BASE_USER_STR}${i}`;
         const email = `${BASE_USER_STR}${i}@elovate.com`;

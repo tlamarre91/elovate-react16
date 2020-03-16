@@ -3,7 +3,8 @@ import * as argon from "argon2";
 
 import { log } from "~shared/log";
 import { BaseRepository } from "./BaseRepository";
-import { User, Group } from "../entities";
+import { User } from "../entities/User";
+import { Group } from "../entities/Group";
 import * as Dto from "../data-transfer-objects";
 
 @Orm.EntityRepository(User)

@@ -3,18 +3,19 @@ import * as Orm from "typeorm";
 
 import { log } from "~shared/log";
 import * as Api from "~shared/api";
-import * as Entity from "~shared/model/entities";
 import * as Repository from "~shared/model/repositories";
 import * as Dto from "~shared/model/data-transfer-objects";
+
+import { User } from "~shared/model/entities/User";
 
 const router = Router();
 
 router.get("/all", async (req, res) => {
     if (req?.user?.isAdmin) {
-        const users = await Orm.getRepository(Entity.User).find();
+        const users = await Orm.getRepository(User).find();
         res.json(new Api.Response(true, null, users.map(u => new Dto.UserDto(u))));
     } else {
-        const users = await Orm.getRepository(Entity.User).find({ where: { publicVisible: true } });
+        const users = await Orm.getRepository(User).find({ where: { publicVisible: true } });
         res.json(new Api.Response(true, null, users.map(u => new Dto.UserDto(u))));
     }
 });
@@ -24,7 +25,7 @@ router.get("/:query", async (req, res) => {
 });
 
 router.get("/availability/email/:query", async (req, res) => {
-    Orm.getRepository(Entity.User).find({ where: { email: req.params["query"] } }).then(result => {
+    Orm.getRepository(User).find({ where: { email: req.params["query"] } }).then(result => {
         if (result.length > 0) {
             res.json(new Api.Response(true, null, true));
         } else {
@@ -35,7 +36,7 @@ router.get("/availability/email/:query", async (req, res) => {
 
 router.get("/availability/username/:query", async (req, res) => {
     try {
-        Orm.getRepository(Entity.User).find({ where: { username: req.params["query"] } }).then(result => {
+        Orm.getRepository(User).find({ where: { username: req.params["query"] } }).then(result => {
             if (result.length === 0) {
                 res.json(new Api.Response(true, null, true));
             } else {
