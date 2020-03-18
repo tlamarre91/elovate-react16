@@ -19,7 +19,7 @@ export class UserDto extends BaseDto<User> {
 
     constructor(obj: User, origin?: string) {
         super(obj, origin);
-        this.dateCreated = obj.dateCreated;
+        this.dateCreated = obj.creationInfo.dateCreated;
         this.username = obj.username;
         this.displayName = obj.displayName;
         this.email = obj.email;

@@ -16,7 +16,7 @@ export class GroupUserRepository extends BaseRepository<GroupUser> {
         throw new Error("Method not implemented.");
     }
 
-    async createMembership(user: User, group: Group, params: {
+    async createMembership(user: User, group: Group, params?: {
         privilege?: GroupUserPrivilege,
         createdBy?: User
     }): Promise<GroupUser> {
@@ -24,7 +24,7 @@ export class GroupUserRepository extends BaseRepository<GroupUser> {
         gu.user = user;
         gu.group = group;
         gu.privilege = params?.privilege ?? GroupUserPrivilege.user;
-        gu.createdBy = params?.createdBy ?? user;
+        gu.creationInfo.createdBy = params?.createdBy ?? user;
         return gu;
     }
 

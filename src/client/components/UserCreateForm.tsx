@@ -16,6 +16,7 @@ import { UserDto } from "~shared/model/data-transfer-objects";
 export interface UserCreateFormProps {
     onChange?: (user: UserDto) => void;
     registration?: boolean; // TODO: this feels like a bad hack. is this is a bad hack? (https://trello.com/c/XLsTxy3H)
+    redirect?: string;
 }
 
 export interface UserCreateFormValues {
@@ -25,18 +26,34 @@ export interface UserCreateFormValues {
 }
 
 export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
+    const history = useHistory();
     const [status, setStatus] = React.useState<string>();
     const [usernameTimeout, setUsernameTimeout] = React.useState<number>();
+    const [passwordTimeout, setPasswordTimeout] = React.useState<number>();
     const [emailTimeout, setEmailTimeout] = React.useState<number>();
+    const [serverErrors, setServerErrors] = React.useState<{
+        username: string,
+        password: string,
+        email: string
+    }>();
 
     const submit = (values: UserCreateFormValues) => {
         const call = new Api.Post<Partial<UserDto>, UserDto>
             (Api.Resource.User, values as Partial<UserDto>, "register");
-        call.execute().then(res => {
+        call.execute().then(async res => {
             if (res.success) {
-                props.onChange(res.data);
                 if (props?.registration) {
-                    postBasicAuth(values.username, values.password);
+                    postBasicAuth(values.username, values.password).then(user => {
+                        log.info("logged in after registration!");
+                        props?.onChange(user);
+                        if (props.redirect) {
+                            history.push(props.redirect);
+                        }
+                    }).catch(err => {
+                        log.warn(`post-registration: ${err}`);
+                    });
+                } else {
+                    props?.onChange(res.data);
                 }
             } else {
                 log.warn(`UserCreateForm: ${res.error}`);
@@ -47,6 +64,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
     }
 
     const validate = (values: UserCreateFormValues) => {
+        const DELAY = 1000;
         const errors: Partial<UserCreateFormValues> = {};
         window.clearTimeout(usernameTimeout);
         if (values.username.trim().length === 0) {
@@ -54,23 +72,22 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
         } else if (blacklists.username.includes(values.username)) {
             errors.username = "Please choose a different username";
         } else {
-            setUsernameTimeout(window.setTimeout(() => {
-                new Api.Get<boolean>(Api.Resource.User, `availability/username/${values.username}`).execute()
-                    .then(res => {
-                        if (res.success) {
-                            if (! res.data) {
-                                errors.username = "Username is already in use";
-                            }
-                        } else {
-                            log.warn(`username availability check (response): ${res.error}`);
-                        }
-                    }).catch((err: Error) => {
-                        log.warn(`username availability check: ${err}`);
-                    });
-            }, 500));
+            //setUsernameTimeout(window.setTimeout(() => {
+            //    setServerErrors({ ... serverErrors, username: null });
+            //    new Api.Post<{ username: string }, { username: string }>
+            //        (Api.Resource.User, { username: values.username }, "validateNewUser").execute()
+            //        .then(res => {
+            //            if (res.success) {
+            //                setServerErrors({ ... serverErrors, username: res.data.username });
+            //            } else {
+            //                setStatus("could not validate username");
+            //            }
+            //        }).catch(err => {
+            //            log.warn(`username validation check (response): ${err}`);
+            //        });
+            //}, DELAY));
         }
 
-        window.clearTimeout(emailTimeout);
         if (values.password.length === 0) {
             errors.password = "Enter a password";
         } else if (values.password.length < 5) {
@@ -79,23 +96,25 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
             errors.password = "We're not letting you set your password to \"password\", OK?";
         }
 
+        window.clearTimeout(emailTimeout);
         if (! emailValidator.validate(values.email)) {
             errors.email = "Enter a valid email address";
         } else {
-            setEmailTimeout(window.setTimeout(() => {
-                new Api.Get<boolean>(Api.Resource.User, `availability/email/${values.email}`).execute()
-                    .then(res => {
-                        if (res.success) {
-                            if (! res.data) {
-                                errors.username = "Email address is already in use";
-                            }
-                        } else {
-                            log.warn(`email availability check (response): ${res.error}`);
-                        }
-                    }).catch((err: Error) => {
-                        log.warn(`email availability check: ${err}`);
-                    });
-            }, 500));
+            //setEmailTimeout(window.setTimeout(() => {
+            //    new Api.Post<{ email: string}, { email: string }>(
+            //        Api.Resource.User,
+            //        { email: values.email},
+            //        "validateNewUser").execute()
+            //        .then(res => {
+            //            if (res.success) {
+            //                errors.username = res.data.email;
+            //            } else {
+            //                log.warn(`email validation check (response): ${res.error}`);
+            //            }
+            //        }).catch((err: Error) => {
+            //            log.warn(`email availability check: ${err}`);
+            //        });
+            //}, DELAY));
         }
 
         return errors;
@@ -162,6 +181,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                                 value={ formProps.values.password }
                             />
                         </BP.FormGroup>
+                        { status ? <div className="status">{ status }</div> : null }
                         <BP.Button type="submit">{ props?.registration ? "Register" : "Create user" }</BP.Button>
                     </form>
                 )}

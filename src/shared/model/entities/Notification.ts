@@ -8,18 +8,13 @@ export class Notification {
     id: number;
 
     @Orm.Column({ default: () => "NOW()" })
+    @Orm.Index()
     created: Date;
-
-    @Orm.Column({ default: () => "NOW()" })
-    edited: Date;
 
     @Orm.ManyToOne(() => User, user => user.notifications)
     recipient: User;
 
-    @Orm.Column({ type: "date", default: "NOW()" })
     @Orm.Index()
-    dateCreated: Date;
-
     @Orm.Column()
     read: boolean;
 

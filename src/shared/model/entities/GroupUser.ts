@@ -1,5 +1,7 @@
 import * as Orm from "typeorm";
+import { Creation } from "./Creation";
 import { Group } from "./Group";
+import { Owners } from "./Owners";
 import { User } from "./User";
 
 // need granularity... maybe bitmask for each permission type?
@@ -14,20 +16,12 @@ export class GroupUser {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column({ default: () => "NOW()" })
-    created: Date;
+    @Orm.Column(() => Creation)
+    creationInfo: Creation;
 
-    @Orm.Column({ default: () => "NOW()" })
-    edited: Date;
+    @Orm.Column(() => Owners)
+    owners: Owners;
 
-    @Orm.ManyToOne(() => User, { nullable: true })
-    createdBy?: User;
-
-    @Orm.ManyToOne(() => User, { nullable: true })
-    ownerUser?: User;
-
-    @Orm.ManyToOne(() => Group, { nullable: true })
-    ownerGroup?: Group;
     @Orm.ManyToOne(() => Group, group => group.memberships)
     group: Group;
 

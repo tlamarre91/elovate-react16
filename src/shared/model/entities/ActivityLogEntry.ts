@@ -5,6 +5,7 @@ import { User } from "./User";
 export class ActivityLogEntry {
     @Orm.PrimaryGeneratedColumn()
     id: number;
+
     @Orm.Column()
     datetime: Date;
 

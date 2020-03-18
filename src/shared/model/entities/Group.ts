@@ -1,5 +1,7 @@
 import * as Orm from "typeorm";
+import { Creation } from "./Creation";
 import { GroupUser } from "./GroupUser";
+import { Owners } from "./Owners";
 import { Party } from "./Party";
 import { User } from "./User";
 
@@ -8,20 +10,11 @@ export class Group {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column({ default: () => "NOW()" })
-    created: Date;
+    @Orm.Column(() => Creation)
+    creationInfo: Creation
 
-    @Orm.Column({ default: () => "NOW()" })
-    edited: Date;
+    @Orm.Column(() => Owners)
 
-    @Orm.ManyToOne(() => User, { nullable: true })
-    createdBy?: User;
-
-    @Orm.ManyToOne(() => User, { nullable: true })
-    ownerUser?: User;
-
-    @Orm.ManyToOne(() => Group, { nullable: true })
-    ownerGroup?: Group;
     @Orm.Column()
     name: string;
 

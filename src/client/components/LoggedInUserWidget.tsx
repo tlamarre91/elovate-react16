@@ -102,7 +102,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
         const target = (
             <a className="target" tabIndex={ 0 } role="button">
                 <div className="displayTag">
-                    <span className="displayName">{ props.user.displayName }</span>
+                    <span className="displayName">{ props.user.displayName || props.user.username }</span>
                     <BP.Icon icon="user" iconSize={ 30 } color={ "rgb(240, 240, 240)" } />
                 </div>
             </a>

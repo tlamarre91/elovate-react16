@@ -1,14 +1,16 @@
 import React from "react";
+import DocumentTitle from "react-document-title";
 import ReactDOM, {
     render,
     createPortal
 } from "react-dom";
 import {
     BrowserRouter as Router,
-    Switch,
-    Route,
+    Link,
     NavLink,
-    Link
+    Route,
+    Switch,
+    useHistory
 } from "react-router-dom";
 
 import * as Api from "~shared/api";
@@ -23,6 +25,10 @@ import {
     GroupRouter,
     DashboardRouter
 } from "~client/routes";
+
+import {
+    UserRegistrationPage
+} from "~client/pages";
 
 import { UserCard } from "~client/components/cards";
 import { LoginDialog } from "~client/components/LoginDialog";
@@ -40,7 +46,8 @@ export const SiteRouter: React.FC<SiteRouterProps> = (props) => {
         setLoggedInUser(user);
     };
 
-    return <Router>
+    return <DocumentTitle title="elovate">
+        <Router>
         <>
             {
                 createPortal(<nav id="appBarNav">
@@ -58,13 +65,17 @@ export const SiteRouter: React.FC<SiteRouterProps> = (props) => {
         </>
         <Switch>
             <Route path="/login">
-                <LoginDialog 
-                    onChange={ handleLoggedInUserChange }
-                    redirect="/"
-                />
+                <LoginDialog onChange={ handleLoggedInUserChange } redirect="/" />
             </Route>
             <Route path="/register">
-                <UserCreateForm registration />
+                <DocumentTitle title="register">
+                    { loggedInUser
+                        ? <div style={{ padding: "20px" }}>
+                            You are already logged in. 😀 To create users go to ______
+                        </div>
+                        :  <UserRegistrationPage onChangeLoggedInUser={ handleLoggedInUserChange }/> 
+                    }
+                </DocumentTitle>
             </Route>
             <Route path="/dashboard">
                 <DashboardRouter />
@@ -77,4 +88,5 @@ export const SiteRouter: React.FC<SiteRouterProps> = (props) => {
             </Route>
         </Switch>
     </Router>
+</DocumentTitle>
 }

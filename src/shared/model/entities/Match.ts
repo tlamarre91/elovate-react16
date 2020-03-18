@@ -1,5 +1,8 @@
 import * as Orm from "typeorm";
+import { CalendarEvent } from "./CalendarEvent";
+import { Creation } from "./Creation";
 import { Group } from "./Group";
+import { Owners } from "./Owners";
 import { Party } from "./Party";
 import { User } from "./User";
 
@@ -39,32 +42,14 @@ export class Match {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column({ default: () => "NOW()" })
-    created: Date;
+    @Orm.Column(() => Creation)
+    creationInfo: Creation;
 
-    @Orm.Column({ default: () => "NOW()" })
-    edited: Date;
-
-    @Orm.ManyToOne(() => User, { nullable: true })
-    createdBy?: User;
-
-    @Orm.ManyToOne(() => User, { nullable: true })
-    ownerUser?: User;
-
-    @Orm.ManyToOne(() => Group, { nullable: true })
-    ownerGroup?: Group;
-//    @Orm.ManyToOne(() => Game, game => game.matches)
-//    game: Game;
-
-    @Orm.Column({ default: () => "NOW()" })
-    changedOn: Date;
+    @Orm.Column(() => Owners)
+    owners: Owners;
     
-    @Orm.Column({ default: () => "NOW()" })
-    createdOn: Date;
-
-    @Orm.Column({ nullable: true })
-    @Orm.Index()
-    datePlayed: Date;
+    @Orm.OneToOne(() => CalendarEvent)
+    calendarEvent: CalendarEvent;
 
     @Orm.Column({
         type: "enum",

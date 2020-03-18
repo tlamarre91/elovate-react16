@@ -1,14 +1,53 @@
 import * as Orm from "typeorm";
 import * as argon from "argon2";
+import * as emailValidator from "email-validator";
 
+import { blacklists } from "~shared/util";
 import { log } from "~shared/log";
 import { BaseRepository } from "./BaseRepository";
 import { User } from "../entities/User";
 import { Group } from "../entities/Group";
+import { GroupUser } from "../entities/GroupUser";
 import * as Dto from "../data-transfer-objects";
+
 
 @Orm.EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
+    // TODO: improved validation rules
+    async validateNewUser(params: {
+        username?: string,
+        password?: string,
+        email?: string
+    }): Promise<typeof params> {
+        const errors: typeof params = {};
+
+        if (params.username) {
+            if (params?.username?.length === 0) {
+                errors.username = "Provide a username";
+            } else if (blacklists.username.includes(params.username)) {
+                errors.username = "Please choose another username"; // TODO: maybe set same string as below...
+            } else if (await this.count({ where: { username: params.username } }).then(count => count > 0)) {
+                errors.username = "Username already in use";
+            }
+        }
+
+        if (params.password) {
+            if (params?.password?.length < 8) {
+                errors.password = "Please choose a password with at least 8 characters";
+            }
+        }
+
+        if (params.email) {
+            if (! emailValidator.validate(params.email)) {
+                errors.email = "Please enter a valid email address";
+            } else if (await this.count({ where: { email: params.email } }).then(count => count > 0)) {
+                errors.email = "Email address already in use";
+            }
+        }
+
+        return errors;
+    }
+
     async createFromDto(dto: Dto.UserDto): Promise<User> {
         try {
             const user = this.create();
@@ -21,21 +60,17 @@ export class UserRepository extends BaseRepository<User> {
             user.username = dto.username ?? null;
 
             if (dto.createdById) {
-                user.createdBy = await this.findOne(dto.createdById);
+                user.creationInfo.createdBy = await this.findOne(dto.createdById);
             }
 
             if (dto.ownerUserId) {
-                user.ownerUser = await this.findOne(dto.ownerUserId);
+                user.owners.user = await this.findOne(dto.ownerUserId);
             }
 
             if (dto.ownerUserId) {
                 const groupRepo = Orm.getRepository(Group);
-                user.ownerGroup = await groupRepo.findOne(dto.ownerGroupId);
+                user.owners.group = await groupRepo.findOne(dto.ownerGroupId);
             }
-
-            dto.groupMemberships.forEach(guDto => {
-                console.log(`${guDto.userId} wants to be in ${guDto.groupId}`);
-            });
 
             return user;
         } catch (err) {
@@ -45,9 +80,9 @@ export class UserRepository extends BaseRepository<User> {
 
     async updateFromDto(user: User, dto: Dto.UserDto): Promise<User> {
         try {
-            user.ownerUser = await this.findOne(dto.ownerUserId);
+            user.owners.user = await this.findOne(dto.ownerUserId);
             const groupRepo = Orm.getRepository(Group);
-            user.ownerGroup = await groupRepo.findOne(dto.ownerGroupId);
+            user.owners.group = await groupRepo.findOne(dto.ownerGroupId);
             user.username = dto.username;
             user.displayName = dto.displayName ?? null;
             user.email = dto.email ?? null;
@@ -70,11 +105,10 @@ export class UserRepository extends BaseRepository<User> {
     async insertAdmin(): Promise<User> {
         const user = new User();
         user.username = "admin";
+        user.passwordDigest = await argon.hash("password");
         user.displayName = "Site Administrator";
         user.isAdmin = true;
-        await this.save(user);
-        this.setPassword(user, "admin");
-        return user;
+        return this.save(user);;
     }
 
     async getRandom(): Promise<User> {
@@ -104,6 +138,14 @@ export class UserRepository extends BaseRepository<User> {
      */
     async setPassword(user: User, password: string): Promise<User> {
         user.passwordDigest = await argon.hash(password);
+        return this.save(user);
+    }
+
+    async register(params: { username: string, password: string, email: string }): Promise<User> {
+        const user = this.create();
+        user.username = params.username;
+        user.passwordDigest = await argon.hash(params.password);
+        user.email = params.email;
         return this.save(user);
     }
 

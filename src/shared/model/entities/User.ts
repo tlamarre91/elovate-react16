@@ -4,28 +4,19 @@ import { GroupUser } from "./GroupUser";
 import { ImageAsset } from "./Asset";
 import { Notification } from "./Notification";
 import { Party } from "./Party";
+import { Owners } from "./Owners";
+import { Creation } from "./Creation";
 
 @Orm.Entity()
 export class User {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column({ default: () => "NOW()" })
-    created: Date;
+    @Orm.Column(() => Creation)
+    creationInfo: Creation;
 
-    @Orm.Column({ default: () => "NOW()" })
-    edited: Date;
-
-    @Orm.ManyToOne(() => User, { nullable: true })
-    createdBy?: User;
-
-    @Orm.ManyToOne(() => User, { nullable: true })
-    ownerUser?: User;
-
-    @Orm.ManyToOne(() => Group, { nullable: true })
-    ownerGroup?: Group;
-    @Orm.Column({ default: () => "NOW()" })
-    dateCreated: Date;
+    @Orm.Column(() => Owners)
+    owners: Owners;
 
     @Orm.Column({ nullable: true })
     lastLogin?: Date;
@@ -37,7 +28,7 @@ export class User {
     @Orm.Column({ length: 64, nullable: true })
     username?: string;
 
-    // TODO: should probably just make an un-joinable admin group...
+    // TODO: maybe just make an un-joinable admin group...
     // would that be less flimsy?
     @Orm.Column({ default: false })
     isAdmin: boolean;
@@ -50,10 +41,10 @@ export class User {
     email?: string;
 
     @Orm.Column({ default: false })
-    emailVerified: boolean;
+    hasAccount: boolean;
 
     @Orm.Column({ default: false })
-    hasAccount: boolean;
+    emailVerified: boolean;
 
     @Orm.Column({ default: false })
     receivesEmail: boolean;
@@ -64,10 +55,9 @@ export class User {
     @Orm.Column({ length: 128, nullable: true })
     passwordDigest?: string;
 
-    @Orm.OneToMany(() => GroupUser, groupUser => groupUser.user)
-    groupMemberships: GroupUser[];
-
-    // invalidateLoginsBefore: seconds in unix epoch
+    /*
+     * invalidateLoginsBefore: seconds in unix epoch (standard for JWT)
+     */
     @Orm.Column({ type: "int", nullable: true })
     invalidateLoginsBefore?: number;
 
@@ -76,4 +66,7 @@ export class User {
 
     @Orm.OneToMany(() => Notification, notification => notification.recipient)
     notifications: Notification[];
+
+    @Orm.OneToMany(() => GroupUser, groupUser => groupUser.user)
+    groupMemberships: GroupUser[];
 }
