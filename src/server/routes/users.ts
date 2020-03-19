@@ -35,31 +35,33 @@ router.post("/validateNewUser", async (req, res) => {
     }
 });
 
-router.post("/register", async (req, res) => {
+async function registerEndpoint(req: Request, res: Response) {
     if (req.user) {
         res.status(403);
         // TODO: fix error string :)
-        res.json(new Api.Response(false, "You are already logged in. To manage group users, go to ______",));
-    } else {
+        const str = "You are already logged in. To manage group users, go to ______";
+        return res.json(new Api.Response(false, str));
+    }
+
+    try {
         const params = req.body.data;
         const userRepo = Orm.getCustomRepository(UserRepository);
+        const errors = await userRepo.validateNewUser(params);
+        if (errors?.username || errors?.email || errors?.password) {
+            res.status(400);
+            return res.json(new Api.Response(false, "invalid parameters"));
+        } 
 
-        try {
-            const errors = await userRepo.validateNewUser(params);
-            if (errors?.username || errors?.email || errors?.password) {
-                res.status(400);
-                return res.json(new Api.Response(false, "invalid parameters"));
-            } 
-
-            const user: User = await userRepo.register(params);
-            res.json(new Api.Response(true, null, new Dto.UserDto(user)));
-        } catch (err) {
-            res.status(500);
-            log.error(err);
-            res.json(new Api.Response(false, "server error"));
-        }
+        const user: User = await userRepo.register(params);
+        res.json(new Api.Response(true, null, new Dto.UserDto(user)));
+    } catch (err) {
+        res.status(500);
+        log.error(`registerEndpoint: ${err}`);
+        res.json(new Api.Response(false, "server error"));
     }
-});
+}
+
+router.post("/register", registerEndpoint);
 
 router.post("/", async (req, res) => {
     if (req?.user?.isAdmin) {

@@ -18,25 +18,29 @@ export interface UserCreateFormValues {
     email: string;
 }
 
+type Values = UserCreateFormValues;
+
 export interface UserCreateFormProps {
     onChange?: (user: UserDto) => void;
     registration?: boolean; // TODO: this feels like a bad hack. is this is a bad hack? (https://trello.com/c/XLsTxy3H)
     redirect?: string;
-    initialValues?: UserCreateFormValues;
+    initialValues?: Values;
 }
 
 export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
     const history = useHistory();
     const [status, setStatus] = React.useState<string>();
-    const [serverErrors, setServerErrors] = React.useState<Partial<UserCreateFormValues>>();
+    const [serverErrors, setServerErrors] = React.useState<Partial<Values>>();
 
-    const trySubmit = async (values: UserCreateFormValues) => {
-        const validateCall = new Api.Post<UserCreateFormValues, Partial<UserCreateFormValues>>
+    const trySubmit = async (values: Values) => {
+        const validateCall = new Api.Post<Values, Partial<Values>>
             (Api.Resource.User, values, "validateNewUser");
         try {
             const res = await validateCall.execute();
-            if (res.success && (res.data?.username || res.data?.email || res.data?.password)) {
-                return setServerErrors(res.data);
+            if (res.success) {
+                if (res.data?.username || res.data?.email || res.data?.password) {
+                    return setServerErrors(res.data);
+                }
             } else {
                 log.warn(res.error);
                 setStatus("could not validate form");
@@ -46,7 +50,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
             setStatus("could not validate form");
         }
 
-        const registerCall = new Api.Post<UserCreateFormValues, UserDto>
+        const registerCall = new Api.Post<Values, UserDto>
             (Api.Resource.User, values, "register");
         try {
             const res = await registerCall.execute();
@@ -71,9 +75,9 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
         }
     }
 
-    const validate = (values: UserCreateFormValues) => {
+    const validate = (values: Values) => {
         const DELAY = 1000;
-        const errors: Partial<UserCreateFormValues> = {};
+        const errors: Partial<Values> = {};
 
         if (values.username.trim().length === 0) {
             errors.username = "Enter a username";

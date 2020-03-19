@@ -24,14 +24,15 @@ type Values = GroupCreateFormValues;
 export interface GroupCreateFormErrors {
     name?: string;
     customUrl?: string;
-    publicVisible?: string;
-    publicJoinable?: string;
 }
 
 type Errors = GroupCreateFormErrors;
 
+const KEYS: (keyof Errors)[] = ["name", "customUrl"];
+
 export interface GroupCreateFormProps {
     initialValues?: GroupCreateFormValues;
+    redirect?: string;
 }
 
 export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
@@ -40,11 +41,21 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
     const [serverErrors, setServerErrors] = React.useState<Errors>();
 
     const trySubmit = async (values: Values) => {
-        const validateCall = new Api.Post<GroupCreateFormValues, GroupCreateFormErrors>
+        const validateCall = new Api.Post<Values, Errors>
             (Api.Resource.Group, values, "validateNewGroup");
         try {
+            const res = await validateCall.execute();
+            if (res.success) {
+                if (KEYS.some(k => res.data?.[k])) {
+                    setServerErrors(res.data);
+                }
+            } else {
+                log.warn(`GroupCreate: ${res.error}`);
+                setStatus("could not validate form");
+            }
         } catch (err) {
-            log // TODO: PERFECT stopping point for the night ;D
+            log.warn(`GroupCreate: ${err}`);
+            setStatus("could not validate form");
         }
     };
 

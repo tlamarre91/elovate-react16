@@ -10,18 +10,19 @@ import { Group } from "../entities/Group";
 import { GroupUser } from "../entities/GroupUser";
 import * as Dto from "../data-transfer-objects";
 
+type NewUserParams = {
+    username?: string,
+    password?: string,
+    email?: string
+};
 
 @Orm.EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
-    // TODO: improved validation rules
-    async validateNewUser(params: {
-        username?: string,
-        password?: string,
-        email?: string
-    }): Promise<typeof params> {
+    // TODO: improved validation rules. also... type checking on server side is basically nowhere. what happened to that dream?
+    async validateNewUser(params: NewUserParams): Promise<NewUserParams> {
         const errors: typeof params = {};
 
-        if (params.username) {
+        if (params?.username?.length > -1) {
             if (params?.username?.length === 0) {
                 errors.username = "Provide a username";
             } else if (blacklists.username.includes(params.username)) {
@@ -31,13 +32,13 @@ export class UserRepository extends BaseRepository<User> {
             }
         }
 
-        if (params.password) {
+        if (params?.password?.length > -1) {
             if (params?.password?.length < 8) {
                 errors.password = "Please choose a password with at least 8 characters";
             }
         }
 
-        if (params.email) {
+        if (params.email?.length > -1) {
             if (! emailValidator.validate(params.email)) {
                 errors.email = "Please enter a valid email address";
             } else if (await this.count({ where: { email: params.email } }).then(count => count > 0)) {

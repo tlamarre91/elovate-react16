@@ -5,15 +5,33 @@ import { Group } from "../entities/Group";
 import { User } from "../entities/User";
 import * as Dto from "../data-transfer-objects";
 
+type NewGroupParams = {
+    name?: string;
+    customUrl?: string;
+}
+
 @Orm.EntityRepository(Group)
 export class GroupRepository extends BaseRepository<Group> {
-    async findOneFromQuery(query: string): Promise<Group> {
-        const id = parseInt(query);
-        if (! isNaN(id)) {
-            return this.findOne(id);
-        } else {
-            throw "GroupRepository.findOneFromQuery: query not yet implemented";
+    async validateNewGroup(params: NewGroupParams): Promise<NewGroupParams> {
+        const errors: NewGroupParams = {};
+        if (params?.name?.length > -1) {
+            if (params.name.length === 0) {
+                errors.name = "Provide a group name";
+            } else if (await this.count({ where: { name: params.name } }).then(count => count > 0)) {
+                errors.name = `Group name ${params.name} already in use`;
+            }
         }
+
+        // TODO: actually customURL will be optional
+        if (params?.customUrl?.length > -1) {
+            if (params.customUrl.length === 0) {
+                errors.customUrl = "Provide a custom URL";
+            } else if (await this.count({ where: { customUrl: params.customUrl } }).then(count => count > 0)) {
+                errors.customUrl = `Custom URL ${params.customUrl} already in use`;
+            }
+        }
+
+        return errors;
     }
 
     async createFromDto(dto: Dto.GroupDto): Promise<Group> {
