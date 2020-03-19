@@ -4,7 +4,6 @@ import { Formik } from "formik";
 import * as BP from "@blueprintjs/core";
 import {
     useHistory,
-    useLocation
 } from "react-router-dom";
 
 import { blacklists } from "~shared/util";
@@ -13,79 +12,73 @@ import { log } from "~shared/log";
 import { postBasicAuth } from "~client/auth";
 import { UserDto } from "~shared/model/data-transfer-objects";
 
-export interface UserCreateFormProps {
-    onChange?: (user: UserDto) => void;
-    registration?: boolean; // TODO: this feels like a bad hack. is this is a bad hack? (https://trello.com/c/XLsTxy3H)
-    redirect?: string;
-}
-
 export interface UserCreateFormValues {
     username: string;
     password: string;
     email: string;
 }
 
+export interface UserCreateFormProps {
+    onChange?: (user: UserDto) => void;
+    registration?: boolean; // TODO: this feels like a bad hack. is this is a bad hack? (https://trello.com/c/XLsTxy3H)
+    redirect?: string;
+    initialValues?: UserCreateFormValues;
+}
+
 export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
     const history = useHistory();
     const [status, setStatus] = React.useState<string>();
-    const [usernameTimeout, setUsernameTimeout] = React.useState<number>();
-    const [passwordTimeout, setPasswordTimeout] = React.useState<number>();
-    const [emailTimeout, setEmailTimeout] = React.useState<number>();
-    const [serverErrors, setServerErrors] = React.useState<{
-        username: string,
-        password: string,
-        email: string
-    }>();
+    const [serverErrors, setServerErrors] = React.useState<Partial<UserCreateFormValues>>();
 
-    const submit = (values: UserCreateFormValues) => {
-        const call = new Api.Post<Partial<UserDto>, UserDto>
-            (Api.Resource.User, values as Partial<UserDto>, "register");
-        call.execute().then(async res => {
+    const trySubmit = async (values: UserCreateFormValues) => {
+        const validateCall = new Api.Post<UserCreateFormValues, Partial<UserCreateFormValues>>
+            (Api.Resource.User, values, "validateNewUser");
+        try {
+            const res = await validateCall.execute();
+            if (res.success && (res.data?.username || res.data?.email || res.data?.password)) {
+                return setServerErrors(res.data);
+            } else {
+                log.warn(res.error);
+                setStatus("could not validate form");
+            }
+        } catch (err) {
+            log.warn(err);
+            setStatus("could not validate form");
+        }
+
+        const registerCall = new Api.Post<UserCreateFormValues, UserDto>
+            (Api.Resource.User, values, "register");
+        try {
+            const res = await registerCall.execute();
             if (res.success) {
+                props?.onChange(res.data);
                 if (props?.registration) {
-                    postBasicAuth(values.username, values.password).then(user => {
-                        log.info("logged in after registration!");
-                        props?.onChange(user);
+                    try {
+                        const user = await postBasicAuth(values.username, values.password);
                         if (props.redirect) {
                             history.push(props.redirect);
                         }
-                    }).catch(err => {
+                    } catch (err) {
                         log.warn(`post-registration: ${err}`);
-                    });
-                } else {
-                    props?.onChange(res.data);
+                    }
                 }
             } else {
                 log.warn(`UserCreateForm: ${res.error}`);
             }
-        }).catch(err => {
-            setStatus(err);
-        });
+        } catch (err) {
+            log.warn(`UserCreateForm: ${err}`);
+            setStatus("could not validate form");
+        }
     }
 
     const validate = (values: UserCreateFormValues) => {
         const DELAY = 1000;
         const errors: Partial<UserCreateFormValues> = {};
-        window.clearTimeout(usernameTimeout);
+
         if (values.username.trim().length === 0) {
             errors.username = "Enter a username";
         } else if (blacklists.username.includes(values.username)) {
             errors.username = "Please choose a different username";
-        } else {
-            //setUsernameTimeout(window.setTimeout(() => {
-            //    setServerErrors({ ... serverErrors, username: null });
-            //    new Api.Post<{ username: string }, { username: string }>
-            //        (Api.Resource.User, { username: values.username }, "validateNewUser").execute()
-            //        .then(res => {
-            //            if (res.success) {
-            //                setServerErrors({ ... serverErrors, username: res.data.username });
-            //            } else {
-            //                setStatus("could not validate username");
-            //            }
-            //        }).catch(err => {
-            //            log.warn(`username validation check (response): ${err}`);
-            //        });
-            //}, DELAY));
         }
 
         if (values.password.length === 0) {
@@ -96,25 +89,8 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
             errors.password = "We're not letting you set your password to \"password\", OK?";
         }
 
-        window.clearTimeout(emailTimeout);
         if (! emailValidator.validate(values.email)) {
             errors.email = "Enter a valid email address";
-        } else {
-            //setEmailTimeout(window.setTimeout(() => {
-            //    new Api.Post<{ email: string}, { email: string }>(
-            //        Api.Resource.User,
-            //        { email: values.email},
-            //        "validateNewUser").execute()
-            //        .then(res => {
-            //            if (res.success) {
-            //                errors.username = res.data.email;
-            //            } else {
-            //                log.warn(`email validation check (response): ${res.error}`);
-            //            }
-            //        }).catch((err: Error) => {
-            //            log.warn(`email availability check: ${err}`);
-            //        });
-            //}, DELAY));
         }
 
         return errors;
@@ -123,18 +99,19 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
     const form = (
         <div className="userCreateForm">
             <Formik
-                initialValues={{
+                initialValues={ props?.initialValues ?? {
                     username: "",
                     password: "",
                     email: ""
                 }}
                 validate={ validate }
-                onSubmit={ submit }>
+                onSubmit={ trySubmit }>
                 { formProps => (
-                    <form onSubmit={ formProps.handleSubmit }>
+                    <form className="userCreateForm" onSubmit={ formProps.handleSubmit }>
                         <BP.FormGroup 
                             label="Username"
-                            helperText={ formProps.touched.username && formProps.errors?.username }
+                            helperText={ formProps.touched.username && formProps.errors?.username
+                                || serverErrors?.username }
                             intent={ formProps.touched.username && formProps.errors?.username
                                 ? BP.Intent.WARNING
                                 : BP.Intent.NONE }
@@ -153,7 +130,8 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                             intent={ formProps.touched.email && formProps.errors?.email
                                 ? BP.Intent.WARNING
                                 : BP.Intent.NONE }
-                            helperText={ formProps.touched.email && formProps.errors?.email }
+                            helperText={ formProps.touched.email && formProps.errors?.email 
+                                || serverErrors?.email }
                             labelFor="emailInput">
                             <BP.InputGroup
                                 id="emailInput"
@@ -169,7 +147,8 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                             intent={ formProps.touched.password && formProps.errors?.password
                                 ? BP.Intent.WARNING
                                 : BP.Intent.NONE }
-                            helperText={ formProps.touched.password && formProps.errors?.password }
+                            helperText={ formProps.touched.password && formProps.errors?.password 
+                                || serverErrors?.password }
                             labelFor="passwordInput">
                             <BP.InputGroup
                                 id="passwordInput"
@@ -182,7 +161,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                             />
                         </BP.FormGroup>
                         { status ? <div className="status">{ status }</div> : null }
-                        <BP.Button type="submit">{ props?.registration ? "Register" : "Create user" }</BP.Button>
+                        <BP.Button id="userSubmitButton" type="submit">{ props?.registration ? "Register" : "Create user" }</BP.Button>
                     </form>
                 )}
             </Formik>

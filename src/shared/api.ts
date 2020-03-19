@@ -40,7 +40,7 @@ export class Get<Receive> {
     }
 }
 
-// NOTE: i might not need a Send parameter. doesn't seem that i actually need to know anything about it
+// TODO: i don't need a Send parameter. doesn't seem that i actually need to know anything about it
 export class Post<Send, Receive> {
     url: string;
     origin: string;

@@ -58,7 +58,7 @@ export class User {
     /*
      * invalidateLoginsBefore: seconds in unix epoch (standard for JWT)
      */
-    @Orm.Column({ type: "int", nullable: true })
+    @Orm.Column({ type: "int" })
     invalidateLoginsBefore?: number;
 
     @Orm.ManyToMany(() => Party, party => party.users)

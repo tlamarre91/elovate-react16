@@ -8,9 +8,11 @@
     "prestart": "gulp",
     "start": "node .",
     "start-dev": "nodemon --config nodemon.json",
-    "selenium": "echo woopsies",
-    "test-server": "node dist/test",
-    "pretest-server": "gulp server"
+    "selenium": "npx mocha test/*.spec.js",
+    "test": "npx mocha test/*.spec.js",
+    "dropdb": "npx typeorm schema:drop",
+    "syncdb": "npx typeorm schema:sync",
+    "migratedb": "gulp; npx typeorm migration:create -n yarn"
   },
   "dependencies": {
     "@blueprintjs/core": "^3.24.0",

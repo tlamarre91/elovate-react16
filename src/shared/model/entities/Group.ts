@@ -14,6 +14,7 @@ export class Group {
     creationInfo: Creation
 
     @Orm.Column(() => Owners)
+    owners: Owners;
 
     @Orm.Column()
     name: string;

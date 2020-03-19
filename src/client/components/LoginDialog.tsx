@@ -64,9 +64,9 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
                         <BP.FormGroup 
                             label="Username"
                             helperText={ props.touched.username && props.errors?.username }
-                            labelFor="usernameInput">
+                            labelFor="usernameLoginInput">
                             <BP.InputGroup
-                                id="usernameInput"
+                                id="usernameLoginInput"
                                 name="username"
                                 leftIcon="user"
                                 onBlur={ props.handleBlur }
@@ -77,9 +77,9 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
                         <BP.FormGroup
                             label="Password"
                             helperText={ props.touched.password && props.errors?.password }
-                            labelFor="passwordInput">
+                            labelFor="passwordLoginInput">
                             <BP.InputGroup
-                                id="passwordInput"
+                                id="passwordLoginInput"
                                 name="password"
                                 leftIcon="lock"
                                 type="password"
@@ -88,7 +88,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
                                 value={ props.values.password }
                             />
                         </BP.FormGroup>
-                        <BP.Button type="submit">Log in</BP.Button>
+                        <BP.Button id="loginDialogButton" type="submit">Log in</BP.Button>
                     </form> 
                 )}
             </Formik>

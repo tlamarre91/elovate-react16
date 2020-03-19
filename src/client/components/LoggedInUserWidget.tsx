@@ -78,7 +78,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
             position="bottom-right"
             usePortal={ false }
             content={ <LoginDialog onChange={ props.onChange } /> }
-            target={ <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Log in" /> } />
+            target={ <BP.Button id="loginButton" style={ promptStyle } tabIndex={ 0 } minimal text="Log in" /> } />
 
         const registerLink = <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Register"
             onClick={ () => history.push("/register") } />
@@ -95,13 +95,13 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
                 <BP.MenuItem onClick={ () => history.push("/settings") } icon="settings" text="Settings" />
                 <BP.MenuItem onClick={ () => history.push("/help") } icon="help" text="Help"/>
                 <BP.Menu.Divider />
-                <BP.MenuItem onClick={ logout } tabIndex={ 0 } icon="log-out" text="Log out" />
+                <BP.MenuItem id="logoutButton" onClick={ logout } tabIndex={ 0 } icon="log-out" text="Log out" />
             </BP.Menu>
         </div>
 
         const target = (
             <a className="target" tabIndex={ 0 } role="button">
-                <div className="displayTag">
+                <div id="loggedInUserTag" className="displayTag">
                     <span className="displayName">{ props.user.displayName || props.user.username }</span>
                     <BP.Icon icon="user" iconSize={ 30 } color={ "rgb(240, 240, 240)" } />
                 </div>

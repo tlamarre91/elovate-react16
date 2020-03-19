@@ -7,5 +7,9 @@ export const blacklists = {
         "poopface",
         "admin",
         "test"
+    ],
+    groupName: [
+        "group",
+        "test"
     ]
 };

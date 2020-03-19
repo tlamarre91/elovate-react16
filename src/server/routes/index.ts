@@ -36,6 +36,8 @@ apiRouter.post(`/${Api.Resource.Authentication}`, async (req, res) => {
         const isWebFallbackClient = req.body["client"] === "web-fallback";
         if (user) {
             if (await userRepo.basicAuth(user, password)) {
+                user.lastLogin = new Date();
+                userRepo.save(user);
                 // TODO: don't necessarily assign refresh: true to all JWTs...
                 const newToken = Authorization.generateUserJwt(user.id, req.app.get("secret"), true);
                 res.cookie(Authorization.JWT_COOKIE_NAME, newToken, { signed: true });

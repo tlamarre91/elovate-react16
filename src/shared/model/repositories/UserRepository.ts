@@ -27,7 +27,7 @@ export class UserRepository extends BaseRepository<User> {
             } else if (blacklists.username.includes(params.username)) {
                 errors.username = "Please choose another username"; // TODO: maybe set same string as below...
             } else if (await this.count({ where: { username: params.username } }).then(count => count > 0)) {
-                errors.username = "Username already in use";
+                errors.username = `Username ${params.username} already in use`;
             }
         }
 
@@ -41,7 +41,7 @@ export class UserRepository extends BaseRepository<User> {
             if (! emailValidator.validate(params.email)) {
                 errors.email = "Please enter a valid email address";
             } else if (await this.count({ where: { email: params.email } }).then(count => count > 0)) {
-                errors.email = "Email address already in use";
+                errors.email = `Email address ${params.email} already in use`;
             }
         }
 
@@ -146,6 +146,7 @@ export class UserRepository extends BaseRepository<User> {
         user.username = params.username;
         user.passwordDigest = await argon.hash(params.password);
         user.email = params.email;
+        user.invalidateLoginsBefore = Math.floor(Date.now() / 1000 - 1);
         return this.save(user);
     }
 
