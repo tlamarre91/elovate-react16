@@ -14,10 +14,9 @@ import {
 } from "react-router-dom";
 
 import * as Api from "~shared/api";
-import * as Dto from "~shared/model/data-transfer-objects";
+import * as Dto from "~shared/data-transfer-objects";
 import { elmt } from "~client/util";
 import { log } from "~shared/log";
-import { UserDto } from "~shared/model/data-transfer-objects";
 
 import {
     AdminRouter,

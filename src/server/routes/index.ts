@@ -14,8 +14,10 @@ import { LoremIpsum } from "lorem-ipsum";
 
 import { log } from "~shared/log";
 
-import * as Dto from "~shared/model/data-transfer-objects";
-import { UserRepository } from "~shared/model/repositories";
+import * as Dto from "~shared/data-transfer-objects";
+import {
+    UserRepository
+} from "~server/model/repositories";
 import { Authorization } from "~server/middleware";
 
 import * as Api from "~shared/api";

@@ -1,7 +1,7 @@
 import winston from "winston";
 
 import { log } from "~shared/log";
-import { BaseDto } from "~shared/model/BaseDto";
+import { BaseDto } from "~shared/data-transfer-objects";
 
 
 export const API_ROOT = "/api/v1"

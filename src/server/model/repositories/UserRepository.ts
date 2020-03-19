@@ -5,10 +5,12 @@ import * as emailValidator from "email-validator";
 import { blacklists } from "~shared/util";
 import { log } from "~shared/log";
 import { BaseRepository } from "./BaseRepository";
-import { User } from "../entities/User";
-import { Group } from "../entities/Group";
-import { GroupUser } from "../entities/GroupUser";
-import * as Dto from "../data-transfer-objects";
+import {
+    Group,
+    GroupUser,
+    User
+} from "~server/model/entities";
+import * as Dto from "~shared/data-transfer-objects";
 
 type NewUserParams = {
     username?: string,

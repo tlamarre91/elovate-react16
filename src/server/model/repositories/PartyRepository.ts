@@ -1,10 +1,13 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
-import { Party, PartyType } from "~shared/model/entities/Party";
-import { Match } from "~shared/model/entities/Match";
-import { User } from "~shared/model/entities/User";
-import * as Dto from "../data-transfer-objects";
+import {
+    Match,
+    User,
+    Party,
+    PartyType
+} from "~server/model/entities";
+import * as Dto from "~shared/data-transfer-objects";
 
 @Orm.EntityRepository(Party)
 export class PartyRepository extends BaseRepository<Party> {

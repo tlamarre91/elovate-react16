@@ -1,4 +1,5 @@
 export * from "./AssetDto";
+export * from "./BaseDto";
 export * from "./CalendarEventDto";
 export * from "./GroupDto";
 export * from "./GroupUserDto";

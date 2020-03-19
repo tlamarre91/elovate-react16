@@ -1,5 +1,7 @@
 import * as Orm from "typeorm";
-import { User } from "./User";
+import {
+    User
+} from ".";
 
 export class Creation {
     @Orm.Column({ default: () => "NOW()" })

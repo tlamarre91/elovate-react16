@@ -1,9 +1,11 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
-import { Group } from "../entities/Group";
-import { User } from "../entities/User";
-import * as Dto from "../data-transfer-objects";
+import {
+    Group,
+    User
+} from "~server/model/entities";
+import * as Dto from "~shared/data-transfer-objects";
 
 type NewGroupParams = {
     name?: string;

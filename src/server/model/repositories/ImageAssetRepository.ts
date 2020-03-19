@@ -6,9 +6,9 @@ import winston from "winston";
 
 import * as Orm from "typeorm";
 
-import * as Dto from "../data-transfer-objects";
+import * as Dto from "~shared/data-transfer-objects";
 import { BaseRepository } from "./BaseRepository";
-import { ImageAsset } from "../entities/Asset";
+import { ImageAsset } from "../entities";
 
 const ASSET_DIR = process.env.ELOVATE_STATIC_DIR || path.join(appRoot.path, "dist", "public");
 

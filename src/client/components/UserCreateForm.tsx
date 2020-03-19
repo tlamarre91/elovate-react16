@@ -10,7 +10,7 @@ import { blacklists } from "~shared/util";
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { postBasicAuth } from "~client/auth";
-import { UserDto } from "~shared/model/data-transfer-objects";
+import { UserDto } from "~shared/data-transfer-objects";
 
 export interface UserCreateFormValues {
     username: string;

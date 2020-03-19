@@ -10,7 +10,7 @@ import {
 
 import { log } from "~shared/log";
 import * as Api from "~shared/api";
-import * as Dto from "~shared/model/data-transfer-objects";
+import * as Dto from "~shared/data-transfer-objects";
 
 export interface UserProfileProps {
     query?: string;

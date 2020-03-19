@@ -1,6 +1,6 @@
 import * as Dto from ".";
-import { BaseDto } from "../BaseDto";
-import { Notification } from "../entities/Notification";
+import { BaseDto } from "./BaseDto";
+import { Notification } from "~server/model/entities/Notification";
 
 export class NotificationDto extends BaseDto<Notification> {
     recipient?: Dto.UserDto;

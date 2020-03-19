@@ -18,7 +18,7 @@ import { Authorization } from "~server/middleware";
 
 import { connectDb } from "~server/db";
 import routes from "~server/routes";
-import { UserRepository } from "~shared/model/repositories";
+import { UserRepository } from "~server/model/repositories";
 
 const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() === "false" ? false : true;
 

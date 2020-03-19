@@ -1,6 +1,6 @@
 import * as Dto from ".";
-import { BaseDto } from "../BaseDto";
-import { Group } from "../entities/Group";
+import { BaseDto } from "./BaseDto";
+import { Group } from "~server/model/entities/Group";
 
 export class GroupDto extends BaseDto<Group> {
     name?: string;

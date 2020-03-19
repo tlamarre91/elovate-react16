@@ -3,10 +3,12 @@ import * as Orm from "typeorm";
 
 import { log } from "~shared/log";
 import * as Api from "~shared/api";
-import { UserRepository } from "~shared/model/repositories";
-import * as Dto from "~shared/model/data-transfer-objects";
+import { UserRepository } from "~server/model/repositories";
+import * as Dto from "~shared/data-transfer-objects";
 
-import { User } from "~shared/model/entities/User";
+import {
+    User
+} from "~server/model/entities";
 
 const router = Router();
 

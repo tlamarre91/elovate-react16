@@ -1,9 +1,12 @@
 import * as Orm from "typeorm";
-import { Creation } from "./Creation";
-import { GroupUser } from "./GroupUser";
-import { Owners } from "./Owners";
-import { Party } from "./Party";
-import { User } from "./User";
+
+import {
+    Creation,
+    GroupUser,
+    Owners,
+    Party,
+    User
+} from ".";
 
 @Orm.Entity()
 export class Group {

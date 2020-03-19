@@ -11,7 +11,7 @@ import {
 
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
-import { UserDto } from "~shared/model/data-transfer-objects";
+import { UserDto } from "~shared/data-transfer-objects";
 
 import { UserAdmin } from "~client/components/UserAdmin";
 

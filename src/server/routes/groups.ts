@@ -3,9 +3,13 @@ import * as Orm from "typeorm";
 
 import { log } from "~shared/log";
 import * as Api from "~shared/api";
-import { GroupRepository } from "~shared/model/repositories";
-import { Group } from "~shared/model/entities";
-import * as Dto from "~shared/model/data-transfer-objects";
+import {
+    GroupRepository
+} from "~server/model/repositories";
+import {
+    Group
+} from "~server/model/entities";
+import * as Dto from "~shared/data-transfer-objects";
 
 const router = Router();
 router.post("/validateNewGroup", async (req, res) => {

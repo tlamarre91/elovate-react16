@@ -1,6 +1,6 @@
 import * as Dto from ".";
-import { BaseDto } from "../BaseDto";
-import { User } from "../entities/User";
+import { BaseDto } from "./BaseDto";
+import { User } from "~server/model/entities/User";
 
 export class UserDto extends BaseDto<User> {
     id?: number;

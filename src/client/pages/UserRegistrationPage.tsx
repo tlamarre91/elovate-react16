@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UserDto } from "~shared/model/data-transfer-objects";
+import { UserDto } from "~shared/data-transfer-objects";
 import { UserCreateForm } from "~client/components/UserCreateForm";
 
 export interface UserRegistrationPageProps {

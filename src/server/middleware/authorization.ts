@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 import { log } from "~shared/log";
-import { UserRepository } from "~shared/model/repositories";
+import { UserRepository } from "~server/model/repositories";
 
 export const JWT_COOKIE_NAME = "elovateJwt";
 export const JWT_EXP_TIME = 60 * 60 * 24;

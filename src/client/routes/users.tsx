@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 
 import { log } from "~shared/log";
-import { UserDto } from "~shared/model/data-transfer-objects";
+import * as Dto from "~shared/data-transfer-objects";
 
 import { UserProfile } from "~client/components/UserProfile";
 import { UserCreateForm } from "~client/components/UserCreateForm";
@@ -26,7 +26,7 @@ export const UserRouter: React.FC = () => {
             <div>HEEEEY ITS UR PROFILE</div>
         </Route>
         <Route path={ `${path}/new` }>
-            <UserCreateForm onChange={ (user: UserDto) => { log.info(JSON.stringify(user, null, 2)) } } />
+            <UserCreateForm onChange={ (user: Dto.UserDto) => { log.info(JSON.stringify(user, null, 2)) } } />
         </Route>
         <Route path={ `${path}/:query` }>
             <UserProfile />

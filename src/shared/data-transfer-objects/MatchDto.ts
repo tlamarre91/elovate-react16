@@ -1,6 +1,6 @@
 import * as Dto from ".";
-import { BaseDto } from "../BaseDto";
-import { Match } from "../entities/Match";
+import { BaseDto } from "./BaseDto";
+import { Match } from "~server/model/entities/Match";
 
 export class MatchDto extends BaseDto<Match> {
     calendarEventId: number;

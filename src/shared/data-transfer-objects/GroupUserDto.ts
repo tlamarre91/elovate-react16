@@ -1,6 +1,6 @@
 import * as Dto from ".";
-import { BaseDto } from "../BaseDto";
-import { GroupUser, GroupUserPrivilege } from "../entities/GroupUser";
+import { BaseDto } from "./BaseDto";
+import { GroupUser, GroupUserPrivilege } from "~server/model/entities/GroupUser";
 
 export class GroupUserDto extends BaseDto<GroupUser> {
     userId: number;
