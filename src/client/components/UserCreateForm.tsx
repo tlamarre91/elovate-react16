@@ -1,7 +1,8 @@
-import * as emailValidator from "email-validator";
 import * as React from "react";
+import * as emailValidator from "email-validator";
 import { Formik } from "formik";
 import * as BP from "@blueprintjs/core";
+import { Helmet } from "react-helmet";
 import {
     useHistory,
 } from "react-router-dom";
@@ -19,6 +20,8 @@ export interface UserCreateFormValues {
 }
 
 type Values = UserCreateFormValues;
+
+const KEYS: (keyof Values)[] = ["username", "password", "email"];
 
 export interface UserCreateFormProps {
     onChange?: (user: UserDto) => void;
@@ -38,7 +41,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
         try {
             const res = await validateCall.execute();
             if (res.success) {
-                if (res.data?.username || res.data?.email || res.data?.password) {
+                if (KEYS.some(k => res.data?.[k])) {
                     return setServerErrors(res.data);
                 }
             } else {
@@ -46,7 +49,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                 setStatus("could not validate form");
             }
         } catch (err) {
-            log.warn(err);
+            log.error(err);
             setStatus("could not validate form");
         }
 
@@ -55,38 +58,41 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
         try {
             const res = await registerCall.execute();
             if (res.success) {
-                props?.onChange(res.data);
                 if (props?.registration) {
                     try {
                         const user = await postBasicAuth(values.username, values.password);
+                        props?.onChange(user);
                         if (props.redirect) {
                             history.push(props.redirect);
                         }
                     } catch (err) {
-                        log.warn(`post-registration: ${err}`);
+                        log.error(`post-registration: ${err}`);
+                        setStatus("could not register user");
                     }
+                } else {
+                    props?.onChange(res.data);
                 }
             } else {
-                log.warn(`UserCreateForm: ${res.error}`);
+                log.error(`UserCreateForm: ${res.error}`);
+                setStatus("could not register user");
             }
         } catch (err) {
-            log.warn(`UserCreateForm: ${err}`);
-            setStatus("could not validate form");
+            log.error(`UserCreateForm: ${err}`);
+            setStatus("could not register user");
         }
     }
 
     const validate = (values: Values) => {
-        const DELAY = 1000;
         const errors: Partial<Values> = {};
 
-        if (values.username.trim().length === 0) {
-            errors.username = "Enter a username";
+        if (values.username.length === 0) {
+            errors.username = "Provide a username";
         } else if (blacklists.username.includes(values.username)) {
             errors.username = "Please choose a different username";
         }
 
         if (values.password.length === 0) {
-            errors.password = "Enter a password";
+            errors.password = "Provide a password";
         } else if (values.password.length < 5) {
             errors.password = "Come on, give us a password of at least 5 characters";
         } else if (values.password === "password") {
@@ -100,14 +106,14 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
         return errors;
     }
 
-    const form = (
-        <div className="userCreateForm">
+    return (
+        <div className="userCreateFormContainer">
             <Formik
                 initialValues={ props?.initialValues ?? {
                     username: "",
                     password: "",
                     email: ""
-                }}
+                } }
                 validate={ validate }
                 onSubmit={ trySubmit }>
                 { formProps => (
@@ -171,6 +177,4 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
             </Formik>
         </div>
     )
-
-    return form;
 }

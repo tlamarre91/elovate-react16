@@ -10,17 +10,20 @@ import {
 
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
-import { UserDto } from "~shared/data-transfer-objects";
-import { LoginDialog } from "~client/components/LoginDialog";
-import { UserCreateForm } from "~client/components/UserCreateForm";
+import context from "~client/context";
+import {
+    UserDto
+} from "~shared/data-transfer-objects";
+import {
+    LoginDialog,
+} from "~client/components";
 
 export interface LoggedInUserWidgetProps {
-    user: UserDto;
-    onChange: (user: UserDto) => void;
 }
 
 export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => {
     const { path, url } = useRouteMatch();
+    const { loggedInUser, setLoggedInUser } = React.useContext(context);
     log.info(`path: ${path}`);
     const [expanded, setExpanded] = React.useState<boolean>(false);
     const [status, setStatus] = React.useState<string>("");
@@ -31,7 +34,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
         const call = new Api.Get<string>(Api.Resource.Deauthentication);
         call.execute().then(res => {
             if (res.success) {
-                props.onChange(null);
+                setLoggedInUser(null);
                 setStatus("logged out")
                 setError(null);
                 setTimeout(() => { setStatus(null) }, 2000);
@@ -49,11 +52,11 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
                 if (res.success) {
                     setStatus("");
                     setError("");
-                    props.onChange(res.data);
+                    setLoggedInUser(res.data);
                 } else {
-                    props.onChange(null);
+                    setLoggedInUser(null);
                     log.warn(`LoggedInUserWidget: ${res.error}`);
-                    setStatus(`not logged in`);
+                    setStatus(`not logged in`); // TODO: this is not correct. need trello card for "insufficiently robust" code
                     setError(res.error);
                 }
 
@@ -68,7 +71,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
 
     if (! loaded) {
         return null;
-    } else if (! props.user) {
+    } else if (! loggedInUser) {
         const promptStyle: React.CSSProperties = {
             color: "rgb(240, 240, 240)",
             fontWeight: "bold"
@@ -77,7 +80,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
         const loginPopover =  <BP.Popover
             position="bottom-right"
             usePortal={ false }
-            content={ <LoginDialog onChange={ props.onChange } /> }
+            content={ <LoginDialog onUserChange={ setLoggedInUser } /> }
             target={ <BP.Button id="loginButton" style={ promptStyle } tabIndex={ 0 } minimal text="Log in" /> } />
 
         const registerLink = <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Register"
@@ -102,7 +105,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
         const target = (
             <a className="target" tabIndex={ 0 } role="button">
                 <div id="loggedInUserTag" className="displayTag">
-                    <span className="displayName">{ props.user.displayName || props.user.username }</span>
+                    <span className="displayName">{ loggedInUser.displayName || loggedInUser.username }</span>
                     <BP.Icon icon="user" iconSize={ 30 } color={ "rgb(240, 240, 240)" } />
                 </div>
             </a>

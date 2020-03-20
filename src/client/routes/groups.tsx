@@ -9,14 +9,17 @@ import {
     useRouteMatch
 } from "react-router-dom";
 
-import { GroupProfile } from "~client/components/GroupProfile";
+import context from "~client/context";
+import {
+    GroupProfile
+} from "~client/components";
 
-export const GroupRouter: React.FC = () => {
+export const GroupRouter: React.FC = (props) => {
     const { path, url } = useRouteMatch();
 
     return <Switch>
         <Route exact path={ path }>
-            <div>wanna list all groups...</div>
+            <div>placeholder</div>
         </Route>
         <Route path={ `${path}/:query` }>
             <GroupProfile />

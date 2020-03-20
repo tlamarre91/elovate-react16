@@ -13,7 +13,11 @@ import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { UserDto } from "~shared/data-transfer-objects";
 
-import { UserAdmin } from "~client/components/UserAdmin";
+import context from "~client/context";
+
+import {
+    UserAdmin
+} from "~client/components/UserAdmin";
 
 export const AdminRouter: React.FC = () => {
     const { path, url } = useRouteMatch();

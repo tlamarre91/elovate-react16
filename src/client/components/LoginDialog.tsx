@@ -7,13 +7,14 @@ import {
     useLocation
 } from "react-router-dom";
 
+import context from "~client/context";
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { UserDto } from "~shared/data-transfer-objects";
 import { postBasicAuth } from "~client/auth";
 
 export interface LoginDialogProps {
-    onChange: (user: UserDto) => void;
+    onUserChange: (user: UserDto) => void;
     modal?: boolean;
     redirect?: string;
     errors?: string[];
@@ -27,12 +28,15 @@ export class LoginDialogValues {
 
 export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
     const [states, setStatus] = React.useState<string>();
+    const { loggedInUser, setLoggedInUser } = React.useContext(context);
     const history = useHistory();
     const submit = async (values: LoginDialogValues) => {
         try {
             const user: UserDto = await postBasicAuth(values.username, values.password);
-            props.onChange(user);
-            history.push(props.redirect ?? "/");
+            setLoggedInUser(user);
+            if (props.redirect) {
+                history.push(props.redirect);
+            }
         } catch (err) {
             setStatus(err);
         }
