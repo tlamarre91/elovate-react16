@@ -1,9 +1,13 @@
 import * as Orm from "typeorm";
 
-import { BaseRepository } from "./BaseRepository";
+import {
+    BaseRepository,
+    GroupUserRepository,
+} from ".";
 import {
     Group,
-    User
+    User,
+    GroupUser
 } from "~server/model/entities";
 import * as Dto from "~shared/data-transfer-objects";
 
@@ -36,9 +40,18 @@ export class GroupRepository extends BaseRepository<Group> {
         return errors;
     }
 
+    async findGroupsVisibleToUser(user: User) {
+        throw new Error("not yet implemented");
+    }
+
+    async findUserGroups(user: User): Promise<Group[]> {
+        const groupUserRepo = Orm.getRepository(GroupUser);
+        const memberships: GroupUser[] = await groupUserRepo.find({ where: { user }, relations: ["group"] });
+        return memberships.map(m => m.group);
+    }
+
     async createFromDto(dto: Dto.GroupDto): Promise<Group> {
-        const group = this.create();
-        return group;
+        throw new Error("not yet implemented");
     }
 
     async countGroupsWithOwner(user: User): Promise<number> {

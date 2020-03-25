@@ -1,4 +1,3 @@
-// TODO: put this down in the dto module
 export class BaseDto<T extends { id?: number, origin?: string }> {
     origin?: string;
     id?: number;
@@ -6,8 +5,8 @@ export class BaseDto<T extends { id?: number, origin?: string }> {
     ownerUserId?: number;
     ownerGroupId?: number;
     constructor(obj?: T, origin?: string) {
-        this.origin = origin;
-        this.id = obj.id;
+        this.origin = origin ?? null;
+        this.id = obj?.id ?? null;
     }
 
     copyFrom(dto: BaseDto<T>) {

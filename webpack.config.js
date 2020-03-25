@@ -20,7 +20,7 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
             "~shared": path.resolve("src/shared"),
-            "~server": path.resolve("src/server"),
+            /* "~server": path.resolve("src/server"), */
             "~client": path.resolve("src/client"),
         }
     },

@@ -1,7 +1,8 @@
 doctype html
 html
     head
-        title elovate
+        block title
+            title elovate
         link(rel="stylesheet", type="text/css" href="/css/style.css")
         script(src="/js/client.js")
     body
@@ -11,6 +12,10 @@ html
                     img(src="/img/elovate.png" alt="elovate home")
             #appBarNavContainer
             #loggedInUserWidgetContainer
-        #contentContainer
-            block content
+        if !error
+            #contentContainer
+                block content
+        else
+            #errorContainer
+                block error
         #siteFooter page footer

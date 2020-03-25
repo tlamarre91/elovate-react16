@@ -5,9 +5,6 @@ import {
 
 export class Creation {
     @Orm.Column({ default: () => "NOW()" })
-    created: Date;
-
-    @Orm.Column({ default: () => "NOW()" })
     edited: Date;
 
     @Orm.Column({ type: "timestamp", default: () => "NOW()" })

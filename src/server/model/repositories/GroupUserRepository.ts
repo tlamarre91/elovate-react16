@@ -5,7 +5,8 @@ import {
     GroupUser,
     GroupUserPrivilege,
     Group,
-    User
+    User,
+    Creation
 } from "~server/model/entities";
 import * as Dto from "~shared/data-transfer-objects";
 
@@ -23,6 +24,8 @@ export class GroupUserRepository extends BaseRepository<GroupUser> {
         gu.user = user;
         gu.group = group;
         gu.privilege = params?.privilege ?? GroupUserPrivilege.user;
+        //gu.creationInfo.createdBy = params?.createdBy ?? user;
+        gu.creationInfo = new Creation();
         gu.creationInfo.createdBy = params?.createdBy ?? user;
         return gu;
     }

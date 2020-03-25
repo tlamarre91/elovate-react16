@@ -1,15 +1,37 @@
-export const NAME_REGEX = /[a-zA-Z][a-zA-Z0-9-_]{3,32}/gi;
+export const clientRoutes = [
+    "/admin",
+    "/dashboard",
+    "/groups",
+    "/login",
+    "/register",
+    "/users",
+];
 
 export const blacklists = {
     username: [
-        "user",
-        "root",
-        "poopface",
         "admin",
-        "test"
+        "poopface",
+        "root",
+        "user",
     ],
     groupName: [
         "group",
-        "test"
-    ]
+        "my",
+        "newgroup",
+        "new",
+        "manage",
+        "myGroups",
+    ],
+    groupCustomUrl: [
+        "group",
+        "mygroup",
+        "user",
+        "myGroups",
+        "new",
+    ],
 };
+
+export const regex = {
+    alphanumericDashUnderscore128: /[-_a-zA-Z0-9]{2,128}/g,
+    alphanumericDashUnderscore256: /[-_a-zA-Z0-9]{2,256}/g
+}

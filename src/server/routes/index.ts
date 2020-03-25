@@ -8,6 +8,10 @@ import {
     Result
 } from "express-validator";
 
+import {
+    clientRoutes
+} from "~shared/util";
+
 import * as Orm from "typeorm";
 
 import { LoremIpsum } from "lorem-ipsum";
@@ -106,10 +110,13 @@ apiRouter.get(`/${Api.Resource.Deauthentication}`, async (req, res) => {
 apiRouter.use(`/${Api.Resource.User}`, userRouter);
 apiRouter.use(`/${Api.Resource.Group}`, groupRouter);
 
-// TODO: exclude paths for static directories
-// i'll eventually have a static site generator, deploying to directories like "blog"
-// and "landing-site" and whatnot
-baseRouter.get("/*", async (req, res) => {
+baseRouter.get(["/", ... clientRoutes, ... clientRoutes.map(r => `${r}/*`)], async (req, res) => {
     res.render("base", { user: req.user });
 });
+
+baseRouter.use("/*", (req, res) => {
+    res.status(404);
+    res.render("error", { error: `resource not found (${req.originalUrl})` });
+});
+
 export default baseRouter;

@@ -13,7 +13,7 @@ import {
     useHistory
 } from "react-router-dom";
 
-import context from "~client/context";
+import appState from "~client/app-state";
 import * as Api from "~shared/api";
 import * as Dto from "~shared/data-transfer-objects";
 import { log } from "~shared/log";

@@ -6,5 +6,5 @@ export interface GroupCreatePageProps {
 }
 
 export const GroupCreatePage: React.FC<GroupCreatePageProps> = (props) => {
-    return <GroupCreateForm redirect="newgroup" />
+    return <GroupCreateForm addCreatorToGroup redirect="newgroup" />
 }

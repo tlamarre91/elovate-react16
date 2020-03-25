@@ -9,6 +9,8 @@
 @import "./LoginDialog";;
 @import "./LoggedInUserWidget";
 @import "./UserCreateForm";
+@import "./GroupCreateForm";
+@import "./GroupList";
 
 body {
     display: grid;
@@ -20,12 +22,24 @@ body {
 }
 
 #contentContainer {
-    min-height: 200px;
+    min-height: 500px;
     grid-template-columns: subgrid;
     grid-column: @fullWidthGrid;
 }
 
-div.userTableContainer {
+#errorContainer {
+    padding: 30px;
+    grid-column: @fullWidthGrid;
+}
+
+.homepageLinks {
+    a {
+        padding: 20px;
+        font-weight: bold;
+    }
+}
+
+.userTableContainer {
     .controls {
         display: flex;
 

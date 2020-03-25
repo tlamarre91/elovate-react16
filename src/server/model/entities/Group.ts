@@ -36,6 +36,9 @@ export class Group {
     @Orm.Column({ default: false })
     publicJoinable: boolean;
 
+    @Orm.Column({ default: true })
+    publicCanRequestJoin: boolean;
+
     @Orm.OneToMany(() => GroupUser, groupUser => groupUser.group)
     memberships: GroupUser[];
 

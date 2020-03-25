@@ -13,7 +13,7 @@ import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { UserDto } from "~shared/data-transfer-objects";
 
-import context from "~client/context";
+import appState from "~client/app-state";
 
 import {
     UserAdmin

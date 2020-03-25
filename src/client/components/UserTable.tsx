@@ -1,3 +1,4 @@
+// TODO: already deprecated. making GroupList now, rewrite this to match
 import React from "react";
 
 import * as Api from "~shared/api";
@@ -103,9 +104,9 @@ export const UserTable: React.FC<UserTableProps> = (props) => {
             </thead>
             <tbody>
             {
-                visibleUsers.map((u, i) => {
+                visibleUsers.map(u => {
                     log.info(`rendering row for user ${u?.id}`);
-                    return <tr key={ i }>
+                    return <tr key={ u.id }>
                         <td>{ u.id }</td>
                         <td>{ u.username }</td>
                         <td>{ u.email }</td>

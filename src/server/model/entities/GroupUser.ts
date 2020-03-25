@@ -28,16 +28,16 @@ export class GroupUser {
     @Orm.ManyToOne(() => User, user => user.groupMemberships)
     user: User;
 
-    @Orm.Column()
+    @Orm.Column({ default: false })
     approvedByGroup: boolean;
 
-    @Orm.Column()
+    @Orm.Column({ default: false })
     declinedByGroup: boolean;
 
-    @Orm.Column()
+    @Orm.Column({ default: false })
     approvedByUser: boolean;
 
-    @Orm.Column()
+    @Orm.Column({ default: false })
     declinedByUser: boolean;
 
     @Orm.Column({

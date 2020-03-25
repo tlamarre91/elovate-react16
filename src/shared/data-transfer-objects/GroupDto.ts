@@ -11,7 +11,12 @@ export class GroupDto extends BaseDto<Group> {
     memberships?: Dto.GroupUserDto[];
     parties?: Dto.PartyDto[];
 
-    constructor(obj: Group, origin?: string) {
-        super(obj, origin);
+    constructor(obj?: Group, origin?: string) {
+            super(obj, origin);
+            this.name = obj?.name;
+            this.customUrl = obj?.customUrl;
+            this.dateCreated = obj?.creationInfo?.dateCreated;
+            this.publicVisible = obj?.publicVisible;
+            this.publicJoinable = obj?.publicJoinable;
     }
 }

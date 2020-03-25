@@ -15,7 +15,7 @@ export interface NavHeaderProps {
 export const NavHeader: React.FC<NavHeaderProps> = (props) => {
     return <Router>
         <nav className="navHeader">
-            { props.links.map(({ url, text }, idx) => <NavLink key={ idx } to={ url }>{ text }</NavLink>) }
+            { props.links.map(({ url, text }) => <NavLink key={ url } to={ url }>{ text }</NavLink>) }
         </nav>
     </Router>
 }

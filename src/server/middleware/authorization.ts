@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { UserRepository } from "~server/model/repositories";
 
@@ -63,4 +64,13 @@ export function init(userRepo: UserRepository) {
             next();
         }
     };
+}
+
+export function requireAuthorization(req: Request, res: Response, next: NextFunction) {
+    if (! req.user) {
+        res.status(403);
+        return res.json(new Api.Response(false, "not logged in"));
+    }
+
+    next();
 }

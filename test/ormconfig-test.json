@@ -1,0 +1,17 @@
+{
+    "database": "elovate-test",
+    "host": "localhost",
+    "port": 5432,
+    "logging": ["error", "query"],
+    "password": "tom",
+    "type": "postgres",
+    "username": "tom",
+    "entities": [
+        "../dist/server/model/entities/*.js"
+    ],
+    "migrations": ["migration/*.js"],
+    "cli": {
+        "migrationsDir": "migration"
+    },
+    "synchronize": true
+}

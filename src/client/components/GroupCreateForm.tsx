@@ -7,6 +7,10 @@ import {
 } from "react-router-dom";
 
 import {
+    ErrorBoundary as EB
+} from "~client/components";
+
+import {
     blacklists,
     regex
 } from "~shared/util";
@@ -19,7 +23,7 @@ export interface GroupCreateFormValues {
     customUrl: string;
     publicVisible: boolean;
     publicJoinable: boolean;
-    publicCanRequestJoin: boolean;
+    addCreatorToGroup: boolean;
 }
 
 type Values = GroupCreateFormValues;
@@ -35,8 +39,8 @@ const KEYS: (keyof Errors)[] = ["name", "customUrl"];
 
 export interface GroupCreateFormProps {
     initialValues?: GroupCreateFormValues;
-    onChange?: (group: GroupDto) => void;
     redirect?: "newgroup" | "usergroups";
+    addCreatorToGroup?: boolean;
 }
 
 export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
@@ -66,7 +70,6 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
         try {
             const res = await createCall.execute();
             if (res.success) {
-                props?.onChange(res.data );
                 if (props.redirect) {
                     if (props.redirect === "newgroup") {
                         history.push(`/groups/${values?.customUrl ?? res.data.id}`);
@@ -79,7 +82,7 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
             }
         } catch (err) {
             log.error(`GroupCreate: ${err}`);
-            setStatus("could not create group");
+            setStatus("error creating group");
         }
     };
 
@@ -91,9 +94,11 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
             errors.name = "Please choose a different group name";
         }
 
-        if (blacklists.groupCustomUrl.includes(values.customUrl)) {
+        if (values.customUrl.length < 3) {
+            errors.customUrl = "Provide at least 3 characters for custom URL";
+        } else if (blacklists.groupCustomUrl.includes(values.customUrl)) {
             errors.customUrl = "Please choose a different custom URL";
-        } else if (! regex.alphanumericDashUnderscore256.exec(values.customUrl)) {
+        } else if (! values.customUrl.match(regex.alphanumericDashUnderscore256)) {
             errors.customUrl = "Custom URL may only contain letters, numbers, dash (-) and underscore (_)";
         }
 
@@ -102,13 +107,14 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
 
     return (
         <div className="groupCreateFormContainer">
+            <EB>
             <Formik
                 initialValues={ props?.initialValues ?? {
                     name: "",
                     customUrl: "",
                     publicVisible: true,
-                    publicJoinable: false,
-                    publicCanRequestJoin: true
+                    publicJoinable: true,
+                    addCreatorToGroup: props.addCreatorToGroup,
                 } }
                 validate={ validate }
                 onSubmit={ trySubmit }>
@@ -147,6 +153,7 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
                             />
                         </BP.FormGroup>
                         <BP.FormGroup
+                            inline
                             label="Visible to public"
                             helperText={ formProps.values.publicVisible
                                 ? "This group will be visible to everyone"
@@ -154,32 +161,22 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
                             labelFor="publicVisibleInput">
                             <BP.Switch
                                 id="publicVisibleInput"
+                                name="publicVisible"
                                 checked={ formProps.values.publicVisible }
                                 onChange={ formProps.handleChange }
                             />
                         </BP.FormGroup>
                         <BP.FormGroup
+                            inline
                             label="Joinable to public"
                             helperText={ formProps.values.publicJoinable
                                 ? "This group can be joined by anyone"
-                                : "Only group moderators can add users" }
+                                : "Users can request an invite or be added by moderators" }
                             labelFor="publicJoinableInput">
                             <BP.Switch
                                 id="publicJoinableInput"
+                                name="publicJoinable"
                                 checked={ formProps.values.publicJoinable }
-                                onChange={ formProps.handleChange }
-                            />
-                        </BP.FormGroup>
-                        <BP.FormGroup
-                            label="Public can request to join"
-                            disabled={ formProps.values.publicJoinable }
-                            helperText={ formProps.values.publicCanRequestJoin
-                                ? "Anyone can ask to join this group"
-                                : "" }
-                            labelFor="publicJoinableInput">
-                            <BP.Switch
-                                id="publicJoinableInput"
-                                checked={ formProps.values.publicJoinable || formProps.values.publicCanRequestJoin }
                                 onChange={ formProps.handleChange }
                             />
                         </BP.FormGroup>
@@ -188,6 +185,7 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
                     </form>
                 )}
             </Formik>
+        </EB>
         </div>
     )
 }

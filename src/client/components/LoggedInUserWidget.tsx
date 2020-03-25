@@ -10,11 +10,14 @@ import {
 
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
-import context from "~client/context";
+import appState from "~client/app-state";
+
 import {
     UserDto
 } from "~shared/data-transfer-objects";
+
 import {
+    ErrorBoundary as EB,
     LoginDialog,
 } from "~client/components";
 
@@ -22,10 +25,7 @@ export interface LoggedInUserWidgetProps {
 }
 
 export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => {
-    const { path, url } = useRouteMatch();
-    const { loggedInUser, setLoggedInUser } = React.useContext(context);
-    log.info(`path: ${path}`);
-    const [expanded, setExpanded] = React.useState<boolean>(false);
+    const { loggedInUser, setLoggedInUser } = React.useContext(appState);
     const [status, setStatus] = React.useState<string>("");
     const [error, setError] = React.useState<string>("");
     const [loaded, setLoaded] = React.useState<boolean>(false);
@@ -45,7 +45,6 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
     }
 
     React.useEffect(() => {
-        log.info(`run @ ${Date.now()}`);
         try {
             const call = new Api.Get<UserDto>(Api.Resource.WhoAmI);
             call.execute().then(res => {
@@ -86,10 +85,10 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
         const registerLink = <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Register"
             onClick={ () => history.push("/register") } />
 
-        return <>
+        return <EB>
             { loginPopover }
             { registerLink }
-        </>
+        </EB>
     } else {
         const popoverContent = <div className="loggedInUserWidgetPopover">
             <BP.Menu>
@@ -111,10 +110,12 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
             </a>
         )
 
-        return <BP.Popover
-            position="bottom-right"
-            usePortal={ false }
-            content={ popoverContent }
-            target={ target } />
+        return <EB>
+            <BP.Popover
+                position="bottom-right"
+                usePortal={ false }
+                content={ popoverContent }
+                target={ target } />
+        </EB>
     }
 }
