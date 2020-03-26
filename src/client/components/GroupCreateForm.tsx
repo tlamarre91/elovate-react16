@@ -11,34 +11,26 @@ import {
 } from "~client/components";
 
 import {
+    validateNewGroup,
+    createNewGroup,
+} from "~client/query-runners";
+
+import {
     blacklists,
     regex
 } from "~shared/util";
+
+import {
+    GroupCreateFormValues as Values,
+    GroupCreateFormErrors as Errors,
+} from "~shared/types";
+
 import * as Api from "~shared/api";
 import { log } from "~shared/log";
 import { GroupDto } from "~shared/data-transfer-objects";
 
-export interface GroupCreateFormValues {
-    name: string;
-    customUrl: string;
-    publicVisible: boolean;
-    publicJoinable: boolean;
-    addCreatorToGroup: boolean;
-}
-
-type Values = GroupCreateFormValues;
-
-export interface GroupCreateFormErrors {
-    name?: string;
-    customUrl?: string;
-}
-
-type Errors = GroupCreateFormErrors;
-
-const KEYS: (keyof Errors)[] = ["name", "customUrl"];
-
 export interface GroupCreateFormProps {
-    initialValues?: GroupCreateFormValues;
+    initialValues?: Values;
     redirect?: "newgroup" | "usergroups";
     addCreatorToGroup?: boolean;
 }
@@ -49,39 +41,28 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
     const [serverErrors, setServerErrors] = React.useState<Errors>();
 
     const trySubmit = async (values: Values) => {
-        const validateCall = new Api.Post<Values, Errors>
-            (Api.Resource.Group, values, "validateNewGroup");
+        const keys: (keyof Errors)[] = ["name", "customUrl"];
         try {
-            const res = await validateCall.execute();
-            if (res.success) {
-                if (KEYS.some(k => res.data?.[k])) {
-                    setServerErrors(res.data);
-                }
-            } else {
-                log.error(`GroupCreate: ${res.error}`);
-                setStatus("could not validate form");
+            const errors = await validateNewGroup(values);
+            if (keys.some(k => errors?.[k])) {
+                setServerErrors(errors);
             }
         } catch (err) {
-            log.error(`GroupCreate: ${err}`);
+            log.error(`GroupCreateForm: ${err}`);
             setStatus("could not validate form");
         }
 
-        const createCall = new Api.Post<Values, GroupDto>(Api.Resource.Group, values);
         try {
-            const res = await createCall.execute();
-            if (res.success) {
-                if (props.redirect) {
-                    if (props.redirect === "newgroup") {
-                        history.push(`/groups/${values?.customUrl ?? res.data.id}`);
-                    } else if (props.redirect === "usergroups") {
-                        log.error("don't know how to redirect to usergroups yet");
-                    }
+            const group = await createNewGroup(values);
+            if (props.redirect) {
+                if (props.redirect === "newgroup") {
+                    history.push(`/groups/${group.id}`);
+                } else if (props.redirect === "usergroups") {
+                    history.push("/groups");
                 }
-            } else {
-                log.error(`GroupCreate: ${res.error}`);
             }
         } catch (err) {
-            log.error(`GroupCreate: ${err}`);
+            log.error(`GroupCreateForm: ${err}`);
             setStatus("error creating group");
         }
     };

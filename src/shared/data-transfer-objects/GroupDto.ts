@@ -10,7 +10,7 @@ export class GroupDto extends BaseDto<Group> {
     publicVisible?: boolean;
     publicJoinable?: boolean;
     memberships?: Dto.GroupUserDto[];
-    parties?: Dto.PartyDto[];
+    teams?: Dto.TeamDto[];
 
     constructor(obj?: Group, origin?: string) {
         super(obj, origin);
@@ -20,5 +20,6 @@ export class GroupDto extends BaseDto<Group> {
         this.name = obj?.name;
         this.publicJoinable = obj?.publicJoinable;
         this.publicVisible = obj?.publicVisible;
+        this.memberships = obj?.memberships?.map(m => new Dto.GroupUserDto(m));
     }
 }

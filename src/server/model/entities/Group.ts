@@ -1,10 +1,10 @@
 import * as Orm from "typeorm";
 
 import {
-    Creation,
+    CreationInfo,
     GroupUser,
     Owners,
-    Party,
+    Team,
     User
 } from ".";
 
@@ -13,8 +13,8 @@ export class Group {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column(() => Creation)
-    creationInfo: Creation
+    @Orm.Column(() => CreationInfo)
+    creationInfo: CreationInfo
 
     @Orm.Column(() => Owners)
     owners: Owners;
@@ -24,7 +24,7 @@ export class Group {
 
     // TODO: validate alphanumeric with dashes/underscore/whatever
     // TODO: validation should force at least one non-numeric
-    // TODO: MAYBE instead of customUrl it should be an @ tag
+    // TODO: MAYBE instead of "customUrl" it should be an @ tag
     @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
     customUrl: string;
@@ -44,6 +44,6 @@ export class Group {
     @Orm.OneToMany(() => GroupUser, groupUser => groupUser.group)
     memberships: GroupUser[];
 
-    @Orm.OneToMany(() => Party, party => party.group)
-    parties: Party[];
+    @Orm.OneToMany(() => Team, team => team.group)
+    teams: Team[];
 }

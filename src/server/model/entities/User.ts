@@ -1,19 +1,22 @@
 import * as Orm from "typeorm";
-import { Group } from "./Group";
-import { GroupUser } from "./GroupUser";
-import { ImageAsset } from "./Asset";
-import { Notification } from "./Notification";
-import { Party } from "./Party";
-import { Owners } from "./Owners";
-import { Creation } from "./Creation";
+
+import {
+    CreationInfo,
+    Group,
+    GroupUser,
+    ImageAsset,
+    Notification,
+    Owners,
+    Team,
+} from ".";
 
 @Orm.Entity()
 export class User {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column(() => Creation)
-    creationInfo: Creation;
+    @Orm.Column(() => CreationInfo)
+    creationInfo: CreationInfo;
 
     @Orm.Column(() => Owners)
     owners: Owners;
@@ -61,8 +64,8 @@ export class User {
     @Orm.Column({ type: "int" })
     invalidateLoginsBefore?: number;
 
-    @Orm.ManyToMany(() => Party, party => party.users)
-    parties: Party[];
+    @Orm.ManyToMany(() => Team, team => team.users)
+    teams: Team[];
 
     @Orm.OneToMany(() => Notification, notification => notification.recipient)
     notifications: Notification[];

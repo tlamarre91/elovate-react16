@@ -8,8 +8,12 @@ import { BaseRepository } from "./BaseRepository";
 import {
     Group,
     GroupUser,
-    User
+    User,
 } from "~server/model/entities";
+
+import {
+    GroupUserApproval,
+} from "~shared/enums";
 import * as Dto from "~shared/data-transfer-objects";
 
 type NewUserParams = {
@@ -81,28 +85,28 @@ export class UserRepository extends BaseRepository<User> {
         }
     }
 
-    async updateFromDto(user: User, dto: Dto.UserDto): Promise<User> {
-        try {
-            user.owners.user = await this.findOne(dto.ownerUserId);
-            const groupRepo = Orm.getRepository(Group);
-            user.owners.group = await groupRepo.findOne(dto.ownerGroupId);
-            user.username = dto.username;
-            user.displayName = dto.displayName ?? null;
-            user.email = dto.email ?? null;
-            user.emailVerified = dto.emailVerified ?? false;
-            user.hasAccount = dto.hasAccount ?? false;
-            user.receivesEmail = dto.receivesEmail ?? false;
+    //async updateFromDto(user: User, dto: Dto.UserDto): Promise<User> {
+    //    try {
+    //        user.owners.user = await this.findOne(dto.ownerUserId);
+    //        const groupRepo = Orm.getRepository(Group);
+    //        user.owners.group = await groupRepo.findOne(dto.ownerGroupId);
+    //        user.username = dto.username;
+    //        user.displayName = dto.displayName ?? null;
+    //        user.email = dto.email ?? null;
+    //        user.emailVerified = dto.emailVerified ?? false;
+    //        user.hasAccount = dto.hasAccount ?? false;
+    //        user.receivesEmail = dto.receivesEmail ?? false;
 
-            dto.groupMemberships.forEach(guDto => {
-                console.log(`${guDto.userId} wants to be in ${guDto.groupId}`);
-            });
+    //        dto.groupMemberships.forEach(guDto => {
+    //            console.log(`${guDto.userId} wants to be in ${guDto.groupId}`);
+    //        });
 
-            return this.save(user);
-        } catch (err) {
-            console.log(err);
-            return null;
-        }
-    }
+    //        return this.save(user);
+    //    } catch (err) {
+    //        console.log(err);
+    //        return null;
+    //    }
+    //}
 
     // TODO: don't change this, ever. it's perfect this way
     async insertAdmin(): Promise<User> {
@@ -115,7 +119,7 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async getRandom(): Promise<User> {
-        const allUsers: User[] = await this.find({ select: ["id"] });
+        const allUsers: User[] = await this.find();
         return allUsers[Math.floor(Math.random() * allUsers.length)];
     }
 
@@ -149,7 +153,7 @@ export class UserRepository extends BaseRepository<User> {
         user.username = params.username;
         user.passwordDigest = await argon.hash(params.password);
         user.email = params.email;
-        user.invalidateLoginsBefore = Math.floor(Date.now() / 1000 - 1);
+        user.invalidateLoginsBefore = Math.floor((Date.now() / 1000) - 1);
         return this.save(user);
     }
 
@@ -164,6 +168,17 @@ export class UserRepository extends BaseRepository<User> {
 
     async findVisibleToUser(user: User): Promise<User[]> {
         throw "not yet implemented";
+    }
+
+    async findGroupUsers(group: Group): Promise<User[]> {
+        const groupUserRepo = Orm.getRepository(GroupUser);
+        const memberships: GroupUser[] = await groupUserRepo.find({
+            where: {
+                group,
+                userApproval: GroupUserApproval.confirmed,
+                groupApproval: GroupUserApproval.confirmed
+            }, relations: ["user"] });
+        return memberships.map(m => m.user);
     }
 }
 

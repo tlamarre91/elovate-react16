@@ -2,11 +2,15 @@ import * as Orm from "typeorm";
 
 import {
     CreationInfo,
-    Owners
+    Group,
+    Match,
+    Owners,
+    Team,
+    User,
 } from ".";
 
 @Orm.Entity()
-export class CalendarEvent {
+export class MatchParty {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
@@ -17,8 +21,11 @@ export class CalendarEvent {
     owners: Owners;
 
     @Orm.Column()
-    scheduledStart: Date;
+    partyNumber: number;
 
-    @Orm.Column()
-    scheduledEnd: Date
+    @Orm.ManyToOne(() => Match, match => match.parties)
+    match: Match;
+
+    @Orm.ManyToOne(() => Team, team => team.parties)
+    team: Team;
 }

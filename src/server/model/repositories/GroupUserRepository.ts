@@ -1,13 +1,19 @@
 import * as Orm from "typeorm";
 
 import { BaseRepository } from "./BaseRepository";
+
 import {
     GroupUser,
-    GroupUserPrivilege,
     Group,
     User,
-    Creation
+    CreationInfo,
 } from "~server/model/entities";
+
+import {
+    GroupUserApproval,
+    GroupUserPrivilege,
+} from "~shared/enums";
+
 import * as Dto from "~shared/data-transfer-objects";
 
 @Orm.EntityRepository(GroupUser)
@@ -17,15 +23,18 @@ export class GroupUserRepository extends BaseRepository<GroupUser> {
     }
 
     async createMembership(user: User, group: Group, params?: {
+        createdBy?: User,
+        groupApproval: GroupUserApproval,
         privilege?: GroupUserPrivilege,
-        createdBy?: User
+        userApproval: GroupUserApproval,
     }): Promise<GroupUser> {
         const gu = this.create();
         gu.user = user;
         gu.group = group;
         gu.privilege = params?.privilege ?? GroupUserPrivilege.user;
-        //gu.creationInfo.createdBy = params?.createdBy ?? user;
-        gu.creationInfo = new Creation();
+        gu.groupApproval = params?.groupApproval ?? GroupUserApproval.pending;
+        gu.userApproval = params?.userApproval ?? GroupUserApproval.pending;
+        gu.creationInfo = new CreationInfo();
         gu.creationInfo.createdBy = params?.createdBy ?? user;
         return gu;
     }

@@ -1,34 +1,26 @@
 import * as Orm from "typeorm";
-import { CalendarEvent } from "./CalendarEvent";
-import { Creation } from "./Creation";
-import { Group } from "./Group";
-import { Owners } from "./Owners";
-import { Party } from "./Party";
-import { User } from "./User";
 
-export enum MatchResultType {
-    singleWinner = "s"
-}
+import {
+    CalendarEvent,
+    CreationInfo,
+    Group,
+    MatchParty,
+    Owners,
+    Team,
+    User
+} from ".";
 
-export class MatchResultData {
-    constructor() {
-        return "FUCK I DON'T KNOW WHAT I'M DOING";
-    }
+import {
+    MatchResultType
+} from "~shared/enums";
+
+export interface SingleWinnerData {
+    winnerParty: number;
 }
 
 export interface MatchResult {
-    version: number;
-    ranked: boolean;
-    type: MatchResultType;
-    data: MatchResultData;
-}
-
-export interface PendingResult extends MatchResult {
-    scheduled: Date;
-}
-
-export interface SingleWinnerResult extends MatchResult {
-    winner: number;
+    resultType: MatchResultType;
+    resultData: object;
 }
 
 export enum MatchVisibility {
@@ -42,8 +34,8 @@ export class Match {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column(() => Creation)
-    creationInfo: Creation;
+    @Orm.Column(() => CreationInfo)
+    creationInfo: CreationInfo;
 
     @Orm.Column(() => Owners)
     owners: Owners;
@@ -58,8 +50,8 @@ export class Match {
     })
     visibility: MatchVisibility;
 
-    @Orm.OneToMany(() => Party, party => party.match, { cascade: true })
-    parties: Party[];
+    @Orm.OneToMany(() => MatchParty, party => party.match, { cascade: true })
+    parties: MatchParty[];
 
     @Orm.Column({ type: "jsonb", nullable: true })
     @Orm.Index()

@@ -15,7 +15,7 @@ export class UserDto extends BaseDto<User> {
     receivesEmail?: boolean;
     publicVisible?: boolean;
     groupMemberships?: Dto.GroupUserDto[];
-    parties?: Dto.PartyDto[];
+    teams?: Dto.TeamDto[];
 
     constructor(obj: User, origin?: string) {
         super(obj, origin);
@@ -29,8 +29,8 @@ export class UserDto extends BaseDto<User> {
             this.groupMemberships = obj.groupMemberships.map(gu => new Dto.GroupUserDto(gu));
         }
 
-        if (obj.parties) {
-            this.parties = obj.parties.map(p => new Dto.PartyDto(p));
+        if (obj.teams) {
+            this.teams = obj.teams.map(p => new Dto.TeamDto(p));
         }
 
         if (obj.avatarAsset) {

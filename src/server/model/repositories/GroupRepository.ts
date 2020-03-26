@@ -4,11 +4,17 @@ import {
     BaseRepository,
     GroupUserRepository,
 } from ".";
+
 import {
     Group,
     User,
-    GroupUser
+    GroupUser,
 } from "~server/model/entities";
+
+import {
+    GroupUserApproval,
+} from "~shared/enums";
+
 import * as Dto from "~shared/data-transfer-objects";
 
 type NewGroupParams = {
@@ -46,7 +52,12 @@ export class GroupRepository extends BaseRepository<Group> {
 
     async findUserGroups(user: User): Promise<Group[]> {
         const groupUserRepo = Orm.getRepository(GroupUser);
-        const memberships: GroupUser[] = await groupUserRepo.find({ where: { user }, relations: ["group"] });
+        const memberships: GroupUser[] = await groupUserRepo.find({
+            where: {
+                user,
+                userApproval: GroupUserApproval.confirmed,
+                groupApproval: GroupUserApproval.confirmed
+            }, relations: ["group"] });
         return memberships.map(m => m.group);
     }
 

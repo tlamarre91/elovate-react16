@@ -47,7 +47,7 @@ export class Post<Send, Receive> {
     body: string;
 
     constructor(resource: Resource, obj: Send, query?: string) {
-        this.url = `${API_ROOT}/${resource}` + (query ? `/${query}` : ""); // TODO: client-side sanitize?
+        this.url = `${API_ROOT}/${resource}` + (query ? `/${query}` : "");
         this.origin = window?.location?.href;
         this.body = JSON.stringify({
             origin,
@@ -79,9 +79,9 @@ export class Put<Send, Receive> {
     origin: string;
     body: string;
 
-    constructor(origin: string, resource: Resource, obj: Send) {
-        this.url = `${API_ROOT}/${resource}`;
-        this.origin = origin;
+    constructor(resource: Resource, obj: Send, query?: string) {
+        this.url = `${API_ROOT}/${resource}` + (query ? `/${query}` : "");
+        this.origin = window?.location?.href;
         this.body = JSON.stringify({
             origin,
             targetResource: resource,

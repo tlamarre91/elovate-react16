@@ -5,6 +5,7 @@ export * from "./GroupDto";
 export * from "./GroupUserDto";
 // export * from "./LeagueDto";
 export * from "./MatchDto";
-export * from "./PartyDto";
+export * from "./MatchPartyDto";
+export * from "./TeamDto";
 export * from "./NotificationDto";
 export * from "./UserDto";

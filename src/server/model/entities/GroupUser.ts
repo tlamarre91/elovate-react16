@@ -1,23 +1,23 @@
 import * as Orm from "typeorm";
-import { Creation } from "./Creation";
-import { Group } from "./Group";
-import { Owners } from "./Owners";
-import { User } from "./User";
+import {
+    CreationInfo,
+    Group,
+    Owners,
+    User
+} from ".";
 
-// need granularity... maybe bitmask for each permission type?
-// or maybe i don't need granularity. how bout we just build something that works
-export enum GroupUserPrivilege {
-    admin = "admin",
-    user = "user"
-}
+import {
+    GroupUserPrivilege,
+    GroupUserApproval
+} from "~shared/enums";
 
 @Orm.Entity()
 export class GroupUser {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column(() => Creation)
-    creationInfo: Creation;
+    @Orm.Column(() => CreationInfo)
+    creationInfo: CreationInfo;
 
     @Orm.Column(() => Owners)
     owners: Owners;
@@ -28,17 +28,19 @@ export class GroupUser {
     @Orm.ManyToOne(() => User, user => user.groupMemberships)
     user: User;
 
-    @Orm.Column({ default: false })
-    approvedByGroup: boolean;
+    @Orm.Column({
+        type: "enum",
+        enum: GroupUserApproval,
+        default: GroupUserApproval.pending
+    })
+    userApproval: GroupUserApproval;
 
-    @Orm.Column({ default: false })
-    declinedByGroup: boolean;
-
-    @Orm.Column({ default: false })
-    approvedByUser: boolean;
-
-    @Orm.Column({ default: false })
-    declinedByUser: boolean;
+    @Orm.Column({
+        type: "enum",
+        enum: GroupUserApproval,
+        default: GroupUserApproval.pending
+    })
+    groupApproval: GroupUserApproval;
 
     @Orm.Column({
         type: "enum",

@@ -3,7 +3,7 @@ import {
     User
 } from ".";
 
-export class Creation {
+export class CreationInfo {
     @Orm.Column({ default: () => "NOW()" })
     edited: Date;
 

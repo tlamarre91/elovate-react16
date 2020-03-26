@@ -1,7 +1,7 @@
 import * as Orm from "typeorm";
 
 import {
-    Creation,
+    CreationInfo,
     Owners,
 } from ".";
 
@@ -10,8 +10,8 @@ abstract class FileAsset {
     @Orm.PrimaryGeneratedColumn()
     id: number;
 
-    @Orm.Column(() => Creation)
-    creationInfo: Creation;
+    @Orm.Column(() => CreationInfo)
+    creationInfo: CreationInfo;
 
     @Orm.Column(() => Owners)
     owners: Owners;

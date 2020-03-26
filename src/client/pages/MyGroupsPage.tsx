@@ -3,6 +3,7 @@ import * as React from "react";
 import * as BP from "@blueprintjs/core";
 
 import {
+    Link,
     useHistory,
     useRouteMatch,
 } from "react-router-dom";
@@ -11,6 +12,7 @@ import {
     AuthWall,
     ErrorBoundary as EB,
     GroupList,
+    PageTitle,
 } from "~client/components";
 
 import * as Api from "~shared/api";
@@ -29,8 +31,9 @@ export const MyGroupsPage: React.FC<MyGroupsPageProps> = (props) => {
     return <EB>
         <AuthWall>
             <div className="myGroupsPage page">
-                <h3>My groups</h3>
-                <GroupList query={ new Api.Get(Api.Resource.Group, "myGroups") } displayIfEmpty={ noGroupsPrompt } />
+                <PageTitle>My groups</PageTitle>
+                <Link to="groups/new">Create new group</Link>
+                <GroupList makeLinks query={ "myGroups" } displayIfEmpty={ noGroupsPrompt } />
             </div>
         </AuthWall>
     </EB>

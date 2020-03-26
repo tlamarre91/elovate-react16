@@ -23,6 +23,7 @@ body {
 
 #contentContainer {
     min-height: 500px;
+    display: grid;
     grid-template-columns: subgrid;
     grid-column: @fullWidthGrid;
 }
@@ -40,7 +41,13 @@ body {
 }
 
 .page {
-    padding: 10px;
+    grid-column: @middleContentGrid;
+    grid-template-columns: subgrid;
+    grid-template-rows: 100px 50px auto;
+
+    .pageTitle {
+        grid-row: ~"1 / 2";
+    }
 }
 
 .userTableContainer {
