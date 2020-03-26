@@ -22,7 +22,7 @@ export interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = (props) => {
-    return <div className="dashboardContainer">
+    return <div className="dashboard page">
         <Helmet>
             <title>Dashboard</title>
         </Helmet>

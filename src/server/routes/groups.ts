@@ -30,7 +30,7 @@ router.post("/validateNewGroup", async (req, res) => {
 
 // TODO: probably make all endpoints like this
 // i.e. named functions passed to router.method(...)
-async function createGroupEndpoint(req: Request, res: Response) {
+async function createGroupHandler(req: Request, res: Response) {
     try {
         const params = req.body.data;
         const groupRepo = Orm.getCustomRepository(GroupRepository);
@@ -54,24 +54,36 @@ async function createGroupEndpoint(req: Request, res: Response) {
         res.json(new Api.Response(true, null, new Dto.GroupDto(group)));
     } catch (err) {
         res.status(500);
-        log.error(`createGroupEndpoint: ${err}`);
+        log.error(`createGroupHandler: ${err}`);
         res.json(new Api.Response(false, "server error"));
     }
 }
 
-router.post("/", requireAuthorization, createGroupEndpoint);
+router.post("/", requireAuthorization, createGroupHandler);
 
-async function findUserGroupsEndpoint(req: Request, res: Response) {
+async function findUserGroupsHandler(req: Request, res: Response) {
     try {
         const groups: Group[] = await Orm.getCustomRepository(GroupRepository).findUserGroups(req.user);
         const dtos = groups.map(g => new Dto.GroupDto(g));
         res.json(new Api.Response(true, null, dtos));
     } catch (err) {
-        log.error(`findUserGroupsEndpoint: ${err}`);
+        log.error(`findUserGroupsHandler: ${err}`);
         res.status(500);
         res.json(new Api.Response(false, "server error"));
     }
 }
-router.get("/myGroups", requireAuthorization, findUserGroupsEndpoint);
+router.get("/myGroups", requireAuthorization, findUserGroupsHandler);
+
+async function findGroupByIdHandler(req: Request, res: Response) {
+    try {
+        const group = await Orm.getRepository(Group).findOne(req.params["id"]);
+        res.json(new Api.Response(true, null, new Dto.GroupDto(group)));
+    } catch (err) {
+        log.error(`findGroupByIdHandler: ${err}`);
+        res.status(500);
+        res.json(new Api.Response(false, "server error"));
+    }
+}
+router.get("/id/:id", requireAuthorization, findGroupByIdHandler);
 
 export default router;

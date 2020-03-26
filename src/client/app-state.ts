@@ -3,20 +3,19 @@ import React from "react";
 import {
     UserDto
 } from "~shared/data-transfer-objects";
-import {
-    NavMapRecord
-} from "~client/components/NavMap";
 
 export interface IAppState {
+    siteInitialized: boolean;
     loggedInUser: UserDto;
     setLoggedInUser: (user: UserDto) => void;
-    navMapRecord: NavMapRecord;
+    setSiteInitialized: (newState: boolean) => void;
 }
 
 export const appState = React.createContext<IAppState>({
+    siteInitialized: false,
     loggedInUser: null,
     setLoggedInUser: null,
-    navMapRecord: null,
+    setSiteInitialized: null
 });
 
 export default appState;

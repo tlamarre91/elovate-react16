@@ -1,5 +1,5 @@
-import * as emailValidator from "email-validator";
 import * as React from "react";
+import * as emailValidator from "email-validator";
 import { Formik } from "formik";
 import * as BP from "@blueprintjs/core";
 import {

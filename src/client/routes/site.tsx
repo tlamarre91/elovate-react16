@@ -36,7 +36,6 @@ import {
 
 import {
     AppBarNav,
-    GroupProfile,
     LoggedInUserWidget,
     LoginDialog,
     UserCreateForm,
@@ -50,18 +49,25 @@ import {
 
 export const SiteRouter: React.FC<{ navElement: HTMLElement, loggedInUserWidgetElement: HTMLElement}> = (props) => {
     const [loggedInUser, setLoggedInUser] = React.useState<Dto.UserDto>();
-    const [navMapRecord] = React.useState<NavMapRecord>(new NavMapRecord());
+    const [siteInitialized, setSiteInitialized] = React.useState<boolean>(false);
+
+    const context = {
+        loggedInUser,
+        setLoggedInUser,
+        siteInitialized,
+        setSiteInitialized
+    }
 
     return (
         <EB>
-            <appState.Provider value={{ loggedInUser, setLoggedInUser, navMapRecord }}>
+            <appState.Provider value={ context }>
                 <Helmet defaultTitle="elovate"
                     titleTemplate="%s - elovate" >
                 </Helmet>
                 <Router>
                     <>
                         {
-                            createPortal(<AppBarNav record={ navMapRecord }/>, props.navElement)
+                            createPortal(<AppBarNav />, props.navElement)
                         }
                         {
                             createPortal(<LoggedInUserWidget />, props.loggedInUserWidgetElement)

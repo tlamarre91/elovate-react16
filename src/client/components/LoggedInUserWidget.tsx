@@ -25,7 +25,7 @@ export interface LoggedInUserWidgetProps {
 }
 
 export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => {
-    const { loggedInUser, setLoggedInUser } = React.useContext(appState);
+    const { loggedInUser, setLoggedInUser, siteInitialized, setSiteInitialized } = React.useContext(appState);
     const [status, setStatus] = React.useState<string>("");
     const [error, setError] = React.useState<string>("");
     const [loaded, setLoaded] = React.useState<boolean>(false);
@@ -59,7 +59,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
                     setError(res.error);
                 }
 
-                setLoaded(true);
+                setSiteInitialized(true);
             });
         } catch (err) {
             log.warn(`LoggedInUserWidget: ${err}`);
@@ -68,7 +68,7 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
 
     const history = useHistory();
 
-    if (! loaded) {
+    if (! siteInitialized) {
         return null;
     } else if (! loggedInUser) {
         const promptStyle: React.CSSProperties = {
@@ -82,8 +82,8 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
             content={ <LoginDialog onUserChange={ setLoggedInUser } /> }
             target={ <BP.Button id="loginButton" style={ promptStyle } tabIndex={ 0 } minimal text="Log in" /> } />
 
-        const registerLink = <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Register"
-            onClick={ () => history.push("/register") } />
+        const registerLink = ( <BP.Button style={ promptStyle } tabIndex={ 0 } minimal text="Register"
+            onClick={ () => history.push("/register") } /> )
 
         return <EB>
             { loginPopover }

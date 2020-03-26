@@ -16,32 +16,26 @@ import {
 } from "react-breadcrumbs-context";
 
 import appState from "~client/app-state";
+import { log } from "~shared/log";
 import * as Api from "~shared/api";
 import * as Dto from "~shared/data-transfer-objects";
 import {
     AuthWall,
-    GroupProfile,
     GroupList,
     GroupCreateForm,
 } from "~client/components";
 
 import {
-    NavMap
-} from "~client/components/NavMap";
-
-import {
-    GroupCreatePage
+    GroupCreatePage,
+    GroupProfile,
+    MyGroupsPage,
 } from "~client/pages";
 
 
 export const GroupRouter: React.FC = (props) => {
     const { path, url } = useRouteMatch();
-    const { loggedInUser, navMapRecord } = React.useContext(appState);
+    const { loggedInUser } = React.useContext(appState);
     const history = useHistory();
-
-    const createGroupPrompt = <div>
-        Looks like you aren't a member of any groups! <BP.Button onClick={ () => history.push(`${path}/new`) }>Create a group</BP.Button>
-    </div>
 
     //    const groups = ["test", "blah", "doof"].map((s,i) => {
     //        const dto = new Dto.GroupDto();
@@ -51,19 +45,11 @@ export const GroupRouter: React.FC = (props) => {
     //        return dto;
     //    });
 
-    const navItems = [
-        { path: `${path}/new`, text: "Create new group" },
-        { path: `${path}/manage`, text: "Manage groups" },
-    ];
-
     return (
         <>
-            <NavMap name="groupRouter" items={ navItems } record={ navMapRecord }/>
             <Switch>
                 <Route exact path={ path }>
-                    <AuthWall>
-                        <GroupList query={ new Api.Get(Api.Resource.Group, "myGroups") } displayIfEmpty={ createGroupPrompt } />
-                    </AuthWall>
+                    <MyGroupsPage />
                 </Route>
                 <Route exact path={ `${path}/new` }>
                     <AuthWall>
