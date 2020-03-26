@@ -1,15 +1,15 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 import {
     CreationInfo,
     Group,
     Owners,
-    User
-} from ".";
+    User,
+} from '.';
 
 import {
     GroupUserPrivilege,
-    GroupUserApproval
-} from "~shared/enums";
+    GroupUserApproval,
+} from '~shared/enums';
 
 @Orm.Entity()
 export class GroupUser {
@@ -22,30 +22,30 @@ export class GroupUser {
     @Orm.Column(() => Owners)
     owners: Owners;
 
-    @Orm.ManyToOne(() => Group, group => group.memberships)
+    @Orm.ManyToOne(() => Group, (group) => group.memberships)
     group: Group;
 
-    @Orm.ManyToOne(() => User, user => user.groupMemberships)
+    @Orm.ManyToOne(() => User, (user) => user.groupMemberships)
     user: User;
 
     @Orm.Column({
-        type: "enum",
+        type: 'enum',
         enum: GroupUserApproval,
-        default: GroupUserApproval.pending
+        default: GroupUserApproval.pending,
     })
     userApproval: GroupUserApproval;
 
     @Orm.Column({
-        type: "enum",
+        type: 'enum',
         enum: GroupUserApproval,
-        default: GroupUserApproval.pending
+        default: GroupUserApproval.pending,
     })
     groupApproval: GroupUserApproval;
 
     @Orm.Column({
-        type: "enum",
+        type: 'enum',
         enum: GroupUserPrivilege,
-        default: GroupUserPrivilege.user
+        default: GroupUserPrivilege.user,
     })
     privilege: GroupUserPrivilege;
 }

@@ -1,9 +1,9 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 
 import {
     CreationInfo,
-    Owners
-} from ".";
+    Owners,
+} from '.';
 
 @Orm.Entity()
 export class CalendarEvent {

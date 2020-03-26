@@ -1,12 +1,12 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 
 import {
     CreationInfo,
     GroupUser,
     Owners,
     Team,
-    User
-} from ".";
+    User,
+} from '.';
 
 @Orm.Entity()
 export class Group {
@@ -38,12 +38,12 @@ export class Group {
     @Orm.Column({ default: false })
     publicJoinable: boolean;
 
-    //@Orm.Column({ default: true })
-    //publicCanRequestJoin: boolean;
+    // @Orm.Column({ default: true })
+    // publicCanRequestJoin: boolean;
 
-    @Orm.OneToMany(() => GroupUser, groupUser => groupUser.group)
+    @Orm.OneToMany(() => GroupUser, (groupUser) => groupUser.group)
     memberships: GroupUser[];
 
-    @Orm.OneToMany(() => Team, team => team.group)
+    @Orm.OneToMany(() => Team, (team) => team.group)
     teams: Team[];
 }

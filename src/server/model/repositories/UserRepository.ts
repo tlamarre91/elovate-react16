@@ -1,20 +1,20 @@
-import * as Orm from "typeorm";
-import * as argon from "argon2";
-import * as emailValidator from "email-validator";
+import * as Orm from 'typeorm';
+import * as argon from 'argon2';
+import * as emailValidator from 'email-validator';
 
-import { blacklists } from "~shared/util";
-import { log } from "~shared/log";
-import { BaseRepository } from "./BaseRepository";
+import { blacklists } from '~shared/util';
+import { log } from '~shared/log';
+import { BaseRepository } from './BaseRepository';
 import {
     Group,
     GroupUser,
     User,
-} from "~server/model/entities";
+} from '~server/model/entities';
 
 import {
     GroupUserApproval,
-} from "~shared/enums";
-import * as Dto from "~shared/data-transfer-objects";
+} from '~shared/enums';
+import * as Dto from '~shared/data-transfer-objects';
 
 type NewUserParams = {
     username?: string,
@@ -30,24 +30,24 @@ export class UserRepository extends BaseRepository<User> {
 
         if (params?.username?.length > -1) {
             if (params?.username?.length === 0) {
-                errors.username = "Provide a username";
+                errors.username = 'Provide a username';
             } else if (blacklists.username.includes(params.username)) {
-                errors.username = "Please choose another username"; // TODO: maybe set same string as below...
-            } else if (await this.count({ where: { username: params.username } }).then(count => count > 0)) {
+                errors.username = 'Please choose another username'; // TODO: maybe set same string as below...
+            } else if (await this.count({ where: { username: params.username } }).then((count) => count > 0)) {
                 errors.username = `Username ${params.username} already in use`;
             }
         }
 
         if (params?.password?.length > -1) {
             if (params?.password?.length < 8) {
-                errors.password = "Please choose a password with at least 8 characters";
+                errors.password = 'Please choose a password with at least 8 characters';
             }
         }
 
         if (params.email?.length > -1) {
-            if (! emailValidator.validate(params.email)) {
-                errors.email = "Please enter a valid email address";
-            } else if (await this.count({ where: { email: params.email } }).then(count => count > 0)) {
+            if (!emailValidator.validate(params.email)) {
+                errors.email = 'Please enter a valid email address';
+            } else if (await this.count({ where: { email: params.email } }).then((count) => count > 0)) {
                 errors.email = `Email address ${params.email} already in use`;
             }
         }
@@ -85,7 +85,7 @@ export class UserRepository extends BaseRepository<User> {
         }
     }
 
-    //async updateFromDto(user: User, dto: Dto.UserDto): Promise<User> {
+    // async updateFromDto(user: User, dto: Dto.UserDto): Promise<User> {
     //    try {
     //        user.owners.user = await this.findOne(dto.ownerUserId);
     //        const groupRepo = Orm.getRepository(Group);
@@ -106,16 +106,16 @@ export class UserRepository extends BaseRepository<User> {
     //        console.log(err);
     //        return null;
     //    }
-    //}
+    // }
 
     // TODO: don't change this, ever. it's perfect this way
     async insertAdmin(): Promise<User> {
         const user = new User();
-        user.username = "admin";
-        user.passwordDigest = await argon.hash("password");
-        user.displayName = "Site Administrator";
+        user.username = 'admin';
+        user.passwordDigest = await argon.hash('password');
+        user.displayName = 'Site Administrator';
         user.isAdmin = true;
-        return this.save(user);;
+        return this.save(user);
     }
 
     async getRandom(): Promise<User> {
@@ -124,8 +124,8 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async basicAuth(user: User, password: string): Promise<boolean> {
-        if (! user.passwordDigest) {
-            throw `user ${ user.username } has no password`;
+        if (!user.passwordDigest) {
+            throw `user ${user.username} has no password`;
         } else {
             return argon.verify(user.passwordDigest, password);
         }
@@ -159,15 +159,14 @@ export class UserRepository extends BaseRepository<User> {
 
     async findOneFromQuery(query: string): Promise<User> {
         const id = parseInt(query);
-        if (! isNaN(id)) {
+        if (!isNaN(id)) {
             return this.findOne(id);
-        } else {
-            throw "UserRepository.findOneFromQuery: query not yet implemented";
         }
+        throw 'UserRepository.findOneFromQuery: query not yet implemented';
     }
 
     async findVisibleToUser(user: User): Promise<User[]> {
-        throw "not yet implemented";
+        throw 'not yet implemented';
     }
 
     async findGroupUsers(group: Group): Promise<User[]> {
@@ -176,9 +175,10 @@ export class UserRepository extends BaseRepository<User> {
             where: {
                 group,
                 userApproval: GroupUserApproval.confirmed,
-                groupApproval: GroupUserApproval.confirmed
-            }, relations: ["user"] });
-        return memberships.map(m => m.user);
+                groupApproval: GroupUserApproval.confirmed,
+            },
+            relations: ['user'],
+        });
+        return memberships.map((m) => m.user);
     }
 }
-

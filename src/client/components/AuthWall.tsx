@@ -1,11 +1,11 @@
-import React from "react";
-import * as BP from "@blueprintjs/core";
+import React from 'react';
+import * as BP from '@blueprintjs/core';
 
-import { log } from "~shared/log";
-import appState from "~client/app-state";
+import { log } from '~shared/log';
+import appState from '~client/app-state';
 import {
-        LoginDialog,
-} from "~client/components";
+    LoginDialog,
+} from '~client/components';
 
 export interface AuthWallProps {
     notAuthorizedText?: string;
@@ -19,13 +19,13 @@ export const AuthWall: React.FC<AuthWallProps> = (props) => {
     if (siteInitialized) {
         if (loggedInUser) {
             return <>{ children }</>;
-        } else {
-            return <div className="notAuthorized">
-                <h3>{ notAuthorizedText ?? "You must log in to access this page" }</h3>
-                <LoginDialog onUserChange={ setLoggedInUser } />
-            </div>
         }
-    } else {
-        return null;
+        return (
+          <div className="notAuthorized">
+              <h3>{ notAuthorizedText ?? 'You must log in to access this page' }</h3>
+              <LoginDialog onUserChange={setLoggedInUser} />
+            </div>
+        );
     }
-}
+    return null;
+};

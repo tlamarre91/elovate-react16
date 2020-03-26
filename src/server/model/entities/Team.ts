@@ -1,4 +1,4 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 import {
     CreationInfo,
     Group,
@@ -6,11 +6,11 @@ import {
     MatchParty,
     Owners,
     User,
-} from ".";
+} from '.';
 
 import {
-    TeamType
-} from "~shared/enums";
+    TeamType,
+} from '~shared/enums';
 
 @Orm.Entity()
 export class Team {
@@ -23,19 +23,19 @@ export class Team {
     @Orm.Column(() => Owners)
     owners: Owners;
 
-    @Orm.ManyToMany(() => User, user => user.teams)
+    @Orm.ManyToMany(() => User, (user) => user.teams)
     users: User[];
 
     @Orm.Column({
-        type: "enum",
+        type: 'enum',
         enum: TeamType,
-        default: TeamType.adhoc
+        default: TeamType.adhoc,
     })
     teamType: TeamType;
 
-    @Orm.ManyToOne(() => Group, group => group.teams)
+    @Orm.ManyToOne(() => Group, (group) => group.teams)
     group: Group;
 
-    @Orm.OneToMany(() => MatchParty, matchParty => matchParty.team)
+    @Orm.OneToMany(() => MatchParty, (matchParty) => matchParty.team)
     parties: MatchParty[];
 }

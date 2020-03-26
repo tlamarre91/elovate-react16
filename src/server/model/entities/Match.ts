@@ -1,4 +1,4 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 
 import {
     CalendarEvent,
@@ -7,12 +7,12 @@ import {
     MatchParty,
     Owners,
     Team,
-    User
-} from ".";
+    User,
+} from '.';
 
 import {
-    MatchResultType
-} from "~shared/enums";
+    MatchResultType,
+} from '~shared/enums';
 
 export interface SingleWinnerData {
     winnerParty: number;
@@ -24,9 +24,9 @@ export interface MatchResult {
 }
 
 export enum MatchVisibility {
-    Public = "public",
-    Group = "group",
-    Hidden = "hidden"
+    Public = 'public',
+    Group = 'group',
+    Hidden = 'hidden'
 }
 
 @Orm.Entity()
@@ -39,21 +39,21 @@ export class Match {
 
     @Orm.Column(() => Owners)
     owners: Owners;
-    
+
     @Orm.OneToOne(() => CalendarEvent)
     calendarEvent: CalendarEvent;
 
     @Orm.Column({
-        type: "enum",
+        type: 'enum',
         enum: MatchVisibility,
-        default: MatchVisibility.Group
+        default: MatchVisibility.Group,
     })
     visibility: MatchVisibility;
 
-    @Orm.OneToMany(() => MatchParty, party => party.match, { cascade: true })
+    @Orm.OneToMany(() => MatchParty, (party) => party.match, { cascade: true })
     parties: MatchParty[];
 
-    @Orm.Column({ type: "jsonb", nullable: true })
+    @Orm.Column({ type: 'jsonb', nullable: true })
     @Orm.Index()
     result: MatchResult;
 }

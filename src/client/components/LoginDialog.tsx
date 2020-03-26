@@ -1,21 +1,21 @@
 // TODO: rename back to LoginForm... :\
-import * as React from "react";
-import { Formik } from "formik";
-import * as BP from "@blueprintjs/core";
+import * as React from 'react';
+import { Formik } from 'formik';
+import * as BP from '@blueprintjs/core';
 import {
     useHistory,
-    useLocation
-} from "react-router-dom";
+    useLocation,
+} from 'react-router-dom';
 
 import {
-    ErrorBoundary as EB
-} from "~client/components";
+    ErrorBoundary as EB,
+} from '~client/components';
 
-import appState from "~client/app-state";
-import * as Api from "~shared/api";
-import { log } from "~shared/log";
-import { UserDto } from "~shared/data-transfer-objects";
-import { postBasicAuth } from "~client/auth";
+import appState from '~client/app-state';
+import * as Api from '~shared/api';
+import { log } from '~shared/log';
+import { UserDto } from '~shared/data-transfer-objects';
+import { postBasicAuth } from '~client/auth';
 
 export interface LoginDialogProps {
     onUserChange: (user: UserDto) => void;
@@ -26,8 +26,10 @@ export interface LoginDialogProps {
 
 export class LoginDialogValues {
     username: string;
+
     password: string;
-    ["auth-method"]: string;
+
+    ['auth-method']: string;
 }
 
 export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
@@ -44,66 +46,69 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
         } catch (err) {
             setStatus(err);
         }
-    }
+    };
 
     const content = (
         <div className="loginDialog">
             <EB>
                 <Formik
                     initialValues={{
-                        username: "",
-                        password: "",
-                        "auth-method": "basic"
+                        username: '',
+                        password: '',
+                        'auth-method': 'basic',
                     }}
-                    validate={ (values: LoginDialogValues) => {
+                    validate={(values: LoginDialogValues) => {
                         const errors: Partial<LoginDialogValues> = {};
                         if (values.username.trim().length === 0) {
-                            errors.username = "Enter a username";
+                            errors.username = 'Enter a username';
                         }
 
                         if (values.password.length === 0) {
-                            errors.password = "Enter a password";
+                            errors.password = 'Enter a password';
                         }
 
                         return errors;
                     }}
-                    onSubmit={ submit }>
-                    { props => (
-                        <form onSubmit={ props.handleSubmit }>
-                            <BP.FormGroup 
+                    onSubmit={submit}
+              >
+                    { (props) => (
+                        <form onSubmit={props.handleSubmit}>
+                            <BP.FormGroup
                                 label="Username"
-                                helperText={ props.touched.username && props.errors?.username }
-                                labelFor="usernameLoginInput">
+                                helperText={props.touched.username && props.errors?.username}
+                                labelFor="usernameLoginInput"
+                          >
                                 <BP.InputGroup
                                     id="usernameLoginInput"
                                     name="username"
                                     leftIcon="user"
-                                    onBlur={ props.handleBlur }
-                                    onChange={ props.handleChange }
-                                    value={ props.values.username }
-                                />
-                            </BP.FormGroup>
+                                    onBlur={props.handleBlur}
+                                    onChange={props.handleChange}
+                                    value={props.values.username}
+                              />
+                          </BP.FormGroup>
                             <BP.FormGroup
                                 label="Password"
-                                helperText={ props.touched.password && props.errors?.password }
-                                labelFor="passwordLoginInput">
+                                helperText={props.touched.password && props.errors?.password}
+                                labelFor="passwordLoginInput"
+                          >
                                 <BP.InputGroup
                                     id="passwordLoginInput"
                                     name="password"
                                     leftIcon="lock"
                                     type="password"
-                                    onBlur={ props.handleBlur }
-                                    onChange={ props.handleChange }
-                                    value={ props.values.password }
-                                />
-                            </BP.FormGroup>
+                                    onBlur={props.handleBlur}
+                                    onChange={props.handleChange}
+                                    value={props.values.password}
+                              />
+                          </BP.FormGroup>
                             <BP.Button id="loginDialogButton" type="submit">Log in</BP.Button>
-                        </form> 
+                      </form>
                     )}
-                </Formik>
-            </EB>
-        </div>
-    )
+              </Formik>
+          </EB>
+      </div>
+    );
 
     return content;
-}
+};

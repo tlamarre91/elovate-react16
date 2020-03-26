@@ -1,5 +1,4 @@
-import * as React from "react";
-import { render } from "react-dom";
+import * as React from 'react';
+import { render } from 'react-dom';
 
-export const elmt = React.createElement; 
-
+export const elmt = React.createElement;

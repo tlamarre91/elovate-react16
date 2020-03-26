@@ -1,1 +1,1 @@
-export * as Authorization from "./authorization";
+export * as Authorization from './authorization';

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -7,24 +7,26 @@ import {
     NavLink,
     useParams,
     useRouteMatch,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import * as Api from "~shared/api";
-import { log } from "~shared/log";
-import { UserDto } from "~shared/data-transfer-objects";
+import * as Api from '~shared/api';
+import { log } from '~shared/log';
+import { UserDto } from '~shared/data-transfer-objects';
 
-import appState from "~client/app-state";
+import appState from '~client/app-state';
 
 import {
-    UserAdmin
-} from "~client/components/UserAdmin";
+    UserAdmin,
+} from '~client/components/UserAdmin';
 
 export const AdminRouter: React.FC = () => {
     const { path, url } = useRouteMatch();
 
-    return <Switch>
-        <div>PLACEHOLDER</div>
-    </Switch>
+    return (
+      <Switch>
+            <div>PLACEHOLDER</div>
+        </Switch>
+    );
 
     //    return <div className="tabbedPage">
     //        <div className="tabLinks">

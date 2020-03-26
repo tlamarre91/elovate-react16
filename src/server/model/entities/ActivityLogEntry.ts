@@ -1,5 +1,5 @@
-import * as Orm from "typeorm";
-import { User } from ".";
+import * as Orm from 'typeorm';
+import { User } from '.';
 
 @Orm.Entity()
 export class ActivityLogEntry {

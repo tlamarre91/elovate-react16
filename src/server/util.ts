@@ -1,11 +1,11 @@
-import jwt from "jsonwebtoken";
-import * as Orm from "typeorm";
-import { log } from "~shared/log";
+import jwt from 'jsonwebtoken';
+import * as Orm from 'typeorm';
+import { log } from '~shared/log';
 import {
     Group,
     GroupUser,
-    User
-} from "~server/model/entities";
+    User,
+} from '~server/model/entities';
 
 export async function clearData() {
     const userGroupRepo = Orm.getRepository(GroupUser);
@@ -24,11 +24,11 @@ export async function populateTestData() {
     const TEST_MATCH_COUNT = 1000;
     const TEST_GAME_COUNT = 2;
 
-    const BASE_USER_STR = "user_";
-    const BASE_GROUP_STR = "group_";
-    const BASE_GAME_STR = "game_";
+    const BASE_USER_STR = 'user_';
+    const BASE_GROUP_STR = 'group_';
+    const BASE_GAME_STR = 'game_';
 
-    log.info("populating test data");
+    log.info('populating test data');
 
     const userRepo = Orm.getRepository(User);
     const users: Array<User> = [];

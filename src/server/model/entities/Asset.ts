@@ -1,9 +1,9 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 
 import {
     CreationInfo,
     Owners,
-} from ".";
+} from '.';
 
 
 abstract class FileAsset {
@@ -25,7 +25,6 @@ export class ImageAsset extends FileAsset {
     @Orm.Column()
     height: number;
 
-    @Orm.Column({ type: "integer" })
+    @Orm.Column({ type: 'integer' })
     width: number;
 }
-

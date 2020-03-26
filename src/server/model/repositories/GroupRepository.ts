@@ -1,21 +1,21 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 
 import {
     BaseRepository,
     GroupUserRepository,
-} from ".";
+} from '.';
 
 import {
     Group,
     User,
     GroupUser,
-} from "~server/model/entities";
+} from '~server/model/entities';
 
 import {
     GroupUserApproval,
-} from "~shared/enums";
+} from '~shared/enums';
 
-import * as Dto from "~shared/data-transfer-objects";
+import * as Dto from '~shared/data-transfer-objects';
 
 type NewGroupParams = {
     name?: string;
@@ -28,8 +28,8 @@ export class GroupRepository extends BaseRepository<Group> {
         const errors: NewGroupParams = {};
         if (params?.name?.length > -1) {
             if (params.name.length === 0) {
-                errors.name = "Provide a group name";
-            } else if (await this.count({ where: { name: params.name } }).then(count => count > 0)) {
+                errors.name = 'Provide a group name';
+            } else if (await this.count({ where: { name: params.name } }).then((count) => count > 0)) {
                 errors.name = `Group name ${params.name} already in use`;
             }
         }
@@ -37,8 +37,8 @@ export class GroupRepository extends BaseRepository<Group> {
         // TODO: actually customURL will be optional
         if (params?.customUrl?.length > -1) {
             if (params.customUrl.length === 0) {
-                errors.customUrl = "Provide a custom URL";
-            } else if (await this.count({ where: { customUrl: params.customUrl } }).then(count => count > 0)) {
+                errors.customUrl = 'Provide a custom URL';
+            } else if (await this.count({ where: { customUrl: params.customUrl } }).then((count) => count > 0)) {
                 errors.customUrl = `Custom URL ${params.customUrl} already in use`;
             }
         }
@@ -47,7 +47,7 @@ export class GroupRepository extends BaseRepository<Group> {
     }
 
     async findGroupsVisibleToUser(user: User) {
-        throw new Error("not yet implemented");
+        throw new Error('not yet implemented');
     }
 
     async findUserGroups(user: User): Promise<Group[]> {
@@ -56,19 +56,20 @@ export class GroupRepository extends BaseRepository<Group> {
             where: {
                 user,
                 userApproval: GroupUserApproval.confirmed,
-                groupApproval: GroupUserApproval.confirmed
-            }, relations: ["group"] });
-        return memberships.map(m => m.group);
+                groupApproval: GroupUserApproval.confirmed,
+            },
+            relations: ['group'],
+        });
+        return memberships.map((m) => m.group);
     }
 
     async createFromDto(dto: Dto.GroupDto): Promise<Group> {
-        throw new Error("not yet implemented");
+        throw new Error('not yet implemented');
     }
 
     async countGroupsWithOwner(user: User): Promise<number> {
         return this.find({ where: { ownerUser: user } })
-            .then(res => res.length)
-            .catch(err => { throw err });
+            .then((res) => res.length)
+            .catch((err) => { throw err; });
     }
 }
-

@@ -1,4 +1,4 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 
 import {
     CreationInfo,
@@ -8,7 +8,7 @@ import {
     Notification,
     Owners,
     Team,
-} from ".";
+} from '.';
 
 @Orm.Entity()
 export class User {
@@ -38,7 +38,7 @@ export class User {
 
     @Orm.Column({ length: 64, nullable: true })
     displayName: string;
-    
+
     @Orm.Index({ unique: true })
     @Orm.Column({ length: 64, nullable: true })
     email?: string;
@@ -61,15 +61,15 @@ export class User {
     /*
      * invalidateLoginsBefore: seconds in unix epoch (standard for JWT)
      */
-    @Orm.Column({ type: "int" })
+    @Orm.Column({ type: 'int' })
     invalidateLoginsBefore?: number;
 
-    @Orm.ManyToMany(() => Team, team => team.users)
+    @Orm.ManyToMany(() => Team, (team) => team.users)
     teams: Team[];
 
-    @Orm.OneToMany(() => Notification, notification => notification.recipient)
+    @Orm.OneToMany(() => Notification, (notification) => notification.recipient)
     notifications: Notification[];
 
-    @Orm.OneToMany(() => GroupUser, groupUser => groupUser.user)
+    @Orm.OneToMany(() => GroupUser, (groupUser) => groupUser.user)
     groupMemberships: GroupUser[];
 }

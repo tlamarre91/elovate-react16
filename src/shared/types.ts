@@ -25,4 +25,3 @@ export interface GroupEditFormErrors {
     description?: string;
     customUrl?: string;
 }
-

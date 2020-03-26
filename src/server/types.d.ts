@@ -2,7 +2,7 @@
 
 declare namespace Express {
     export interface Request {
-        user: import("~server/model/entities").User;
-        groupMemberships: import("~server/model/entities").GroupUser[];
+        user: import('~server/model/entities').User;
+        groupMemberships: import('~server/model/entities').GroupUser[];
     }
 }

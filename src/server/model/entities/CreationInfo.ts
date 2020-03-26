@@ -1,13 +1,13 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 import {
-    User
-} from ".";
+    User,
+} from '.';
 
 export class CreationInfo {
-    @Orm.Column({ default: () => "NOW()" })
+    @Orm.Column({ default: () => 'NOW()' })
     edited: Date;
 
-    @Orm.Column({ type: "timestamp", default: () => "NOW()" })
+    @Orm.Column({ type: 'timestamp', default: () => 'NOW()' })
     dateCreated: Date;
 
     @Orm.ManyToOne(() => User, { nullable: true })

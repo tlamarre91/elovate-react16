@@ -1,4 +1,4 @@
-import * as Orm from "typeorm";
+import * as Orm from 'typeorm';
 
 import {
     CreationInfo,
@@ -7,7 +7,7 @@ import {
     Owners,
     Team,
     User,
-} from ".";
+} from '.';
 
 @Orm.Entity()
 export class MatchParty {
@@ -23,9 +23,9 @@ export class MatchParty {
     @Orm.Column()
     partyNumber: number;
 
-    @Orm.ManyToOne(() => Match, match => match.parties)
+    @Orm.ManyToOne(() => Match, (match) => match.parties)
     match: Match;
 
-    @Orm.ManyToOne(() => Team, team => team.parties)
+    @Orm.ManyToOne(() => Team, (team) => team.parties)
     team: Team;
 }

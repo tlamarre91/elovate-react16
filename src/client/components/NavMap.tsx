@@ -1,10 +1,10 @@
 // TODO: clean up this mess :\
-import React from "react";
+import React from 'react';
 import {
-    NavLink
-} from "react-router-dom";
+    NavLink,
+} from 'react-router-dom';
 
-import { log } from "~shared/log";
+import { log } from '~shared/log';
 
 export class NavMapRecord {
     data: { [name: string]: { text: string, path: string }[] };
@@ -27,11 +27,11 @@ export class NavMapRecord {
 
     items(): { text: string, path: string }[] {
         const items: { text: string, path: string }[] = [];
-        for (let k in this.data) {
-            items.push(... this.data[k]);
+        for (const k in this.data) {
+            items.push(...this.data[k]);
         }
 
-        return items
+        return items;
     }
 }
 
@@ -40,7 +40,9 @@ class NavMapState {
 
 class NavMapProps {
     name: string;
+
     items: { text: string, path: string }[];
+
     record: NavMapRecord
 }
 
@@ -51,13 +53,13 @@ export class NavMap extends React.Component<NavMapProps, NavMapState> {
 
     componentDidMount() {
         const { name, items, record } = this.props;
-        log.info(`mount: ${ name }`);
+        log.info(`mount: ${name}`);
         record.set(name, items);
     }
 
     componentWillUnmount() {
         const { name, record } = this.props;
-        log.info(`unmount: ${ name }`);
+        log.info(`unmount: ${name}`);
         record.remove(name);
     }
 
@@ -74,9 +76,7 @@ export const NavMapDisplay: React.FC<NavMapDisplayProps> = (props) => {
     const { items } = props;
     return (
         <>
-            { items.map(({text, path}) => {
-                return <NavLink key={ `${name}-${text}-${path}` } to={ path }>{ text }</NavLink>
-            }) }
-        </>
-    )
-}
+            { items.map(({ text, path }) => <NavLink key={`${name}-${text}-${path}`} to={path}>{ text }</NavLink>) }
+      </>
+    );
+};

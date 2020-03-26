@@ -1,18 +1,18 @@
-import React from "react";
-import * as BP from "@blueprintjs/core";
+import React from 'react';
+import * as BP from '@blueprintjs/core';
 
 import {
-    Link
-} from "react-router-dom";
+    Link,
+} from 'react-router-dom';
 
-import { log } from "~shared/log";
-import * as Api from "~shared/api";
-import * as Dto from "~shared/data-transfer-objects";
+import { log } from '~shared/log';
+import * as Api from '~shared/api';
+import * as Dto from '~shared/data-transfer-objects';
 
 import {
     getOneGroup,
     getManyGroups,
-} from "~client/query-runners";
+} from '~client/query-runners';
 
 interface GroupListItemProps {
     group: Dto.GroupDto;
@@ -21,37 +21,45 @@ interface GroupListItemProps {
 }
 
 const GroupListItem: React.FC<GroupListItemProps> = ({ group, expanded, makeLinks }) => {
-    const nameElmt = ( makeLinks
-        ?  ( <Link to={ `/groups/${group.id}` }>
-                <div className="groupName">
-                    { group.name }
+    const nameElmt = (makeLinks
+        ? (
+            <Link to={`/groups/${group.id}`}>
+            <div className="groupName">
+                  { group.name }
                 </div>
-            </Link> )
-        : <div className="groupName">
-            { group.name }
-        </div>
-    )
+          </Link>
+        )
+        : (
+          <div className="groupName">
+                { group.name }
+            </div>
+        )
+    );
 
-    return <div className="groupListItem">
-        <div className="icon">
-            <BP.Icon icon="graph" />
+    return (
+      <div className="groupListItem">
+            <div className="icon">
+                <BP.Icon icon="graph" />
         </div>
-        { nameElmt }
-        <div className="controls">
-            <BP.Icon icon="edit" />
+            { nameElmt }
+            <div className="controls">
+                <BP.Icon icon="edit" />
         </div>
-    </div>
-}
+        </div>
+    );
+};
 
 export interface GroupListProps {
     pageLength?: number;
-    //displayFields?: (keyof Dto.GroupDto)[];
+    // displayFields?: (keyof Dto.GroupDto)[];
     query?: string;
     displayIfEmpty?: React.ReactElement<any>;
     makeLinks?: boolean;
 }
 
-export const GroupList: React.FC<GroupListProps> = ({ pageLength, query, displayIfEmpty, makeLinks }) => {
+export const GroupList: React.FC<GroupListProps> = ({
+    pageLength, query, displayIfEmpty, makeLinks,
+}) => {
     const [ready, setReady] = React.useState<boolean>(false);
     const [loadedGroups, setLoadedGroups] = React.useState<Dto.GroupDto[]>();
     const [visibleGroups, setVisibleGroups] = React.useState<Dto.GroupDto[]>();
@@ -60,9 +68,8 @@ export const GroupList: React.FC<GroupListProps> = ({ pageLength, query, display
     const pageCount = () => {
         if ((pageLength ?? false) && pageLength > 0) {
             return Math.ceil((loadedGroups?.length ?? 0) / pageLength);
-        } else {
-            return 1;
         }
+        return 1;
     };
 
     const refreshVisibleGroups = () => {
@@ -76,41 +83,45 @@ export const GroupList: React.FC<GroupListProps> = ({ pageLength, query, display
 
             setReady(true);
         } else {
-            log.warn(`GroupTable: groups not loaded`);
+            log.warn('GroupTable: groups not loaded');
         }
-    }
+    };
 
     const loadGroups = () => {
-        log.info("RUNNING");
-        setStatus("loading groups");
+        log.info('RUNNING');
+        setStatus('loading groups');
         setReady(false);
         if (query) {
-            getManyGroups(query).then(groups => {
+            getManyGroups(query).then((groups) => {
                 setLoadedGroups(groups);
                 setStatus(null);
-            }).catch(err => {
+            }).catch((err) => {
                 setStatus(err);
                 log.error(err);
             });
         } else {
-            log.warn(`GroupTable: dunno how to load the groups, boss. gimme a query prop or somethin'`);
+            log.warn('GroupTable: dunno how to load the groups, boss. gimme a query prop or somethin\'');
         }
-    }
+    };
 
     React.useEffect(refreshVisibleGroups, [currentPage, loadedGroups]);
     React.useEffect(loadGroups, []);
 
-    return <div className="groupList">
-        {
-            pageCount() > 1 ? 
-            <div className="controls">
-                controls placeholder
+    return (
+      <div className="groupList">
+            {
+                pageCount() > 1
+                    ? (
+                      <div className="controls">
+                          controls placeholder
             </div>
-            : null
-        }
-        { status ? <div className="status">{ status }</div> : null }
-    { ready ? loadedGroups.length > 0 ? visibleGroups.map((group: Dto.GroupDto) => <GroupListItem makeLinks={ makeLinks } key={ group.id } group={ group } />)
-            : displayIfEmpty
-        : null }
-    </div>
-}
+                    )
+                    : null
+            }
+            { status ? <div className="status">{ status }</div> : null }
+            { ready ? loadedGroups.length > 0 ? visibleGroups.map((group: Dto.GroupDto) => <GroupListItem makeLinks={makeLinks} key={group.id} group={group} />)
+                : displayIfEmpty
+                : null }
+        </div>
+    );
+};

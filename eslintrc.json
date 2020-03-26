@@ -1,0 +1,39 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb",
+        "prettier/@typescript-eslint"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
+    "rules": {
+      "indent": [ "error", 4 ],
+      "import/no-unresolved": [ "off" ],
+      "no-unused-vars": [ "off" ],
+      "import/extensions": [ "off" ],
+      "import/prefer-default-export": [ "off" ],
+      "consistent-return": [ "off" ],
+      "no-restricted-globals": [ "warn" ],
+      "max-len": [ "warn" ],
+      "no-useless-constructor": [ "off" ]
+    }
+}

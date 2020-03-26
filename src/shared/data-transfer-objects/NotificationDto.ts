@@ -1,12 +1,16 @@
-import * as Dto from ".";
-import { BaseDto } from "./BaseDto";
-import { Notification } from "~server/model/entities/Notification";
+import * as Dto from '.';
+import { BaseDto } from './BaseDto';
+import { Notification } from '~server/model/entities/Notification';
 
 export class NotificationDto extends BaseDto<Notification> {
     recipient?: Dto.UserDto;
+
     created?: Date;
+
     read?: boolean;
+
     message?: string;
+
     linkedResourceUri?: string;
 
     constructor(obj: Notification, origin?: string) {

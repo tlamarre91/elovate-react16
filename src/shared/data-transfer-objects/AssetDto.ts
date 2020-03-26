@@ -1,12 +1,15 @@
-import * as Dto from ".";
-import { BaseDto } from "./BaseDto";
-import { ImageAsset } from "~server/model/entities/Asset";
+import * as Dto from '.';
+import { BaseDto } from './BaseDto';
+import { ImageAsset } from '~server/model/entities/Asset';
 
 export class ImageAssetDto extends BaseDto<ImageAsset> {
     // TODO: file permissions should be fun...
     id?: number;
+
     uri: string;
+
     height?: number;
+
     width?: number;
 
     constructor(obj: ImageAsset, origin?: string) {

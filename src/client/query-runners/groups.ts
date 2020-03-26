@@ -1,15 +1,15 @@
-import { log } from "~shared/log";
-import * as Api from "~shared/api";
+import { log } from '~shared/log';
+import * as Api from '~shared/api';
 import {
-    GroupDto
-} from "~shared/data-transfer-objects";
+    GroupDto,
+} from '~shared/data-transfer-objects';
 
 import {
     GroupCreateFormValues,
     GroupCreateFormErrors,
     GroupEditFormValues,
     GroupEditFormErrors,
-} from "~shared/types";
+} from '~shared/types';
 
 function processQuery(query: string) {
     const id = parseInt(query);
@@ -26,9 +26,8 @@ export async function getOneGroup(query: string): Promise<GroupDto> {
         const res = await call.execute();
         if (res.success) {
             return res.data;
-        } else {
-            throw new Error(res.error);
         }
+        throw new Error(res.error);
     } catch (err) {
         throw err;
     }
@@ -40,9 +39,8 @@ export async function getManyGroups(query: string): Promise<GroupDto[]> {
         const res = await call.execute();
         if (res.success) {
             return res.data;
-        } else {
-            throw new Error(res.error);
         }
+        throw new Error(res.error);
     } catch (err) {
         throw err;
     }
@@ -50,13 +48,12 @@ export async function getManyGroups(query: string): Promise<GroupDto[]> {
 
 export async function validateNewGroup(values: GroupCreateFormValues): Promise<GroupCreateFormErrors> {
     try {
-        const validateCall = new Api.Post<GroupCreateFormValues, GroupCreateFormErrors>(Api.Resource.Group, values, "validateNewGroup");
+        const validateCall = new Api.Post<GroupCreateFormValues, GroupCreateFormErrors>(Api.Resource.Group, values, 'validateNewGroup');
         const res = await validateCall.execute();
         if (res.success) {
             return res.data;
-        } else {
-            throw new Error(res.error);
         }
+        throw new Error(res.error);
     } catch (err) {
         throw err;
     }
@@ -68,9 +65,8 @@ export async function createNewGroup(values: GroupCreateFormValues): Promise<Gro
         const res = await createCall.execute();
         if (res.success) {
             return res.data;
-        } else {
-            throw new Error(res.error);
         }
+        throw new Error(res.error);
     } catch (err) {
         throw err;
     }
@@ -79,14 +75,12 @@ export async function createNewGroup(values: GroupCreateFormValues): Promise<Gro
 export async function validateUpdateGroup(groupId: number, newValues: Partial<GroupEditFormValues>): Promise<GroupEditFormErrors> {
     try {
         type CallType = Partial<GroupEditFormValues> & { groupId: number };
-        const validateCall = new Api.Put<CallType, GroupEditFormErrors>
-            (Api.Resource.Group, { groupId, ... newValues }, "validateUpdateGroup");
+        const validateCall = new Api.Put<CallType, GroupEditFormErrors>(Api.Resource.Group, { groupId, ...newValues }, 'validateUpdateGroup');
         const res = await validateCall.execute();
         if (res.success) {
-            return res.data
-        } else {
-            throw new Error(res.error);
+            return res.data;
         }
+        throw new Error(res.error);
     } catch (err) {
         throw err;
     }
