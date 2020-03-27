@@ -56,7 +56,7 @@ export async function validateNewGroup(
         const validateCall = new Api.Post<
             GroupCreateFormValues,
             GroupCreateFormErrors
-        >(Api.Resource.Group, values, 'validateNewGroup');
+        >(Api.Resource.Group, values, 'validateNew');
         const res = await validateCall.execute();
         if (res.success) {
             return res.data;
@@ -85,18 +85,30 @@ export async function createNewGroup(
     }
 }
 
-export async function validateUpdateGroup(
-    groupId: number,
-    newValues: Partial<GroupEditFormValues>,
-): Promise<GroupEditFormErrors> {
+export async function validateUpdateGroup(values: GroupEditFormValues): Promise<GroupEditFormErrors> {
     try {
-        type CallType = Partial<GroupEditFormValues> & { groupId: number };
-        const validateCall = new Api.Put<CallType, GroupEditFormErrors>(
+        const validateCall = new Api.Post<GroupEditFormValues, GroupEditFormErrors>(
             Api.Resource.Group,
-            { groupId, ...newValues },
-            'validateUpdateGroup',
+            values,
+            'validateUpdate',
         );
         const res = await validateCall.execute();
+        if (res.success) {
+            return res.data;
+        }
+        throw new Error(res.error);
+    } catch (err) {
+        throw err;
+    }
+}
+
+export async function updateGroup(values: GroupEditFormValues): Promise<string> {
+    try {
+        const updateCall = new Api.Put<GroupEditFormValues, string>(
+            Api.Resource.Group,
+            values
+        );
+        const res = await updateCall.execute();
         if (res.success) {
             return res.data;
         }

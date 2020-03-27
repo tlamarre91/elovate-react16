@@ -1,20 +1,21 @@
 export enum TeamType {
-    adhoc = 'a',
-    premade = 'p',
+    adhoc,
+    premade,
+    individual,
 }
 
 export enum GroupUserPrivilege {
-    admin = 'admin',
-    user = 'user',
+    admin,
+    user,
 }
 
 export enum GroupUserApproval {
-    confirmed = 'c',
-    pending = 'p',
-    declined = 'd',
+    confirmed,
+    pending,
+    declined,
 }
 
 export enum MatchResultType {
-    singleWinner = 'singlewinner',
-    pending = 'pending',
+    singleWinner,
+    pending,
 }

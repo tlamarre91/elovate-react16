@@ -1,11 +1,18 @@
 import React from 'react';
 
+import { Helmet } from "react-helmet";
+
 interface PageTitleProps {
-    children: JSX.Element | JSX.Element[] | string | string[];
+    children: string | string[];
 }
 
 export const PageTitle: React.FC<PageTitleProps> = ({ children }) => (
-    <div className="pageTitle">
-        <h3>{children}</h3>
-    </div>
+    <>
+        <Helmet>
+            <title>{children}</title>
+        </Helmet>
+        <div className="pageTitle">
+            <h3>{children}</h3>
+        </div>
+    </>
 );

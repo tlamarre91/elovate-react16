@@ -10,14 +10,15 @@ import {
     User,
 } from '.';
 
-import { MatchResultType } from '~shared/enums';
+//import { MatchResultType } from '~shared/enums';
+import * as Enums from "../../../shared/enums";
 
 export interface SingleWinnerData {
     winnerParty: number;
 }
 
 export interface MatchResult {
-    resultType: MatchResultType;
+    resultType: Enums.MatchResultType;
     resultData: object;
 }
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet';
 import appState from '~client/app-state';
 import { UserDto } from '~shared/data-transfer-objects';
-import { UserCreateForm } from '~client/components/UserCreateForm';
+import { UserCreateForm, PageTitle } from '~client/components';
 
 export interface UserRegistrationPageProps {}
 
@@ -18,15 +18,13 @@ export const UserRegistrationPage: React.FC<UserRegistrationPageProps> = (
         );
     }
     return (
-        <>
-            <Helmet>
-                <title>register</title>
-            </Helmet>
+        <div className="registrationPage page">
+            <PageTitle>Register</PageTitle>
             <UserCreateForm
                 registration
                 redirect="/"
                 onChange={setLoggedInUser}
             />
-        </>
+        </div>
     );
 };

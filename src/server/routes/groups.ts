@@ -12,6 +12,13 @@ import {
     GroupUserRepository,
 } from '~server/model/repositories';
 
+import {
+    GroupCreateFormValues,
+    GroupCreateFormErrors,
+    GroupEditFormValues,
+    GroupEditFormErrors,
+} from "~shared/types";
+
 import { Group, GroupUser, User } from '~server/model/entities';
 
 import { GroupUserApproval, GroupUserPrivilege } from '~shared/enums';
@@ -19,27 +26,45 @@ import { GroupUserApproval, GroupUserPrivilege } from '~shared/enums';
 import * as Dto from '~shared/data-transfer-objects';
 
 const router = Router();
-router.post('/validateNewGroup', async (req, res) => {
+
+async function validateNewGroupHandler(req: Request, res: Response) {
     try {
         const groupRepo = Orm.getCustomRepository(GroupRepository);
-        const errors = await groupRepo.validateNewGroup(req.body.data);
-        res.json(new Api.Response(true, null, errors));
+        const validationErrors = await groupRepo.validateNewGroup(req.body.data as GroupCreateFormValues);
+        res.json(new Api.Response(true, null, validationErrors));
     } catch (err) {
+        log.error(err);
         res.status(500);
         res.json(new Api.Response(false, err));
     }
-});
+}
+
+router.post('/validateNew', validateNewGroupHandler);
+
+async function validateUpdateGroupHandler(req: Request, res: Response) {
+    try {
+        const groupRepo = Orm.getCustomRepository(GroupRepository);
+        const validationErrors = await groupRepo.validateUpdateGroup(req.body.data);
+        res.json(new Api.Response(true, null, validationErrors));
+    } catch (err) {
+        log.error(`groups/validateNew: ${err.message}`);
+        res.status(500);
+        res.json(new Api.Response(false, err));
+    }
+}
+
+router.post('/validateUpdate', validateUpdateGroupHandler);
 
 async function createGroupHandler(req: Request, res: Response) {
     try {
-        const params = req.body.data;
+        const params = req.body.data as GroupCreateFormValues;
         const groupRepo = Orm.getCustomRepository(GroupRepository);
         const errors = await groupRepo.validateNewGroup(params);
 
-        log.info(`errors: ${JSON.stringify(errors)}`);
         if (errors?.name || errors?.customUrl) {
+            log.warn(`bad POST to /groups:\nvalues: ${JSON.stringify(params, null, 2)}\nerrors: ${JSON.stringify(errors, null, 2)}`);
             res.status(400);
-            return res.json(new Api.Response(false, 'invalid parameters'));
+            return res.json(new Api.Response(false, 'invalid parameters - first check against /groups/validateNew'));
         }
 
         const group: Group = groupRepo.create({
@@ -65,13 +90,62 @@ async function createGroupHandler(req: Request, res: Response) {
 
         res.json(new Api.Response(true, null, new Dto.GroupDto(group)));
     } catch (err) {
-        res.status(500);
         log.error(`createGroupHandler: ${err}`);
+        res.status(500);
         res.json(new Api.Response(false, 'server error'));
     }
 }
 
 router.post('/', requireAuthorization, createGroupHandler);
+
+async function updateGroupHandler(req: Request, res: Response) {
+    try {
+        const params = req.body.data as GroupEditFormValues;
+        const groupRepo = Orm.getCustomRepository(GroupRepository);
+
+        if (!(params?.id ?? false)) {
+            res.status(400);
+            return res.json(new Api.Response(false, 'id field not found'));
+        }
+
+        try {
+            await groupRepo.findOneOrFail(params.id);
+        } catch (err) {
+            res.status(404);
+            return res.json(new Api.Response(false, `group not found with id=${params.id}`));
+        }
+
+        const errors = await groupRepo.validateUpdateGroup(params);
+        if (Object.keys(errors).length > 0) {
+            log.warn(`bad PUT to /:groups\nvalues: ${JSON.stringify(params, null, 2)}\nerrors: ${JSON.stringify(errors, null, 2)}`);
+            res.status(400)
+            return res.json(new Api.Response(false, 'invalid parameters - first check against /groups/validateUpdate'));
+        }
+
+        const updateValues = {
+            customUrl: params.customUrl,
+            description: params.description,
+            name: params.name,
+            publicJoinable: params.publicJoinable,
+            publicVisible: params.publicVisible,
+        }
+
+        try {
+            await groupRepo.update({ id: params.id }, { ... updateValues });
+            res.json(new Api.Response(true, `updated group: ${params.name}`));
+        } catch (err) {
+            log.warn(`updateGroupHandler groupRepo.update: ${err}`);
+            res.status(500);
+            res.json(new Api.Response(false, 'server error'));
+        }
+    } catch (err) {
+        log.error(`updateGroupHandler: ${err}`);
+        res.status(500);
+        res.json(new Api.Response(false, 'server error'));
+    }
+}
+
+router.put('/', requireAuthorization, updateGroupHandler);
 
 async function findMyGroupsHandler(req: Request, res: Response) {
     try {

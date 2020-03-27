@@ -31,15 +31,14 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
     const [serverErrors, setServerErrors] = React.useState<Errors>();
 
     const trySubmit = async (values: Values) => {
-        const keys: (keyof Errors)[] = ['name', 'customUrl'];
         try {
             const errors = await validateNewGroup(values);
-            if (keys.some((k) => errors?.[k])) {
-                setServerErrors(errors);
+            if (Object.keys(errors).length > 0) {
+                return setServerErrors(errors);
             }
         } catch (err) {
             log.error(`GroupCreateForm: ${err}`);
-            setStatus('could not validate form');
+            return setStatus('could not validate form');
         }
 
         try {
@@ -70,7 +69,7 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
         } else if (blacklists.groupCustomUrl.includes(values.customUrl)) {
             errors.customUrl = 'Please choose a different custom URL';
         } else if (
-            !values.customUrl.match(regex.alphanumericDashUnderscore256)
+            !values.customUrl.match(regex.alphanumericDashUnderscore128)
         ) {
             errors.customUrl = 'Custom URL may only contain letters, numbers, dash (-) and underscore (_)';
         }
@@ -79,7 +78,7 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
     };
 
     return (
-        <div className="groupCreateFormContainer">
+        <div className='groupCreateFormContainer'>
             <EB>
                 <Formik
                     initialValues={
@@ -96,11 +95,11 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
                 >
                     {(formProps) => (
                         <form
-                            className="groupCreateForm"
+                            className='groupCreateForm'
                             onSubmit={formProps.handleSubmit}
                         >
                             <BP.FormGroup
-                                label="Group name"
+                                label='Group name'
                                 helperText={
                                     (formProps.touched.name
                                         && formProps.errors?.name)
@@ -112,18 +111,18 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
                                         ? BP.Intent.WARNING
                                         : BP.Intent.NONE
                                 }
-                                labelFor="groupNameInput"
+                                labelFor='groupNameInput'
                             >
                                 <BP.InputGroup
-                                    id="groupNameInput"
-                                    name="name"
+                                    id='groupNameInput'
+                                    name='name'
                                     onBlur={formProps.handleBlur}
                                     onChange={formProps.handleChange}
                                     value={formProps.values.name}
                                 />
                             </BP.FormGroup>
                             <BP.FormGroup
-                                label="Custom URL"
+                                label='Custom URL'
                                 helperText={
                                     (formProps.touched.customUrl
                                         && formProps.errors?.customUrl)
@@ -135,11 +134,11 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
                                         ? BP.Intent.WARNING
                                         : BP.Intent.NONE
                                 }
-                                labelFor="customUrlInput"
+                                labelFor='customUrlInput'
                             >
                                 <BP.InputGroup
-                                    id="customUrlInput"
-                                    name="customUrl"
+                                    id='customUrlInput'
+                                    name='customUrl'
                                     onBlur={formProps.handleBlur}
                                     onChange={formProps.handleChange}
                                     value={formProps.values.customUrl}
@@ -147,42 +146,42 @@ export const GroupCreateForm: React.FC<GroupCreateFormProps> = (props) => {
                             </BP.FormGroup>
                             <BP.FormGroup
                                 inline
-                                label="Visible to public"
+                                label='Visible to public'
                                 helperText={
                                     formProps.values.publicVisible
                                         ? 'This group will be visible to everyone'
                                         : 'This group can be shared via link'
                                 }
-                                labelFor="publicVisibleInput"
+                                labelFor='publicVisibleInput'
                             >
                                 <BP.Switch
-                                    id="publicVisibleInput"
-                                    name="publicVisible"
+                                    id='publicVisibleInput'
+                                    name='publicVisible'
                                     checked={formProps.values.publicVisible}
                                     onChange={formProps.handleChange}
                                 />
                             </BP.FormGroup>
                             <BP.FormGroup
                                 inline
-                                label="Joinable to public"
+                                label='Joinable to public'
                                 helperText={
                                     formProps.values.publicJoinable
                                         ? 'This group can be joined by anyone'
                                         : 'Users can request an invite or be added by moderators'
                                 }
-                                labelFor="publicJoinableInput"
+                                labelFor='publicJoinableInput'
                             >
                                 <BP.Switch
-                                    id="publicJoinableInput"
-                                    name="publicJoinable"
+                                    id='publicJoinableInput'
+                                    name='publicJoinable'
                                     checked={formProps.values.publicJoinable}
                                     onChange={formProps.handleChange}
                                 />
                             </BP.FormGroup>
                             {status ? (
-                                <div className="status">{status}</div>
+                                <div className='status'>{status}</div>
                             ) : null}
-                            <BP.Button id="groupSubmitButton" type="submit">
+                            <BP.Button id='groupSubmitButton' type='submit'>
                             Create group
                             </BP.Button>
                         </form>

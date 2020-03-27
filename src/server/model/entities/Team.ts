@@ -3,7 +3,8 @@ import {
     CreationInfo, Group, Match, MatchParty, Owners, User,
 } from '.';
 
-import { TeamType } from '~shared/enums';
+//import { TeamType } from '~shared/enums';
+import * as Enums from "../../../shared/enums";
 
 @Orm.Entity()
 export class Team {
@@ -21,10 +22,10 @@ export class Team {
 
     @Orm.Column({
         type: 'enum',
-        enum: TeamType,
-        default: TeamType.adhoc,
+        enum: Enums.TeamType,
+        default: Enums.TeamType.adhoc,
     })
-    teamType: TeamType;
+    teamType: Enums.TeamType;
 
     @Orm.ManyToOne(() => Group, (group) => group.teams)
     group: Group;

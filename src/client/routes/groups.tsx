@@ -24,7 +24,7 @@ import {
     // GroupEditForm,
 } from '~client/components';
 
-import { GroupCreatePage, GroupProfile, MyGroupsPage } from '~client/pages';
+import { GroupCreatePage, GroupDashboard, MyGroupsPage } from '~client/pages';
 
 export const GroupRouter: React.FC = (props) => {
     const { path, url } = useRouteMatch();
@@ -51,7 +51,7 @@ export const GroupRouter: React.FC = (props) => {
                     </AuthWall>
                 </Route>
                 <Route path={`${path}/:query`}>
-                    <GroupProfile />
+                    <GroupDashboard />
                 </Route>
             </Switch>
         </>
