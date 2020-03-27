@@ -15,15 +15,13 @@ import { UserDto } from '~shared/data-transfer-objects';
 
 import appState from '~client/app-state';
 
-import {
-    UserAdmin,
-} from '~client/components/UserAdmin';
+import { UserAdmin } from '~client/components/UserAdmin';
 
 export const AdminRouter: React.FC = () => {
     const { path, url } = useRouteMatch();
 
     return (
-      <Switch>
+        <Switch>
             <div>PLACEHOLDER</div>
         </Switch>
     );

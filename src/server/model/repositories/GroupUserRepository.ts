@@ -3,16 +3,10 @@ import * as Orm from 'typeorm';
 import { BaseRepository } from './BaseRepository';
 
 import {
-    GroupUser,
-    Group,
-    User,
-    CreationInfo,
+    GroupUser, Group, User, CreationInfo,
 } from '~server/model/entities';
 
-import {
-    GroupUserApproval,
-    GroupUserPrivilege,
-} from '~shared/enums';
+import { GroupUserApproval, GroupUserPrivilege } from '~shared/enums';
 
 import * as Dto from '~shared/data-transfer-objects';
 
@@ -22,12 +16,16 @@ export class GroupUserRepository extends BaseRepository<GroupUser> {
         throw new Error('Method not implemented.');
     }
 
-    async createMembership(user: User, group: Group, params?: {
-        createdBy?: User,
-        groupApproval: GroupUserApproval,
-        privilege?: GroupUserPrivilege,
-        userApproval: GroupUserApproval,
-    }): Promise<GroupUser> {
+    async createMembership(
+        user: User,
+        group: Group,
+        params?: {
+            createdBy?: User;
+            groupApproval: GroupUserApproval;
+            privilege?: GroupUserPrivilege;
+            userApproval: GroupUserApproval;
+        },
+    ): Promise<GroupUser> {
         const gu = this.create();
         gu.user = user;
         gu.group = group;

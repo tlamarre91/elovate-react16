@@ -1,4 +1,4 @@
-export class BaseDto<T extends { id?: number, origin?: string }> {
+export class BaseDto<T extends { id?: number; origin?: string }> {
     origin?: string;
 
     id?: number;

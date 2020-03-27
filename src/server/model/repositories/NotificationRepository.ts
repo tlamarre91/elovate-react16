@@ -1,9 +1,7 @@
 import * as Orm from 'typeorm';
 
 import { BaseRepository } from './BaseRepository';
-import {
-    Notification,
-} from '~server/model/entities';
+import { Notification } from '~server/model/entities';
 import * as Dto from '~shared/data-transfer-objects';
 
 @Orm.EntityRepository(Notification)

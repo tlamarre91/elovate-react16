@@ -26,14 +26,21 @@
         "@typescript-eslint"
     ],
     "rules": {
-      "indent": [ "error", 4 ],
-      "import/no-unresolved": [ "off" ],
-      "no-unused-vars": [ "off" ],
-      "import/extensions": [ "off" ],
-      "import/prefer-default-export": [ "off" ],
+      "class-methods-use-this": [ "warn" ],
       "consistent-return": [ "off" ],
-      "no-restricted-globals": [ "warn" ],
+      "import/extensions": [ "off" ],
+      "import/no-unresolved": [ "off" ],
+      "import/prefer-default-export": [ "off" ],
+      "indent": [ "error", 4 ],
       "max-len": [ "warn" ],
-      "no-useless-constructor": [ "off" ]
+      "no-restricted-globals": [ "warn" ],
+      "no-unused-vars": [ "off" ],
+      "no-useless-constructor": [ "off" ],
+      "react/jsx-indent": [ "off" ],
+      "react/jsx-indent-props": [ "off" ],
+      "react/jsx-filename-extension": [ "error", { "extensions": [ ".jsx", ".tsx" ] } ],
+      "react/destructuring-assignment": [ "off" ],
+      "react/prop-types": [ "off" ],
+      "no-nested-ternary": [ "warn" ]
     }
 }

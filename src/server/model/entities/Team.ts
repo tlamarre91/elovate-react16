@@ -1,16 +1,9 @@
 import * as Orm from 'typeorm';
 import {
-    CreationInfo,
-    Group,
-    Match,
-    MatchParty,
-    Owners,
-    User,
+    CreationInfo, Group, Match, MatchParty, Owners, User,
 } from '.';
 
-import {
-    TeamType,
-} from '~shared/enums';
+import { TeamType } from '~shared/enums';
 
 @Orm.Entity()
 export class Team {

@@ -1,9 +1,6 @@
 import * as Orm from 'typeorm';
 
-import {
-    CreationInfo,
-    Owners,
-} from '.';
+import { CreationInfo, Owners } from '.';
 
 @Orm.Entity()
 export class CalendarEvent {
@@ -20,5 +17,5 @@ export class CalendarEvent {
     scheduledStart: Date;
 
     @Orm.Column()
-    scheduledEnd: Date
+    scheduledEnd: Date;
 }

@@ -1,13 +1,8 @@
 import * as Dto from '.';
 import { BaseDto } from './BaseDto';
-import {
-    GroupUser,
-} from '~server/model/entities';
+import { GroupUser } from '~server/model/entities';
 
-import {
-    GroupUserApproval,
-    GroupUserPrivilege,
-} from '~shared/enums';
+import { GroupUserApproval, GroupUserPrivilege } from '~shared/enums';
 
 export class GroupUserDto extends BaseDto<GroupUser> {
     user?: Dto.UserDto;

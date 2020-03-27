@@ -8,9 +8,15 @@ export interface BasicAuthValues {
     ['auth-method']: string;
 }
 
-export async function postBasicAuth(username: string, password: string): Promise<UserDto> {
+export async function postBasicAuth(
+    username: string,
+    password: string,
+): Promise<UserDto> {
     const values = { username, password, 'auth-method': 'basic' };
-    const call = new Api.Post<BasicAuthValues, UserDto>(Api.Resource.Authentication, values);
+    const call = new Api.Post<BasicAuthValues, UserDto>(
+        Api.Resource.Authentication,
+        values,
+    );
     try {
         const res = await call.execute();
         if (res.success) {

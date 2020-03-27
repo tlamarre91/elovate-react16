@@ -7,5 +7,5 @@ export class CalendarEventDto extends BaseDto<CalendarEvent> {
 
     scheduledStart: Date;
 
-    scheduledEnd: Date
+    scheduledEnd: Date;
 }

@@ -1,12 +1,7 @@
 import * as Orm from 'typeorm';
 
 import {
-    CreationInfo,
-    Group,
-    Match,
-    Owners,
-    Team,
-    User,
+    CreationInfo, Group, Match, Owners, Team, User,
 } from '.';
 
 @Orm.Entity()

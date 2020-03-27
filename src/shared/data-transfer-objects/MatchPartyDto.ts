@@ -1,8 +1,5 @@
 import * as Dto from '.';
 import { BaseDto } from './BaseDto';
-import {
-    MatchParty,
-} from '~server/model/entities';
+import { MatchParty } from '~server/model/entities';
 
-export class MatchPartyDto extends BaseDto<MatchParty> {
-}
+export class MatchPartyDto extends BaseDto<MatchParty> {}

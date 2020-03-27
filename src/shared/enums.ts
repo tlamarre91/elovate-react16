@@ -1,11 +1,11 @@
 export enum TeamType {
     adhoc = 'a',
-    premade = 'p'
+    premade = 'p',
 }
 
 export enum GroupUserPrivilege {
     admin = 'admin',
-    user = 'user'
+    user = 'user',
 }
 
 export enum GroupUserApproval {
@@ -16,5 +16,5 @@ export enum GroupUserApproval {
 
 export enum MatchResultType {
     singleWinner = 'singlewinner',
-    pending = 'pending'
+    pending = 'pending',
 }

@@ -1,15 +1,9 @@
 import * as Orm from 'typeorm';
 
 import { BaseRepository } from './BaseRepository';
-import {
-    Match,
-    User,
-    Team,
-} from '~server/model/entities';
+import { Match, User, Team } from '~server/model/entities';
 
-import {
-    TeamType,
-} from '~shared/enums';
+import { TeamType } from '~shared/enums';
 
 import * as Dto from '~shared/data-transfer-objects';
 

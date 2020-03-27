@@ -1,8 +1,6 @@
 import React from 'react';
 
-import {
-    UserDto,
-} from '~shared/data-transfer-objects';
+import { UserDto } from '~shared/data-transfer-objects';
 
 export interface IAppState {
     siteInitialized: boolean;

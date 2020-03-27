@@ -1,11 +1,7 @@
 import * as Orm from 'typeorm';
 
 import {
-    CreationInfo,
-    GroupUser,
-    Owners,
-    Team,
-    User,
+    CreationInfo, GroupUser, Owners, Team, User,
 } from '.';
 
 @Orm.Entity()
@@ -14,7 +10,7 @@ export class Group {
     id: number;
 
     @Orm.Column(() => CreationInfo)
-    creationInfo: CreationInfo
+    creationInfo: CreationInfo;
 
     @Orm.Column(() => Owners)
     owners: Owners;

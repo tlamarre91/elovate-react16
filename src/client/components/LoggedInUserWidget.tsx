@@ -12,21 +12,20 @@ import * as Api from '~shared/api';
 import { log } from '~shared/log';
 import appState from '~client/app-state';
 
-import {
-    UserDto,
-} from '~shared/data-transfer-objects';
+import { UserDto } from '~shared/data-transfer-objects';
 
-import {
-    ErrorBoundary as EB,
-    LoginDialog,
-} from '~client/components';
+import { ErrorBoundary as EB, LoginDialog } from '~client/components';
 
-export interface LoggedInUserWidgetProps {
-}
+export interface LoggedInUserWidgetProps {}
 
-export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => {
+export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (
+    props,
+) => {
     const {
-        loggedInUser, setLoggedInUser, siteInitialized, setSiteInitialized,
+        loggedInUser,
+        setLoggedInUser,
+        siteInitialized,
+        setSiteInitialized,
     } = React.useContext(appState);
     const [status, setStatus] = React.useState<string>('');
     const [error, setError] = React.useState<string>('');
@@ -39,7 +38,9 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
                 setLoggedInUser(null);
                 setStatus('logged out');
                 setError(null);
-                setTimeout(() => { setStatus(null); }, 2000);
+                setTimeout(() => {
+                    setStatus(null);
+                }, 2000);
             } else {
                 setError(res.error);
             }
@@ -72,7 +73,8 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
 
     if (!siteInitialized) {
         return null;
-    } if (!loggedInUser) {
+    }
+    if (!loggedInUser) {
         const promptStyle: React.CSSProperties = {
             color: 'rgb(240, 240, 240)',
             fontWeight: 'bold',
@@ -80,56 +82,89 @@ export const LoggedInUserWidget: React.FC<LoggedInUserWidgetProps> = (props) => 
 
         const loginPopover = (
             <BP.Popover
-            position="bottom-right"
-            usePortal={false}
-            content={<LoginDialog onUserChange={setLoggedInUser} />}
-            target={<BP.Button id="loginButton" style={promptStyle} tabIndex={0} minimal text="Log in" />}
-          />
+                position="bottom-right"
+                usePortal={false}
+                content={<LoginDialog onUserChange={setLoggedInUser} />}
+                target={(
+                    <BP.Button
+                        id="loginButton"
+                        style={promptStyle}
+                        tabIndex={0}
+                        minimal
+                        text="Log in"
+                    />
+                )}
+            />
         );
 
         const registerLink = (
             <BP.Button
-                style={promptStyle} tabIndex={0} minimal text="Register"
-            onClick={() => history.push('/register')}
-          />
+                style={promptStyle}
+                tabIndex={0}
+                minimal
+                text="Register"
+                onClick={() => history.push('/register')}
+            />
         );
 
         return (
-          <EB>
-                { loginPopover }
-                { registerLink }
+            <EB>
+                {loginPopover}
+                {registerLink}
             </EB>
         );
     }
     const popoverContent = (
-      <div className="loggedInUserWidgetPopover">
-          <BP.Menu>
-              <BP.MenuItem onClick={() => history.push('/user/profile')} text="Profile" />
-              <BP.MenuItem onClick={() => history.push('/messages')} text="Messages" />
-              <BP.MenuItem onClick={() => history.push('/settings')} icon="settings" text="Settings" />
-              <BP.MenuItem onClick={() => history.push('/help')} icon="help" text="Help" />
-              <BP.Menu.Divider />
-              <BP.MenuItem id="logoutButton" onClick={logout} tabIndex={0} icon="log-out" text="Log out" />
+        <div className="loggedInUserWidgetPopover">
+            <BP.Menu>
+                <BP.MenuItem
+                    onClick={() => history.push('/user/profile')}
+                    text="Profile"
+                />
+                <BP.MenuItem
+                    onClick={() => history.push('/messages')}
+                    text="Messages"
+                />
+                <BP.MenuItem
+                    onClick={() => history.push('/settings')}
+                    icon="settings"
+                    text="Settings"
+                />
+                <BP.MenuItem
+                    onClick={() => history.push('/help')}
+                    icon="help"
+                    text="Help"
+                />
+                <BP.Menu.Divider />
+                <BP.MenuItem
+                    id="logoutButton"
+                    onClick={logout}
+                    tabIndex={0}
+                    icon="log-out"
+                    text="Log out"
+                />
             </BP.Menu>
         </div>
     );
 
     const target = (
-      <a className="target" tabIndex={0} role="button">
-          <div id="loggedInUserTag" className="displayTag">
-              <span className="displayName">{ loggedInUser.displayName || loggedInUser.username }</span>
-              <BP.Icon icon="user" iconSize={30} color="rgb(240, 240, 240)" />
+        <a className="target" tabIndex={0} role="button">
+            <div id="loggedInUserTag" className="displayTag">
+                <span className="displayName">
+                    {loggedInUser.displayName || loggedInUser.username}
+                </span>
+                <BP.Icon icon="user" iconSize={30} color="rgb(240, 240, 240)" />
             </div>
         </a>
     );
 
     return (
-      <EB>
-          <BP.Popover
-              position="bottom-right"
-              usePortal={false}
-              content={popoverContent}
-              target={target}
+        <EB>
+            <BP.Popover
+                position="bottom-right"
+                usePortal={false}
+                content={popoverContent}
+                target={target}
             />
         </EB>
     );

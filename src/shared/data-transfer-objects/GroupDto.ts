@@ -27,6 +27,8 @@ export class GroupDto extends BaseDto<Group> {
         this.name = obj?.name;
         this.publicJoinable = obj?.publicJoinable;
         this.publicVisible = obj?.publicVisible;
-        this.memberships = obj?.memberships?.map((m) => new Dto.GroupUserDto(m));
+        this.memberships = obj?.memberships?.map(
+            (m) => new Dto.GroupUserDto(m)
+        );
     }
 }

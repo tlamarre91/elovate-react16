@@ -28,13 +28,18 @@ export class ImageAssetRepository extends BaseRepository<ImageAsset> {
         return `${this.identiconDir}/${token}-${size}x${size}.png`;
     }
 
-    async generateIdenticon(token: string, size: number = 50): Promise<ImageAsset> {
+    async generateIdenticon(
+        token: string,
+        size: number = 50,
+    ): Promise<ImageAsset> {
         const png = jdenticon.toPng(token, size);
         const uri = ImageAssetRepository.identiconUri(token, size);
         try {
-            fs.mkdirSync(path.join(ASSET_DIR, ImageAssetRepository.identiconDir));
+            fs.mkdirSync(
+                path.join(ASSET_DIR, ImageAssetRepository.identiconDir),
+            );
         } catch (e) {
-        // woops TODO
+            // woops TODO
         }
 
         fs.writeFileSync(path.join(ASSET_DIR, uri), png); // TODO: async!
@@ -50,7 +55,8 @@ export class ImageAssetRepository extends BaseRepository<ImageAsset> {
             throw new Error('Cannot handle identicon larger than 256 pixels');
         }
 
-        return this.findOneOrFail({ // TODO: woops, wrong. findOne returns null if there isn't one. that's not an error
+        return this.findOneOrFail({
+            // TODO: woops, wrong. findOne returns null if there isn't one. that's not an error
             uri: ImageAssetRepository.identiconUri(token, size),
         })
             .then((asset) => asset)

@@ -38,7 +38,9 @@ export class UserDto extends BaseDto<User> {
         this.lastLogin = obj.lastLogin;
 
         if (obj.groupMemberships) {
-            this.groupMemberships = obj.groupMemberships.map((gu) => new Dto.GroupUserDto(gu));
+            this.groupMemberships = obj.groupMemberships.map(
+                (gu) => new Dto.GroupUserDto(gu),
+            );
         }
 
         if (obj.teams) {

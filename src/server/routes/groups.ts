@@ -12,16 +12,9 @@ import {
     GroupUserRepository,
 } from '~server/model/repositories';
 
-import {
-    Group,
-    GroupUser,
-    User,
-} from '~server/model/entities';
+import { Group, GroupUser, User } from '~server/model/entities';
 
-import {
-    GroupUserApproval,
-    GroupUserPrivilege,
-} from '~shared/enums';
+import { GroupUserApproval, GroupUserPrivilege } from '~shared/enums';
 
 import * as Dto from '~shared/data-transfer-objects';
 
@@ -49,7 +42,10 @@ async function createGroupHandler(req: Request, res: Response) {
             return res.json(new Api.Response(false, 'invalid parameters'));
         }
 
-        const group: Group = groupRepo.create({ name: params.name, customUrl: params.customUrl });
+        const group: Group = groupRepo.create({
+            name: params.name,
+            customUrl: params.customUrl,
+        });
         await groupRepo.save(group);
 
         if (params.addCreatorToGroup) {
@@ -59,7 +55,11 @@ async function createGroupHandler(req: Request, res: Response) {
                 userApproval: GroupUserApproval.confirmed,
                 groupApproval: GroupUserApproval.confirmed,
             };
-            const membership: GroupUser = await guRepo.createMembership(req.user, group, params);
+            const membership: GroupUser = await guRepo.createMembership(
+                req.user,
+                group,
+                params,
+            );
             await guRepo.save(membership);
         }
 
@@ -75,13 +75,19 @@ router.post('/', requireAuthorization, createGroupHandler);
 
 async function findMyGroupsHandler(req: Request, res: Response) {
     try {
-    // const groups: Group[] = await Orm.getCustomRepository(GroupRepository).findUserGroups(req.user);
-    // const dtos = groups.map(g => new Dto.GroupDto(g));
-    // res.json(new Api.Response(true, null, dtos));
+        // const groups: Group[] = await Orm.getCustomRepository(GroupRepository).findUserGroups(req.user);
+        // const dtos = groups.map(g => new Dto.GroupDto(g));
+        // res.json(new Api.Response(true, null, dtos));
         const groups: Group[] = await Orm.getRepository(GroupUser)
             .find({ where: { user: req.user }, relations: ['group'] })
             .then((groupUsers) => groupUsers.map((gu) => gu.group));
-        res.json(new Api.Response(true, null, groups.map((g) => new Dto.GroupDto(g))));
+        res.json(
+            new Api.Response(
+                true,
+                null,
+                groups.map((g) => new Dto.GroupDto(g)),
+            ),
+        );
     } catch (err) {
         log.error(`findMyGroupsHandler: ${err}`);
         res.status(500);

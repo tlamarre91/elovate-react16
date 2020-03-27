@@ -2,18 +2,11 @@ import * as React from 'react';
 import * as emailValidator from 'email-validator';
 import { Formik } from 'formik';
 import * as BP from '@blueprintjs/core';
-import {
-    useHistory,
-} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-import {
-    ErrorBoundary as EB,
-} from '~client/components';
+import { ErrorBoundary as EB } from '~client/components';
 
-import {
-    blacklists,
-    regex,
-} from '~shared/util';
+import { blacklists, regex } from '~shared/util';
 
 import * as Api from '~shared/api';
 import { log } from '~shared/log';
@@ -30,4 +23,6 @@ export interface GroupEditFormProps {
     group: GroupDto;
 }
 
-export const GroupEditForm: React.FC<GroupEditFormProps> = (props) => <div>placeholder</div>;
+export const GroupEditForm: React.FC<GroupEditFormProps> = (props) => (
+    <div>placeholder</div>
+);

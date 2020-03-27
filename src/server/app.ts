@@ -25,7 +25,7 @@ const ELOVATE_SERVE_STATIC = process.env.ELOVATE_SERVE_STATIC?.toLowerCase() !==
 
 export enum Env {
     DEV = 'development',
-    PROD = 'production'
+    PROD = 'production',
 }
 
 export const app = express();
@@ -44,13 +44,15 @@ async function main() {
     const env = process.env.NODE_ENV;
 
     const logOutput = env === Env.DEV ? 'dev' : 'short';
-    app.use(morgan(logOutput, {
-        stream: {
-            write: (msg) => {
-                log.info(msg.trim());
+    app.use(
+        morgan(logOutput, {
+            stream: {
+                write: (msg) => {
+                    log.info(msg.trim());
+                },
             },
-        },
-    }));
+        }),
+    );
 
     if (env === Env.DEV && ELOVATE_SERVE_STATIC) {
         try {

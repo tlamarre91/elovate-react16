@@ -8,27 +8,9 @@ export const clientRoutes = [
 ];
 
 export const blacklists = {
-    username: [
-        'admin',
-        'poopface',
-        'root',
-        'user',
-    ],
-    groupName: [
-        'group',
-        'my',
-        'newgroup',
-        'new',
-        'manage',
-        'myGroups',
-    ],
-    groupCustomUrl: [
-        'group',
-        'mygroup',
-        'user',
-        'myGroups',
-        'new',
-    ],
+    username: ['admin', 'poopface', 'root', 'user'],
+    groupName: ['group', 'my', 'newgroup', 'new', 'manage', 'myGroups'],
+    groupCustomUrl: ['group', 'mygroup', 'user', 'myGroups', 'new'],
 };
 
 export const regex = {

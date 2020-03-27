@@ -11,9 +11,7 @@ import {
     useHistory,
 } from 'react-router-dom';
 
-import {
-    withBreadcrumb,
-} from 'react-breadcrumbs-context';
+import { withBreadcrumb } from 'react-breadcrumbs-context';
 
 import appState from '~client/app-state';
 import { log } from '~shared/log';
@@ -26,12 +24,7 @@ import {
     // GroupEditForm,
 } from '~client/components';
 
-import {
-    GroupCreatePage,
-    GroupProfile,
-    MyGroupsPage,
-} from '~client/pages';
-
+import { GroupCreatePage, GroupProfile, MyGroupsPage } from '~client/pages';
 
 export const GroupRouter: React.FC = (props) => {
     const { path, url } = useRouteMatch();
@@ -51,17 +44,17 @@ export const GroupRouter: React.FC = (props) => {
             <Switch>
                 <Route exact path={path}>
                     <MyGroupsPage />
-              </Route>
+                </Route>
                 <Route exact path={`${path}/new`}>
                     <AuthWall>
                         <GroupCreatePage />
-                  </AuthWall>
-              </Route>
+                    </AuthWall>
+                </Route>
                 <Route path={`${path}/:query`}>
                     <GroupProfile />
-              </Route>
-          </Switch>
-      </>
+                </Route>
+            </Switch>
+        </>
     );
 };
 

@@ -6,8 +6,6 @@ interface PageTitleProps {
 
 export const PageTitle: React.FC<PageTitleProps> = ({ children }) => (
     <div className="pageTitle">
-        <h3>
-            { children }
-      </h3>
-  </div>
+        <h3>{children}</h3>
+    </div>
 );

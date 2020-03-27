@@ -8,19 +8,31 @@ import * as Api from '~shared/api';
 import { UserRepository } from '~server/model/repositories';
 import * as Dto from '~shared/data-transfer-objects';
 
-import {
-    User,
-} from '~server/model/entities';
+import { User } from '~server/model/entities';
 
 const router = Router();
 
 router.get('/all', async (req, res) => {
     if (req?.user?.isAdmin) {
         const users = await Orm.getRepository(User).find();
-        res.json(new Api.Response(true, null, users.map((u) => new Dto.UserDto(u))));
+        res.json(
+            new Api.Response(
+                true,
+                null,
+                users.map((u) => new Dto.UserDto(u)),
+            ),
+        );
     } else {
-        const users = await Orm.getRepository(User).find({ where: { publicVisible: true } });
-        res.json(new Api.Response(true, null, users.map((u) => new Dto.UserDto(u))));
+        const users = await Orm.getRepository(User).find({
+            where: { publicVisible: true },
+        });
+        res.json(
+            new Api.Response(
+                true,
+                null,
+                users.map((u) => new Dto.UserDto(u)),
+            ),
+        );
     }
 });
 
@@ -75,7 +87,9 @@ router.post('/', async (req, res) => {
             const existingUser = userRepo.findOne(dto.id);
             if (existingUser) {
                 res.status(409);
-                res.json(new Api.Response(false, `user ${dto.id} already exists`));
+                res.json(
+                    new Api.Response(false, `user ${dto.id} already exists`),
+                );
             } else {
                 const user = await userRepo.createFromDto(dto);
                 return userRepo.save(user);
@@ -90,7 +104,6 @@ router.post('/', async (req, res) => {
         res.json(new Api.Response(false, 'not authorized'));
     }
 });
-
 
 router.put('/:id', async (req, res) => {
     throw new Error('nope');

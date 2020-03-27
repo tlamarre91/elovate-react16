@@ -1,15 +1,9 @@
 import * as Orm from 'typeorm';
 import {
-    CreationInfo,
-    Group,
-    Owners,
-    User,
+    CreationInfo, Group, Owners, User,
 } from '.';
 
-import {
-    GroupUserPrivilege,
-    GroupUserApproval,
-} from '~shared/enums';
+import { GroupUserPrivilege, GroupUserApproval } from '~shared/enums';
 
 @Orm.Entity()
 export class GroupUser {

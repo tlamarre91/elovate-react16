@@ -2,14 +2,9 @@
 import * as React from 'react';
 import { Formik } from 'formik';
 import * as BP from '@blueprintjs/core';
-import {
-    useHistory,
-    useLocation,
-} from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
-import {
-    ErrorBoundary as EB,
-} from '~client/components';
+import { ErrorBoundary as EB } from '~client/components';
 
 import appState from '~client/app-state';
 import * as Api from '~shared/api';
@@ -38,7 +33,10 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
     const history = useHistory();
     const submit = async (values: LoginDialogValues) => {
         try {
-            const user: UserDto = await postBasicAuth(values.username, values.password);
+            const user: UserDto = await postBasicAuth(
+                values.username,
+                values.password,
+            );
             setLoggedInUser(user);
             if (props.redirect) {
                 history.push(props.redirect);
@@ -70,14 +68,17 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
                         return errors;
                     }}
                     onSubmit={submit}
-              >
-                    { (props) => (
+                >
+                    {(props) => (
                         <form onSubmit={props.handleSubmit}>
                             <BP.FormGroup
                                 label="Username"
-                                helperText={props.touched.username && props.errors?.username}
+                                helperText={
+                                    props.touched.username
+                                    && props.errors?.username
+                                }
                                 labelFor="usernameLoginInput"
-                          >
+                            >
                                 <BP.InputGroup
                                     id="usernameLoginInput"
                                     name="username"
@@ -85,13 +86,16 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
                                     onBlur={props.handleBlur}
                                     onChange={props.handleChange}
                                     value={props.values.username}
-                              />
-                          </BP.FormGroup>
+                                />
+                            </BP.FormGroup>
                             <BP.FormGroup
                                 label="Password"
-                                helperText={props.touched.password && props.errors?.password}
+                                helperText={
+                                    props.touched.password
+                                    && props.errors?.password
+                                }
                                 labelFor="passwordLoginInput"
-                          >
+                            >
                                 <BP.InputGroup
                                     id="passwordLoginInput"
                                     name="password"
@@ -100,14 +104,16 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
                                     onBlur={props.handleBlur}
                                     onChange={props.handleChange}
                                     value={props.values.password}
-                              />
-                          </BP.FormGroup>
-                            <BP.Button id="loginDialogButton" type="submit">Log in</BP.Button>
-                      </form>
+                                />
+                            </BP.FormGroup>
+                            <BP.Button id="loginDialogButton" type="submit">
+                            Log in
+                            </BP.Button>
+                        </form>
                     )}
-              </Formik>
-          </EB>
-      </div>
+                </Formik>
+            </EB>
+        </div>
     );
 
     return content;

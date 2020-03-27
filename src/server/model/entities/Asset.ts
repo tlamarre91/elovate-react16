@@ -1,10 +1,6 @@
 import * as Orm from 'typeorm';
 
-import {
-    CreationInfo,
-    Owners,
-} from '.';
-
+import { CreationInfo, Owners } from '.';
 
 abstract class FileAsset {
     @Orm.PrimaryGeneratedColumn()

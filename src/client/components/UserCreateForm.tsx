@@ -3,9 +3,7 @@ import * as emailValidator from 'email-validator';
 import { Formik } from 'formik';
 import * as BP from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
-import {
-    useHistory,
-} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { blacklists } from '~shared/util';
 import * as Api from '~shared/api';
@@ -36,7 +34,11 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
     const [serverErrors, setServerErrors] = React.useState<Partial<Values>>();
 
     const trySubmit = async (values: Values) => {
-        const validateCall = new Api.Post<Values, Partial<Values>>(Api.Resource.User, values, 'validateNewUser');
+        const validateCall = new Api.Post<Values, Partial<Values>>(
+            Api.Resource.User,
+            values,
+            'validateNewUser',
+        );
         try {
             const res = await validateCall.execute();
             if (res.success) {
@@ -52,13 +54,20 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
             setStatus('could not validate form');
         }
 
-        const registerCall = new Api.Post<Values, UserDto>(Api.Resource.User, values, 'register');
+        const registerCall = new Api.Post<Values, UserDto>(
+            Api.Resource.User,
+            values,
+            'register',
+        );
         try {
             const res = await registerCall.execute();
             if (res.success) {
                 if (props?.registration) {
                     try {
-                        const user = await postBasicAuth(values.username, values.password);
+                        const user = await postBasicAuth(
+                            values.username,
+                            values.password,
+                        );
                         props?.onChange(user);
                         if (props.redirect) {
                             history.push(props.redirect);
@@ -94,7 +103,7 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
         } else if (values.password.length < 5) {
             errors.password = 'Come on, give us a password of at least 5 characters';
         } else if (values.password === 'password') {
-            errors.password = "We're not letting you set your password to \"password\", OK?";
+            errors.password = 'We\'re not letting you set your password to "password", OK?';
         }
 
         if (!emailValidator.validate(values.email)) {
@@ -107,25 +116,36 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
     return (
         <div className="userCreateFormContainer">
             <Formik
-                initialValues={props?.initialValues ?? {
-                    username: '',
-                    password: '',
-                    email: '',
-                }}
+                initialValues={
+                    props?.initialValues ?? {
+                        username: '',
+                        password: '',
+                        email: '',
+                    }
+                }
                 validate={validate}
                 onSubmit={trySubmit}
-          >
-                { (formProps) => (
-                    <form className="userCreateForm" onSubmit={formProps.handleSubmit}>
+            >
+                {(formProps) => (
+                    <form
+                        className="userCreateForm"
+                        onSubmit={formProps.handleSubmit}
+                    >
                         <BP.FormGroup
                             label="Username"
-                            helperText={formProps.touched.username && formProps.errors?.username
-                                || serverErrors?.username}
-                            intent={formProps.touched.username && formProps.errors?.username
-                                ? BP.Intent.WARNING
-                                : BP.Intent.NONE}
+                            helperText={
+                                (formProps.touched.username
+                                    && formProps.errors?.username)
+                                || serverErrors?.username
+                            }
+                            intent={
+                                formProps.touched.username
+                                && formProps.errors?.username
+                                    ? BP.Intent.WARNING
+                                    : BP.Intent.NONE
+                            }
                             labelFor="usernameInput"
-                      >
+                        >
                             <BP.InputGroup
                                 id="usernameInput"
                                 name="username"
@@ -133,17 +153,23 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                                 onBlur={formProps.handleBlur}
                                 onChange={formProps.handleChange}
                                 value={formProps.values.username}
-                          />
-                      </BP.FormGroup>
+                            />
+                        </BP.FormGroup>
                         <BP.FormGroup
                             label="Email address"
-                            intent={formProps.touched.email && formProps.errors?.email
-                                ? BP.Intent.WARNING
-                                : BP.Intent.NONE}
-                            helperText={formProps.touched.email && formProps.errors?.email
-                                || serverErrors?.email}
+                            intent={
+                                formProps.touched.email
+                                && formProps.errors?.email
+                                    ? BP.Intent.WARNING
+                                    : BP.Intent.NONE
+                            }
+                            helperText={
+                                (formProps.touched.email
+                                    && formProps.errors?.email)
+                                || serverErrors?.email
+                            }
                             labelFor="emailInput"
-                      >
+                        >
                             <BP.InputGroup
                                 id="emailInput"
                                 name="email"
@@ -151,17 +177,23 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                                 onBlur={formProps.handleBlur}
                                 onChange={formProps.handleChange}
                                 value={formProps.values.email}
-                          />
-                      </BP.FormGroup>
+                            />
+                        </BP.FormGroup>
                         <BP.FormGroup
                             label="Password"
-                            intent={formProps.touched.password && formProps.errors?.password
-                                ? BP.Intent.WARNING
-                                : BP.Intent.NONE}
-                            helperText={formProps.touched.password && formProps.errors?.password
-                                || serverErrors?.password}
+                            intent={
+                                formProps.touched.password
+                                && formProps.errors?.password
+                                    ? BP.Intent.WARNING
+                                    : BP.Intent.NONE
+                            }
+                            helperText={
+                                (formProps.touched.password
+                                    && formProps.errors?.password)
+                                || serverErrors?.password
+                            }
                             labelFor="passwordInput"
-                      >
+                        >
                             <BP.InputGroup
                                 id="passwordInput"
                                 name="password"
@@ -170,13 +202,15 @@ export const UserCreateForm: React.FC<UserCreateFormProps> = (props) => {
                                 onBlur={formProps.handleBlur}
                                 onChange={formProps.handleChange}
                                 value={formProps.values.password}
-                          />
-                      </BP.FormGroup>
-                        { status ? <div className="status">{ status }</div> : null }
-                        <BP.Button id="userSubmitButton" type="submit">{ props?.registration ? 'Register' : 'Create user' }</BP.Button>
-                  </form>
+                            />
+                        </BP.FormGroup>
+                        {status ? <div className="status">{status}</div> : null}
+                        <BP.Button id="userSubmitButton" type="submit">
+                            {props?.registration ? 'Register' : 'Create user'}
+                        </BP.Button>
+                    </form>
                 )}
-          </Formik>
-      </div>
+            </Formik>
+        </div>
     );
 };

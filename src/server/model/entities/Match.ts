@@ -10,9 +10,7 @@ import {
     User,
 } from '.';
 
-import {
-    MatchResultType,
-} from '~shared/enums';
+import { MatchResultType } from '~shared/enums';
 
 export interface SingleWinnerData {
     winnerParty: number;
@@ -26,7 +24,7 @@ export interface MatchResult {
 export enum MatchVisibility {
     Public = 'public',
     Group = 'group',
-    Hidden = 'hidden'
+    Hidden = 'hidden',
 }
 
 @Orm.Entity()

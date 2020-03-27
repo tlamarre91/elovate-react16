@@ -33,9 +33,13 @@ export const UserProfile: React.FC<UserProfileProps> = (props) => {
     }, []);
 
     return (
-      <div className="userProfile">
-            { status ? <div className="status">{ status }</div> : null}
-            { userDto ? <div className="username">{ userDto.username }</div> : <p>still loading this sorry user</p> }
+        <div className="userProfile">
+            {status ? <div className="status">{status}</div> : null}
+            {userDto ? (
+                <div className="username">{userDto.username}</div>
+            ) : (
+                <p>still loading this sorry user</p>
+            )}
         </div>
     );
 };

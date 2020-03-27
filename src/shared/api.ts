@@ -3,7 +3,6 @@ import winston from 'winston';
 import { log } from '~shared/log';
 import { BaseDto } from '~shared/data-transfer-objects';
 
-
 export const API_ROOT = '/api/v1';
 
 export enum Resource {
@@ -12,7 +11,7 @@ export enum Resource {
     Deauthentication = 'deauth',
     User = 'users',
     Group = 'groups',
-    Match = 'matches'
+    Match = 'matches',
 }
 
 export class Get<Receive> {

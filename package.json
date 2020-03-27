@@ -113,5 +113,10 @@
   "_moduleAliases": {
     "~shared": "dist/shared",
     "~server": "dist/server"
+  },
+  "prettier": {
+      "printWidth": 80,
+      "tabWidth": 4,
+      "singleQuote": true
   }
 }

@@ -5,26 +5,21 @@ import * as emailValidator from 'email-validator';
 import { blacklists } from '~shared/util';
 import { log } from '~shared/log';
 import { BaseRepository } from './BaseRepository';
-import {
-    Group,
-    GroupUser,
-    User,
-} from '~server/model/entities';
+import { Group, GroupUser, User } from '~server/model/entities';
 
-import {
-    GroupUserApproval,
-} from '~shared/enums';
+import { GroupUserApproval } from '~shared/enums';
 import * as Dto from '~shared/data-transfer-objects';
 
 type NewUserParams = {
-    username?: string,
-    password?: string,
-    email?: string
+    username?: string;
+    password?: string;
+    email?: string;
 };
 
 @Orm.EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
-    // TODO: improved validation rules. also... type checking on server side is basically nowhere. what happened to that dream?
+    // TODO: improved validation rules. also... type checking on server side is basically nowhere.
+    // what happened to that dream?
     async validateNewUser(params: NewUserParams): Promise<NewUserParams> {
         const errors: typeof params = {};
 
@@ -33,7 +28,11 @@ export class UserRepository extends BaseRepository<User> {
                 errors.username = 'Provide a username';
             } else if (blacklists.username.includes(params.username)) {
                 errors.username = 'Please choose another username'; // TODO: maybe set same string as below...
-            } else if (await this.count({ where: { username: params.username } }).then((count) => count > 0)) {
+            } else if (
+                await this.count({ where: { username: params.username } }).then(
+                    (count) => count > 0,
+                )
+            ) {
                 errors.username = `Username ${params.username} already in use`;
             }
         }
@@ -47,7 +46,11 @@ export class UserRepository extends BaseRepository<User> {
         if (params.email?.length > -1) {
             if (!emailValidator.validate(params.email)) {
                 errors.email = 'Please enter a valid email address';
-            } else if (await this.count({ where: { email: params.email } }).then((count) => count > 0)) {
+            } else if (
+                await this.count({ where: { email: params.email } }).then(
+                    (count) => count > 0,
+                )
+            ) {
                 errors.email = `Email address ${params.email} already in use`;
             }
         }
@@ -67,7 +70,9 @@ export class UserRepository extends BaseRepository<User> {
             user.username = dto.username ?? null;
 
             if (dto.createdById) {
-                user.creationInfo.createdBy = await this.findOne(dto.createdById);
+                user.creationInfo.createdBy = await this.findOne(
+                    dto.createdById,
+                );
             }
 
             if (dto.ownerUserId) {
@@ -148,12 +153,16 @@ export class UserRepository extends BaseRepository<User> {
         return this.save(user);
     }
 
-    async register(params: { username: string, password: string, email: string }): Promise<User> {
+    async register(params: {
+        username: string;
+        password: string;
+        email: string;
+    }): Promise<User> {
         const user = this.create();
         user.username = params.username;
         user.passwordDigest = await argon.hash(params.password);
         user.email = params.email;
-        user.invalidateLoginsBefore = Math.floor((Date.now() / 1000) - 1);
+        user.invalidateLoginsBefore = Math.floor(Date.now() / 1000 - 1);
         return this.save(user);
     }
 
