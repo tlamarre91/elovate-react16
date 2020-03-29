@@ -31,6 +31,7 @@
     "express": "^4.17.1",
     "express-validator": "^6.2.0",
     "formik": "^2.1.4",
+    "graphql": "^14.6.0",
     "http-errors": "^1.7.3",
     "http-status-codes": "^1.4.0",
     "jdenticon": "^2.2.0",
@@ -53,6 +54,7 @@
     "reflect-metadata": "^0.1.13",
     "serve-favicon": "^2.5.0",
     "tiny-invariant": "^1.1.0",
+    "type-graphql": "^0.17.6",
     "typeorm": "^0.2.20",
     "winston": "^3.2.1",
     "yup": "^0.28.3"
@@ -64,6 +66,7 @@
     "@types/express-jwt": "^0.0.42",
     "@types/express-session": "^1.15.16",
     "@types/faker": "^4.1.8",
+    "@types/graphql": "^14.5.0",
     "@types/http-errors": "^1.6.2",
     "@types/jsonwebtoken": "^8.3.8",
     "@types/mocha": "^7.0.2",
@@ -115,8 +118,8 @@
     "~server": "dist/server"
   },
   "prettier": {
-      "printWidth": 80,
-      "tabWidth": 4,
-      "singleQuote": true
+    "printWidth": 80,
+    "tabWidth": 4,
+    "singleQuote": true
   }
 }

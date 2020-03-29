@@ -33,7 +33,6 @@ export class Get<Receive> {
                 Accept: 'application/json',
             },
         };
-
         return fetch(this.url, fetchParams)
             .then((response) => response.json())
             .then((obj) => obj as Response<Receive>); // TODO: not enough to just assert type. need validation.

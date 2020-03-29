@@ -1,3 +1,4 @@
+import 'reflect-metadata'; // typegraphql told me to put this here. https://typegraphql.com/docs/installation.html
 import 'module-alias/register'; // required to allow module path aliases (i.e. "~shared" -> "dist/shared")
 import appRoot from 'app-root-path';
 import bodyParser from 'body-parser';
