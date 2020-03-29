@@ -31,14 +31,6 @@ export const GroupRouter: React.FC = (props) => {
     const { loggedInUser } = React.useContext(appState);
     const history = useHistory();
 
-    //    const groups = ["test", "blah", "doof"].map((s,i) => {
-    //        const dto = new Dto.GroupDto();
-    //        dto.id = i;
-    //        dto.name = s;
-    //        dto.customUrl = s;
-    //        return dto;
-    //    });
-
     return (
         <>
             <Switch>

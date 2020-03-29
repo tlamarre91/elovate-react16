@@ -54,7 +54,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = (props) => {
 
     const loggedInUserIsAdmin: boolean = group?.memberships?.some(
             (m) => m.privilege === GroupUserPrivilege.admin
-                && m.user.id === loggedInUser.id
+                && m.user.id === loggedInUser?.id
         ) ?? false;
 
     const profilePage = !group ? null : (
